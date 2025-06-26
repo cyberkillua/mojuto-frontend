@@ -1,11 +1,12 @@
 import './App.css'
-
+import { Route, Routes } from 'react-router-dom'
+import Login from "@/pages/auth/login";
 function App() {
 
   return (
-    <>
-      <h1 className="">THIS IS MOJUTO</h1>
-    </>
+    <Routes>
+      <Route path="/" element={<Login />} />
+    </Routes>
   )
 }
 
