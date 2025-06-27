@@ -27,7 +27,7 @@ const SocialLogin = ({
                         <Button
                             variant={"outline"}
                             key={idx}
-                            className="!h-[5rem] shadow px-[6rem] rounded-[4.5rem]"
+                            className="!h-[5rem] shadow px-[5rem] rounded-[4.5rem]"
                         >
                             <img
                                 src={socialLogin.icon} 

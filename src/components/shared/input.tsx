@@ -68,7 +68,7 @@ const SharedInput = ({
                         onChange={onChange}
                         placeholder={placeholder}
                         type={type}
-                        className={cn("h-[4.9rem] !text-fg-base !text-[1.3rem] px-[1.4rem] rounded-[4rem] shadow focus-visible:bg-[#F9FAFB] focus-visible:border-[#E5E7EB] focus-visible:ring-0", className)}
+                        className={cn("h-[4.9rem] !text-fg-base !text-[1.3rem] px-[1.4rem] rounded-[4rem] shadow focus-visible:border-[#E5E7EB] bg-[#F9FAFB] focus-visible:ring-0", className)}
                         {...props}
                     />
                 );

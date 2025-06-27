@@ -1,5 +1,6 @@
 html {
   font-size: min(15px, 0.6944vw);
+  overflow-x: hidden;
 }
 
 * {

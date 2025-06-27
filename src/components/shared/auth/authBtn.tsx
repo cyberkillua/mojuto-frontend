@@ -12,7 +12,7 @@ const AuthBtn = ({
 }: Props) => {
     return ( 
         <Button 
-            className={cn("w-full !font-medium rounded-[2.5rem] py-[2.4rem] text-[1.3rem]", classname)}
+            className={cn("w-full mt-[3rem] !font-medium rounded-[2.5rem] py-[2.4rem] text-[1.3rem]", classname)}
         >
             {text}
         </Button>
