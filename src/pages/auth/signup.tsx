@@ -47,7 +47,7 @@ const Enterprise = () => {
 
     return (
         <div className="mt-[3.5rem]">
-            <div className="grid grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
+            <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
                 {
                     regularFields.map((key) => {
                         return (
@@ -111,7 +111,7 @@ const SingleUser = () => {
 
     return (
         <div className="mt-[3.5rem]">
-            <div className="grid grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
+            <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
                 {
                     regularFields.map((key) => {
                         return (
