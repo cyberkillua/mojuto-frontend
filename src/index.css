@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -48,6 +48,8 @@
   --color-text-base: rgba(102, 116, 133, 1);
   --color-text-accent: #2563EB;
   --color-grey-300: #9CA3AF;
+  --font-rubik: "Rubik", sans-serif;
+  --color-off-white: rgba(255, 255, 255, 0.2);
 }
 
 :root {

@@ -1,6 +1,6 @@
-import Tabs from "@/components/shared/tabs";
+import Tabs from "@/components/shared/common/tabs";
 import { useState } from "react";
-import Input from "@/components/shared/input";
+import Input from "@/components/shared/common/input";
 import AuthBtn from "@/components/shared/auth/authBtn";
 import SocialLogin from "@/components/shared/auth/socialLogin";
 import { Button } from "@/components/ui/button";
@@ -85,7 +85,7 @@ const Enterprise = () => {
 
             <SocialLogin />
 
-            <p className="text-center mt-[3rem] text-grey-300 text-[1.3rem]">Have no Account? <Button className="!p-0 text-grey-300 text-[1.3rem] text-[]" variant={"ghost"}><Link to={""}>Sign Up</Link></Button></p>
+            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>Already have an Account? <Link to={"/login"}>Log In</Link></Button></p>
         </div>
     )
 }
@@ -137,7 +137,7 @@ const SingleUser = () => {
 
             <SocialLogin />
 
-            <p className="text-center mt-[3rem] text-grey-300 text-[1.3rem]">Have no Account? <Button className="!p-0 text-grey-300 text-[1.3rem] text-[]" variant={"ghost"}><Link to={""}>Sign Up</Link></Button></p>
+            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>Already have an Account? <Link to={"/login"}>Log In</Link></Button></p>
         </div>
     )
 }

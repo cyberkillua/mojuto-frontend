@@ -1,4 +1,4 @@
-import Input from "@/components/shared/input";
+import Input from "@/components/shared/common/input";
 import AuthBtn from "@/components/shared/auth/authBtn";
 import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,7 +52,7 @@ const Login = () => {
                 <Button
                     variant="ghost"
                     asChild
-                    className="text-[1.3rem] text-[#2563EB]"
+                    className="text-[1.3rem] text-[#008188]"
                 >
                     <Link to={""}>
                         Forgot Password?
@@ -62,7 +62,7 @@ const Login = () => {
 
             <SocialLogin />
 
-            <p className="text-center mt-[3rem] text-grey-300 text-[1.3rem]">Have no Account? <Button className="!p-0 text-grey-300 text-[1.3rem] text-[]" variant={"ghost"}><Link to={""}>Sign Up</Link></Button></p>
+            <p className="text-center mt-[3rem] text-[#008188] text-[1.3rem]">Have no Account? <Button className="!p-0 text-grey-300 text-[1.3rem] text-[]" variant={"ghost"}><Link to={"/signup"}>Sign Up</Link></Button></p>
         </>
     );
 }
