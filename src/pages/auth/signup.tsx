@@ -11,7 +11,7 @@ const SignUp = () => {
         <>
             <h2 className="text-center text-[1.9rem] font-semibold">Sign Up</h2>
             <Tabs
-                options={["Single User","As Enterprise" ]}
+                options={["Single User", "As Enterprise"]}
                 content={[
                     <SingleUser />,
                     <Enterprise />
@@ -23,7 +23,9 @@ const SignUp = () => {
 
 export default SignUp;
 
+
 const Enterprise = () => {
+    const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
         "FirstName": "",
         "LastName": "",
@@ -31,6 +33,8 @@ const Enterprise = () => {
         "Company": "",
         "Country": "",
         "Message": "",
+        "Password": "",
+        "Re-enterPassword": "",
     });
 
     const formatKey = (key: string) => {
@@ -39,56 +43,104 @@ const Enterprise = () => {
         });
     }
 
-    const formKeys = Object.keys(formData);
-    const regularFields = formKeys.slice(0, -1);
-    const lastField = formKeys[formKeys.length - 1];
+    const handleContinue = () => {
+        if (step === 1) {
+            setStep(2);
+        } else {
+            // Handle final form submission here
+            console.log("Final form data:", formData);
+        }
+    }
+
+
+    // Step 1 fields
+    const step1Keys = ["FirstName", "LastName", "Email", "Company", "Country", "Message"];
+    const step1RegularFields = step1Keys.slice(0, -1);
+    const step1LastField = step1Keys[step1Keys.length - 1];
+
+    // Step 2 fields
+    const step2Keys = ["Password", "Re-enterPassword"];
 
     return (
         <div className="mt-[3.5rem]">
-            <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
-                {
-                    regularFields.map((key) => {
-                        const isEmail = key === "Email";
-                        
-                        return (
-                            <div 
-                                className={`${isEmail ? 'sm:col-span-2' : ''}`} 
-                                key={key}
-                            >
-                                <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
-                                    {formatKey(key)}
-                                </p>
-                                <Input
-                                    name={key}
-                                    value={formData[key as keyof typeof formData]}
-                                    type="text"
-                                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                                />
-                            </div>
-                        )
-                    })
-                }
-            </div>
+            {step === 1 ? (
+                <>
+                    <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
+                        {
+                            step1RegularFields.map((key) => {
+                                const isEmail = key === "Email";
 
-            <div className="">
-                <p className="capitalize font-normal text-[1.3rem] text-[#667485] mb-[.8rem]">
-                    Message (Optional)
-                </p>
-                <Input
-                    name={lastField}
-                    value={formData[lastField as keyof typeof formData]}
-                    type="textarea"
-                    onChange={(e) => setFormData({ ...formData, [lastField]: e.target.value })}
-                />
-            </div>
+                                return (
+                                    <div
+                                        className={`${isEmail ? 'sm:col-span-2' : ''}`}
+                                        key={key}
+                                    >
+                                        <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
+                                            {formatKey(key)}
+                                        </p>
+                                        <Input
+                                            name={key}
+                                            value={formData[key as keyof typeof formData]}
+                                            type="text"
+                                            onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                                        />
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
 
-            <AuthBtn
-                text="continue"
-            />
+                    <div className="">
+                        <p className="capitalize font-normal text-[1.3rem] text-[#667485] mb-[.8rem]">
+                            Message (Optional)
+                        </p>
+                        <Input
+                            name={step1LastField}
+                            value={formData[step1LastField as keyof typeof formData]}
+                            type="textarea"
+                            onChange={(e) => setFormData({ ...formData, [step1LastField]: e.target.value })}
+                        />
+                    </div>
 
-            <SocialLogin />
+                    <AuthBtn
+                        text="Continue"
+                        onClick={handleContinue}
+                    />
 
-            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> 
+                    <SocialLogin />
+                </>
+            ) : (
+                <>
+                    <div className="grid gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
+                        {
+                            step2Keys.map((key) => {
+                                return (
+                                    <div className="" key={key}>
+                                        <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
+                                            {formatKey(key)}
+                                        </p>
+                                        <Input
+                                            name={key}
+                                            value={formData[key as keyof typeof formData]}
+                                            type="password"
+                                            onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
+                                        />
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+
+
+                    <AuthBtn
+                        text="Create Account"
+                        onClick={handleContinue}
+                        classname="flex-1"
+                    />
+                </>
+            )}
+
+            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]">
                 <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>
                     Already have an Account? <Link to={"/login"}>Log In</Link>
                 </Button>
@@ -122,10 +174,10 @@ const SingleUser = () => {
                         // Email takes full width, others follow normal grid
                         const isEmail = key === "Email";
                         // const isPasswordField = key === "Password" || key === "Re-enterPassword";
-                        
+
                         return (
-                            <div 
-                                className={`${isEmail ? 'sm:col-span-2' : ''}`} 
+                            <div
+                                className={`${isEmail ? 'sm:col-span-2' : ''}`}
                                 key={key}
                             >
                                 <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
@@ -149,7 +201,7 @@ const SingleUser = () => {
 
             <SocialLogin />
 
-            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> 
+            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]">
                 <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>
                     Already have an Account? <Link to={"/login"}>Log In</Link>
                 </Button>
