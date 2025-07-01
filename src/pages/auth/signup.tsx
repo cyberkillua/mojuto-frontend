@@ -11,10 +11,10 @@ const SignUp = () => {
         <>
             <h2 className="text-center text-[1.9rem] font-semibold">Sign Up</h2>
             <Tabs
-                options={["As Enterprise", "Single User"]}
+                options={["Single User","As Enterprise" ]}
                 content={[
-                    <Enterprise />,
-                    <SingleUser />
+                    <SingleUser />,
+                    <Enterprise />
                 ]}
             />
         </>
@@ -23,13 +23,11 @@ const SignUp = () => {
 
 export default SignUp;
 
-
 const Enterprise = () => {
     const [formData, setFormData] = useState({
         "FirstName": "",
         "LastName": "",
         "Email": "",
-        "Phone No.": "",
         "Company": "",
         "Country": "",
         "Message": "",
@@ -50,8 +48,13 @@ const Enterprise = () => {
             <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
                 {
                     regularFields.map((key) => {
+                        const isEmail = key === "Email";
+                        
                         return (
-                            <div className="" key={key}>
+                            <div 
+                                className={`${isEmail ? 'sm:col-span-2' : ''}`} 
+                                key={key}
+                            >
                                 <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
                                     {formatKey(key)}
                                 </p>
@@ -85,7 +88,11 @@ const Enterprise = () => {
 
             <SocialLogin />
 
-            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>Already have an Account? <Link to={"/login"}>Log In</Link></Button></p>
+            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> 
+                <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>
+                    Already have an Account? <Link to={"/login"}>Log In</Link>
+                </Button>
+            </p>
         </div>
     )
 }
@@ -95,7 +102,6 @@ const SingleUser = () => {
         "FirstName": "",
         "LastName": "",
         "Email": "",
-        "Phone No.": "",
         "Password": "",
         "Re-enterPassword": "",
     });
@@ -107,15 +113,21 @@ const SingleUser = () => {
     }
 
     const formKeys = Object.keys(formData);
-    const regularFields = formKeys;
 
     return (
         <div className="mt-[3.5rem]">
             <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
                 {
-                    regularFields.map((key) => {
+                    formKeys.map((key) => {
+                        // Email takes full width, others follow normal grid
+                        const isEmail = key === "Email";
+                        const isPasswordField = key === "Password" || key === "Re-enterPassword";
+                        
                         return (
-                            <div className="" key={key}>
+                            <div 
+                                className={`${isEmail ? 'sm:col-span-2' : ''}`} 
+                                key={key}
+                            >
                                 <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
                                     {formatKey(key)}
                                 </p>
@@ -137,7 +149,11 @@ const SingleUser = () => {
 
             <SocialLogin />
 
-            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>Already have an Account? <Link to={"/login"}>Log In</Link></Button></p>
+            <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]"> 
+                <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>
+                    Already have an Account? <Link to={"/login"}>Log In</Link>
+                </Button>
+            </p>
         </div>
     )
 }

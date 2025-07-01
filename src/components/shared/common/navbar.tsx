@@ -1,4 +1,5 @@
 import Logo from "../icons/logo";
+import X from "../icons/x";
 
 const Nav = () => {
 
@@ -22,7 +23,15 @@ const Nav = () => {
                         navItems.map((navItem, idx) => {
                             return (
                                 <li key={idx} className="font-rubik bg-off-white  px-[2.5rem] rounded-[3rem] py-[1.2rem] text-[#ffffff] text-[1.3rem] font-light backdrop-blur-[1rem]">
-                                    <a href={navItem.link}>{navItem.name}</a>
+                                    <a href={navItem.link}>
+                                        {
+                                            navItem.name === "Contact Us" ? ("Contact Us") : (
+                                                <X
+                                                    fill="white"
+                                                />
+                                            )
+                                        }
+                                    </a>
                                 </li>
                             )
                         })
