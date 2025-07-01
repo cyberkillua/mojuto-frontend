@@ -121,7 +121,7 @@ const SingleUser = () => {
                     formKeys.map((key) => {
                         // Email takes full width, others follow normal grid
                         const isEmail = key === "Email";
-                        const isPasswordField = key === "Password" || key === "Re-enterPassword";
+                        // const isPasswordField = key === "Password" || key === "Re-enterPassword";
                         
                         return (
                             <div 
@@ -134,7 +134,7 @@ const SingleUser = () => {
                                 <Input
                                     name={key}
                                     value={formData[key as keyof typeof formData]}
-                                    type="text"
+                                    type={key == "Password" || key == "Re-enterPassword" ? "password" : "text"}
                                     onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
                                 />
                             </div>
