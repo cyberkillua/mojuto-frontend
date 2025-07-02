@@ -54,7 +54,7 @@ const Login = () => {
                     asChild
                     className="text-[1.3rem] text-[#008188]"
                 >
-                    <Link to={""}>
+                    <Link to={"/forgot-password"}>
                         Forgot Password?
                     </Link>
                 </Button>
