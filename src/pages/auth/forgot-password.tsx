@@ -67,7 +67,7 @@ const Default = ({
                 <AuthBtn
                     text="Back to Login"
                     classname="mt-[2rem] font-semibold text-[#030712] bg-white bg-[linear-gradient(180deg,rgba(40,40,40,0.16)_0%,rgba(40,40,40,0)_100%)]"
-                    
+                    link="/login"
                 />
             </div>
 

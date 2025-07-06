@@ -10,6 +10,7 @@ interface Props {
     placeholder?: string;
     type?: string;
     className?: string;
+    onBlur?: () => void;
 }
 
 const SharedInput = ({
@@ -19,6 +20,7 @@ const SharedInput = ({
     placeholder,
     type = "text",
     className,
+    onBlur,
     ...props
 }: Props) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -40,6 +42,7 @@ const SharedInput = ({
                             type={showPassword ? "text" : "password"}
                             className={cn("h-[4.9rem] !text-[1.3rem] px-[1.4rem] pr-[3.5rem] rounded-[4rem] shadow focus-visible:bg-[#F9FAFB] focus-visible:border-[#E5E7EB] focus-visible:ring-0", className)}
                             {...props}
+                            onBlur={onBlur}
                         />
                         <button
                             type="button"

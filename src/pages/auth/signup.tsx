@@ -1,10 +1,12 @@
 import Tabs from "@/components/shared/common/tabs";
-import { useState } from "react";
-import Input from "@/components/shared/common/input";
+import { useState, useRef } from "react";
 import AuthBtn from "@/components/shared/auth/authBtn";
 import SocialLogin from "@/components/shared/auth/socialLogin";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import useFetch from "@/hooks/use-fetch";
+import FormField from "@/components/shared/auth/formField";
 
 const SignUp = () => {
     return (
@@ -23,84 +25,162 @@ const SignUp = () => {
 
 export default SignUp;
 
-
 const Enterprise = () => {
+    interface EnterpriseFormData {
+        FirstName: string;
+        LastName: string;
+        Email: string;
+        Company: string;
+        Country: string;
+        Message: string;
+        Password: string;
+        "Re-enterPassword": string;
+    }
+
+    interface TransformedEnterpriseData {
+        companyName: string;
+        country: string;
+        adminEmail: string;
+        adminFirstName: string;
+        adminLastName: string;
+        password: string;
+        message?: string;
+    }
+
     const [step, setStep] = useState(1);
-    const [formData, setFormData] = useState({
-        "FirstName": "",
-        "LastName": "",
-        "Email": "",
-        "Company": "",
-        "Country": "",
-        "Message": "",
-        "Password": "",
+    const [showErrors, setShowErrors] = useState(false);
+    const [formData, setFormData] = useState<EnterpriseFormData>({
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Company: "",
+        Country: "",
+        Message: "",
+        Password: "",
         "Re-enterPassword": "",
     });
 
-    const formatKey = (key: string) => {
-        return key.replace(/([A-Z])/g, (letter, index) => {
-            return index === 0 ? letter : ` ${letter}`;
+    const fieldRefs = useRef<{[key: string]: any}>({});
+
+    const transformFormData = (formData: EnterpriseFormData): TransformedEnterpriseData => {
+        return {
+            companyName: formData.Company,
+            country: formData.Country,
+            adminEmail: formData.Email,
+            adminFirstName: formData.FirstName,
+            adminLastName: formData.LastName,
+            password: formData.Password,
+            ...(formData.Message && { message: formData.Message })
+        };
+    };
+
+    const {
+        mutate: signupMutation,
+        isPending: isSignupPending,
+    } = useMutation({
+        mutationFn: () => useFetch('/organization/sign-up-enterprise', { 
+            method: "POST",
+            body: JSON.stringify(transformFormData(formData)),
+        }),
+        onSuccess: (data) => {
+            console.log("Success:", data);
+        },
+        onError: (error) => {
+            console.error("Error:", error);
+        },
+    });
+
+    const validateCurrentStep = (): boolean => {
+        let isValid = true;
+        const fieldsToValidate = step === 1 
+            ? ["FirstName", "LastName", "Email", "Company", "Country"]
+            : ["Password", "Re-enterPassword"];
+
+        fieldsToValidate.forEach(fieldName => {
+            const fieldRef = fieldRefs.current[fieldName];
+            if (fieldRef) {
+                const validation = fieldRef.validate();
+                if (!validation.isValid) {
+                    isValid = false;
+                }
+            }
         });
-    }
+
+        return isValid;
+    };
 
     const handleContinue = () => {
-        if (step === 1) {
-            setStep(2);
-        } else {
-            // Handle final form submission here
-            console.log("Final form data:", formData);
-        }
-    }
+        setShowErrors(true);
+        
+        setTimeout(() => {
+            const isValid = validateCurrentStep();
+            
+            if (!isValid) {
+                return;
+            }
 
+            if (step === 1) {
+                setStep(2);
+                setShowErrors(false);
+            } else {
+                console.log("Final form data:", transformFormData(formData));
+                signupMutation();
+            }
+        }, 0);
+    };
+
+    const handleInputChange = (field: keyof EnterpriseFormData) => (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setFormData({ ...formData, [field]: e.target.value });
+    };
 
     // Step 1 fields
-    const step1Keys = ["FirstName", "LastName", "Email", "Company", "Country", "Message"];
-    const step1RegularFields = step1Keys.slice(0, -1);
-    const step1LastField = step1Keys[step1Keys.length - 1];
+    const step1Fields = [
+        { name: "FirstName", required: true },
+        { name: "LastName", required: true },
+        { name: "Email", required: true, type: "email" as const },
+        { name: "Company", required: true },
+        { name: "Country", required: true },
+        { name: "Message", required: false, type: "textarea" as const }
+    ];
 
     // Step 2 fields
-    const step2Keys = ["Password", "Re-enterPassword"];
+    const step2Fields = [
+        { name: "Password", required: true, type: "password" as const },
+        { name: "Re-enterPassword", required: true, type: "password" as const, validatePassword: true }
+    ];
 
     return (
         <div className="mt-[3.5rem]">
             {step === 1 ? (
                 <>
                     <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
-                        {
-                            step1RegularFields.map((key) => {
-                                const isEmail = key === "Email";
-
-                                return (
-                                    <div
-                                        className={`${isEmail ? 'sm:col-span-2' : ''}`}
-                                        key={key}
-                                    >
-                                        <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
-                                            {formatKey(key)}
-                                        </p>
-                                        <Input
-                                            name={key}
-                                            value={formData[key as keyof typeof formData]}
-                                            type="text"
-                                            onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                                        />
-                                    </div>
-                                )
-                            })
-                        }
+                        {step1Fields.slice(0, -1).map((field) => (
+                            <FormField
+                                key={field.name}
+                                ref={(el) => { fieldRefs.current[field.name] = el; }}
+                                name={field.name}
+                                value={formData[field.name as keyof EnterpriseFormData]}
+                                type={field.type || "text"}
+                                onChange={handleInputChange(field.name as keyof EnterpriseFormData)}
+                                required={field.required}
+                                showError={showErrors}
+                                className={field.name === "Email" ? "sm:col-span-2" : ""}
+                            />
+                        ))}
                     </div>
 
-                    <div className="">
-                        <p className="capitalize font-normal text-[1.3rem] text-[#667485] mb-[.8rem]">
-                            Message (Optional)
-                        </p>
-                        <Input
-                            name={step1LastField}
-                            value={formData[step1LastField as keyof typeof formData]}
-                            type="textarea"
-                            onChange={(e) => setFormData({ ...formData, [step1LastField]: e.target.value })}
-                        />
-                    </div>
+                    <FormField
+                        ref={(el) => { fieldRefs.current["Message"] = el; }}
+                        name="Message"
+                        value={formData.Message}
+                        type="textarea"
+                        onChange={handleInputChange("Message")}
+                        required={false}
+                        showError={showErrors}
+                        className="mb-[2.5rem]"
+                    />
 
                     <AuthBtn
                         text="Continue"
@@ -112,30 +192,27 @@ const Enterprise = () => {
             ) : (
                 <>
                     <div className="grid gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
-                        {
-                            step2Keys.map((key) => {
-                                return (
-                                    <div className="" key={key}>
-                                        <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
-                                            {formatKey(key)}
-                                        </p>
-                                        <Input
-                                            name={key}
-                                            value={formData[key as keyof typeof formData]}
-                                            type="password"
-                                            onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                                        />
-                                    </div>
-                                )
-                            })
-                        }
+                        {step2Fields.map((field) => (
+                            <FormField
+                                key={field.name}
+                                ref={(el) => { fieldRefs.current[field.name] = el; }}
+                                name={field.name}
+                                value={formData[field.name as keyof EnterpriseFormData]}
+                                type={field.type}
+                                onChange={handleInputChange(field.name as keyof EnterpriseFormData)}
+                                required={field.required}
+                                showError={showErrors}
+                                validatePassword={field.validatePassword}
+                                passwordToMatch={field.validatePassword ? formData.Password : undefined}
+                            />
+                        ))}
                     </div>
-
 
                     <AuthBtn
                         text="Create Account"
                         onClick={handleContinue}
                         classname="flex-1"
+                        loading={isSignupPending}
                     />
                 </>
             )}
@@ -146,57 +223,97 @@ const Enterprise = () => {
                 </Button>
             </p>
         </div>
-    )
-}
+    );
+};
 
 const SingleUser = () => {
-    const [formData, setFormData] = useState({
-        "FirstName": "",
-        "LastName": "",
-        "Email": "",
-        "Password": "",
+    interface SingleUserFormData {
+        FirstName: string;
+        LastName: string;
+        Email: string;
+        Password: string;
+        "Re-enterPassword": string;
+    }
+
+    const [formData, setFormData] = useState<SingleUserFormData>({
+        FirstName: "",
+        LastName: "",
+        Email: "",
+        Password: "",
         "Re-enterPassword": "",
     });
 
-    const formatKey = (key: string) => {
-        return key.replace(/([A-Z])/g, (letter, index) => {
-            return index === 0 ? letter : ` ${letter}`;
-        });
-    }
+    const [showErrors, setShowErrors] = useState(false);
+    const fieldRefs = useRef<{[key: string]: any}>({});
 
-    const formKeys = Object.keys(formData);
+    const handleInputChange = (field: keyof SingleUserFormData) => (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setFormData({ ...formData, [field]: e.target.value });
+    };
+
+    const validateForm = (): boolean => {
+        let isValid = true;
+        const fieldsToValidate = ["FirstName", "LastName", "Email", "Password", "Re-enterPassword"];
+
+        fieldsToValidate.forEach(fieldName => {
+            const fieldRef = fieldRefs.current[fieldName];
+            if (fieldRef) {
+                const validation = fieldRef.validate();
+                if (!validation.isValid) {
+                    isValid = false;
+                }
+            }
+        });
+
+        return isValid;
+    };
+
+    const handleSubmit = () => {
+        setShowErrors(true);
+        
+        setTimeout(() => {
+            const isValid = validateForm();
+            
+            if (!isValid) {
+                return;
+            }
+
+            console.log("Form data:", formData);
+        }, 0);
+    };
+
+    const formFields = [
+        { name: "FirstName", required: true },
+        { name: "LastName", required: true },
+        { name: "Email", required: true, type: "email" as const },
+        { name: "Password", required: true, type: "password" as const },
+        { name: "Re-enterPassword", required: true, type: "password" as const, validatePassword: true }
+    ];
 
     return (
         <div className="mt-[3.5rem]">
             <div className="grid sm:grid-cols-2 gap-y-[2.5rem] gap-x-[2rem] mb-[2.5rem]">
-                {
-                    formKeys.map((key) => {
-                        // Email takes full width, others follow normal grid
-                        const isEmail = key === "Email";
-                        // const isPasswordField = key === "Password" || key === "Re-enterPassword";
-
-                        return (
-                            <div
-                                className={`${isEmail ? 'sm:col-span-2' : ''}`}
-                                key={key}
-                            >
-                                <p className="capitalize text-[1.3rem] text-[#667485] font-normal mb-[.8rem]">
-                                    {formatKey(key)}
-                                </p>
-                                <Input
-                                    name={key}
-                                    value={formData[key as keyof typeof formData]}
-                                    type={key == "Password" || key == "Re-enterPassword" ? "password" : "text"}
-                                    onChange={(e) => setFormData({ ...formData, [key]: e.target.value })}
-                                />
-                            </div>
-                        )
-                    })
-                }
+                {formFields.map((field) => (
+                    <FormField
+                        key={field.name}
+                        ref={(el) => { fieldRefs.current[field.name] = el; }}
+                        name={field.name}
+                        value={formData[field.name as keyof SingleUserFormData]}
+                        type={field.type || "text"}
+                        onChange={handleInputChange(field.name as keyof SingleUserFormData)}
+                        required={field.required}
+                        showError={showErrors}
+                        className={field.name === "Email" ? "sm:col-span-2" : ""}
+                        validatePassword={field.validatePassword}
+                        passwordToMatch={field.validatePassword ? formData.Password : undefined}
+                    />
+                ))}
             </div>
 
             <AuthBtn
                 text="Create Account"
+                onClick={handleSubmit}
             />
 
             <SocialLogin />
@@ -207,5 +324,5 @@ const SingleUser = () => {
                 </Button>
             </p>
         </div>
-    )
-}
+    );
+};
