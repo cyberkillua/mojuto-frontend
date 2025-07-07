@@ -8,6 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import useFetch from "@/hooks/use-fetch";
 import FormField from "@/components/shared/auth/formField";
 
+
 const SignUp = () => {
     return (
         <>
@@ -111,7 +112,7 @@ const Enterprise = () => {
 
     const handleContinue = () => {
         setShowErrors(true);
-        
+
         setTimeout(() => {
             const isValid = validateCurrentStep();
             
@@ -135,7 +136,6 @@ const Enterprise = () => {
         setFormData({ ...formData, [field]: e.target.value });
     };
 
-    // Step 1 fields
     const step1Fields = [
         { name: "FirstName", required: true },
         { name: "LastName", required: true },
@@ -145,7 +145,6 @@ const Enterprise = () => {
         { name: "Message", required: false, type: "textarea" as const }
     ];
 
-    // Step 2 fields
     const step2Fields = [
         { name: "Password", required: true, type: "password" as const },
         { name: "Re-enterPassword", required: true, type: "password" as const, validatePassword: true }
@@ -235,6 +234,13 @@ const SingleUser = () => {
         "Re-enterPassword": string;
     }
 
+    interface TransformedSingleUserData {
+        email: string;
+        firstName: string;
+        lastName: string;
+        password: string;
+    }
+
     const [formData, setFormData] = useState<SingleUserFormData>({
         FirstName: "",
         LastName: "",
@@ -245,6 +251,31 @@ const SingleUser = () => {
 
     const [showErrors, setShowErrors] = useState(false);
     const fieldRefs = useRef<{[key: string]: any}>({});
+
+    const transformFormData = (formData: SingleUserFormData): TransformedSingleUserData => {
+        return {
+            email: formData.Email,
+            firstName: formData.FirstName,
+            lastName: formData.LastName,
+            password: formData.Password
+        };
+    };
+
+    const {
+        mutate: signupMutation,
+        isPending: isSignupPending,
+    } = useMutation({
+        mutationFn: () => useFetch('/organization/sign-up-single-user', { 
+            method: "POST",
+            body: JSON.stringify(transformFormData(formData)),
+        }),
+        onSuccess: (data) => {
+            console.log("Success:", data);
+        },
+        onError: (error) => {
+            console.error("Error:", error);
+        },
+    });
 
     const handleInputChange = (field: keyof SingleUserFormData) => (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -279,7 +310,8 @@ const SingleUser = () => {
                 return;
             }
 
-            console.log("Form data:", formData);
+            console.log("Form data:", transformFormData(formData));
+            signupMutation();
         }, 0);
     };
 
@@ -314,6 +346,7 @@ const SingleUser = () => {
             <AuthBtn
                 text="Create Account"
                 onClick={handleSubmit}
+                loading={isSignupPending}
             />
 
             <SocialLogin />

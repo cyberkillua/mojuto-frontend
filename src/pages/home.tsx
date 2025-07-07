@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import DashboardHome from "./dashboard/dashboard-home";
 const Home = () => {
     return (
         <main className="flex justify-between pt-[2rem] sm:px-[4rem] px-[2rem]">
@@ -12,4 +13,4 @@ const Home = () => {
     );
 }
 
-export default Home;
+export default Home;DashboardHome
