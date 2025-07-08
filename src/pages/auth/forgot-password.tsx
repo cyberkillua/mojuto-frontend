@@ -75,7 +75,7 @@ const Default = ({
         mutate: forgotPasswordMutation,
         isPending: isForgotPasswordPending,
     } = useMutation({
-        mutationFn: (): Promise<ForgotPasswordResponse> => useFetch('/organization/forgot-password', {
+        mutationFn: (): Promise<ForgotPasswordResponse> => useFetch('/user/forgot-password', {
             method: "POST",
             body: JSON.stringify({
                 email: formData.email

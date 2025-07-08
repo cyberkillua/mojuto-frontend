@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import useFetch from "@/hooks/use-fetch";
 import FormField from "@/components/shared/auth/formField";
+import { toast } from "sonner";
 
 
 const SignUp = () => {
@@ -85,9 +86,11 @@ const Enterprise = () => {
         }),
         onSuccess: (data) => {
             console.log("Success:", data);
+            toast.success("Successfully created account!");
         },
         onError: (error) => {
             console.error("Error:", error);
+            toast.error(error.message || "Failed to send reset link. Please try again.");
         },
     });
 
@@ -271,9 +274,11 @@ const SingleUser = () => {
         }),
         onSuccess: (data) => {
             console.log("Success:", data);
+            toast.success("Successfully created account!");
         },
         onError: (error) => {
             console.error("Error:", error);
+             toast.error(error.message || "Failed to send reset link. Please try again.");
         },
     });
 

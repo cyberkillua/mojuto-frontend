@@ -186,9 +186,12 @@ const Login = () => {
             <SocialLogin />
 
             <p className="text-center mt-[3rem] text-[#008188] text-[1.3rem]">
-                Have no Account? 
-                <Button className="!p-0 text-grey-300 text-[1.3rem]" variant={"ghost"}>
-                    <Link to={"/signup"}>Sign Up</Link>
+                Have no Account?
+               <Button
+                  className="!p-0 text-[#008188] text-[1.3rem]"
+                  variant={"ghost"}
+                >
+                    <Link to={"/signup"}> Sign Up</Link>
                 </Button>
             </p>
         </>
