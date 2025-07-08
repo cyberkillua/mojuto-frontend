@@ -39,7 +39,6 @@ const Login = () => {
     const fieldRefs = useRef<{[key: string]: any}>({});
     const { login } = useAuth();
 
-    // Check for remembered user on component mount
     useEffect(() => {
         const rememberedUser = localStorage.getItem('rememberUser');
         if (rememberedUser) {
@@ -73,7 +72,6 @@ const Login = () => {
             if (response.success && response.data) {
                 const { email, firstName, lastName, token, userId } = response.data;
                 
-                // Use the auth context to handle login
                 login(
                     { email, firstName, lastName, userId },
                     token,
@@ -88,7 +86,6 @@ const Login = () => {
         onError: (error: any) => {
             console.error("Login error:", error);
             
-            // Handle specific error messages
             const errorMessage = error.response?.data?.message || 
                                error.message || 
                                "Login failed. Please check your credentials.";

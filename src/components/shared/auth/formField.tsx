@@ -10,10 +10,10 @@ interface FormFieldProps {
     label?: string;
     placeholder?: string;
     className?: string;
-    validatePassword?: boolean; 
-    passwordToMatch?: string; // The original password to match against
+    validatePassword?: boolean;
+    passwordToMatch?: string;
     onValidation?: (isValid: boolean, errorMessage?: string) => void;
-    showError?: boolean; // Control when to show errors
+    showError?: boolean;
 }
 
 interface FormFieldRef {
@@ -52,9 +52,11 @@ const FormField = forwardRef<FormFieldRef, FormFieldProps>(({
             };
         }
 
-        // Email validation
+       
         if (type === "email" && value.trim()) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+           
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
             if (!emailRegex.test(value)) {
                 return {
                     isValid: false,
@@ -88,7 +90,7 @@ const FormField = forwardRef<FormFieldRef, FormFieldProps>(({
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         onChange(e);
-        
+
         // Clear error when user starts typing
         if (error) {
             setError("");
@@ -100,7 +102,7 @@ const FormField = forwardRef<FormFieldRef, FormFieldProps>(({
             const validation = validateField();
             const errorMessage = validation.errorMessage || "";
             setError(errorMessage);
-            
+
             if (onValidation) {
                 onValidation(validation.isValid, errorMessage);
             }
@@ -113,11 +115,11 @@ const FormField = forwardRef<FormFieldRef, FormFieldProps>(({
             const validation = validateField();
             const errorMessage = validation.errorMessage || "";
             setError(showError ? errorMessage : "");
-            
+
             if (onValidation) {
                 onValidation(validation.isValid, errorMessage);
             }
-            
+
             return validation;
         }
     }));

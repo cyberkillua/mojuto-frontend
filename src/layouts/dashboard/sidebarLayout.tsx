@@ -7,9 +7,11 @@ const SidebarLayout = () => {
     return (
         <SidebarProvider>
             <AppSidebar />
-            <main>
+            <main className="bg-[]">
                 <SidebarTrigger />
-                <Outlet />
+                <section className="bg-[]">
+                    <Outlet />
+                </section>
             </main>
         </SidebarProvider>
     );
