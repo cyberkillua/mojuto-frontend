@@ -16,7 +16,6 @@ import {
     SidebarMenuItem,
     SidebarFooter,
 } from "@/components/ui/sidebar"
-import { Binoculars } from "lucide-react"
 
 // Menu items.
 const items = [
