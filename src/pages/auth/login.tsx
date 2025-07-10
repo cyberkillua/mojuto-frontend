@@ -175,7 +175,7 @@ const Login = () => {
                 <Button
                     variant="ghost"
                     asChild
-                    className="text-[1.3rem] text-[#008188]"
+                    className="text-[1.3rem] hover:text-blue-600 hover:bg-transparent  text-[#008188]"
                 >
                     <Link to={"/forgot-password"}>
                         Forgot Password?
@@ -186,9 +186,9 @@ const Login = () => {
             <SocialLogin />
 
             <p className="text-center mt-[3rem] text-[#008188] text-[1.3rem]">
-                Have no Account?
+                {"Have no Account? "}
                <Button
-                  className="!p-0 text-[#008188] text-[1.3rem]"
+                  className="!p-0  hover:text-blue-600 hover:bg-transparent text-[#008188] text-[1.3rem]"
                   variant={"ghost"}
                 >
                     <Link to={"/signup"}> Sign Up</Link>

@@ -62,7 +62,7 @@ const Enterprise = () => {
         "Re-enterPassword": "",
     });
 
-    const fieldRefs = useRef<{[key: string]: any}>({});
+    const fieldRefs = useRef<{ [key: string]: any }>({});
 
     const transformFormData = (formData: EnterpriseFormData): TransformedEnterpriseData => {
         return {
@@ -80,7 +80,7 @@ const Enterprise = () => {
         mutate: signupMutation,
         isPending: isSignupPending,
     } = useMutation({
-        mutationFn: () => useFetch('/organization/sign-up-enterprise', { 
+        mutationFn: () => useFetch('/organization/sign-up-enterprise', {
             method: "POST",
             body: JSON.stringify(transformFormData(formData)),
         }),
@@ -96,7 +96,7 @@ const Enterprise = () => {
 
     const validateCurrentStep = (): boolean => {
         let isValid = true;
-        const fieldsToValidate = step === 1 
+        const fieldsToValidate = step === 1
             ? ["FirstName", "LastName", "Email", "Company", "Country"]
             : ["Password", "Re-enterPassword"];
 
@@ -118,7 +118,7 @@ const Enterprise = () => {
 
         setTimeout(() => {
             const isValid = validateCurrentStep();
-            
+
             if (!isValid) {
                 return;
             }
@@ -253,7 +253,7 @@ const SingleUser = () => {
     });
 
     const [showErrors, setShowErrors] = useState(false);
-    const fieldRefs = useRef<{[key: string]: any}>({});
+    const fieldRefs = useRef<{ [key: string]: any }>({});
 
     const transformFormData = (formData: SingleUserFormData): TransformedSingleUserData => {
         return {
@@ -268,7 +268,7 @@ const SingleUser = () => {
         mutate: signupMutation,
         isPending: isSignupPending,
     } = useMutation({
-        mutationFn: () => useFetch('/organization/sign-up-single-user', { 
+        mutationFn: () => useFetch('/organization/sign-up-single-user', {
             method: "POST",
             body: JSON.stringify(transformFormData(formData)),
         }),
@@ -278,7 +278,7 @@ const SingleUser = () => {
         },
         onError: (error) => {
             console.error("Error:", error);
-             toast.error(error.message || "Failed to send reset link. Please try again.");
+            toast.error(error.message || "Failed to send reset link. Please try again.");
         },
     });
 
@@ -307,10 +307,10 @@ const SingleUser = () => {
 
     const handleSubmit = () => {
         setShowErrors(true);
-        
+
         setTimeout(() => {
             const isValid = validateForm();
-            
+
             if (!isValid) {
                 return;
             }
@@ -357,8 +357,9 @@ const SingleUser = () => {
             <SocialLogin />
 
             <p className="text-center !text-[#008188] mt-[3rem] text-[1.3rem]">
-                <Button className="!p-0 text-[1.3rem]" variant={"ghost"}>
-                    Already have an Account? <Link to={"/login"}>Log In</Link>
+                {"Already have an Account? "}
+                <Button className="!p-0 hover:text-blue-600 hover:bg-transparent text-[1.3rem]" variant={"ghost"}>
+                    <Link to={"/login"}>Log In</Link>
                 </Button>
             </p>
         </div>

@@ -1,9 +1,67 @@
+import { Button } from "@/components/ui/button";
+
 const DashboardHome = () => {
-    return ( 
-        <div className="">
-            <h1 className="">dashboard</h1>
-        </div>
-     );
+    const overView = [
+        {
+            title: "Total Uploads",
+            value: "4",
+            icon: "/icons/upload.svg",
+        },
+        {
+            title: "Total Wallets Tracked",
+            value: "120",
+            icon: "/icons/download.svg",
+        },
+        {
+            title: "Total Analytics Requests",
+            value: "4",
+            icon: "/icons/users.svg",
+        }
+    ]
+    
+    return (
+        <>
+            <div className="max-w-[100rem] w-full">
+                <div className="flex justify-between">
+                    <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
+
+                    <Button
+                        style={{
+                            boxShadow: `
+                                0px 0.5px 0px 0px #03071229,
+                                0px 0.25px 0px 0px #03071229,
+                                0px 1.75px 0px 0px #FFFFFF29 inset
+                                `,
+                            background: `
+                                linear-gradient(0deg, #FFFFFF, #FFFFFF),
+                                linear-gradient(180deg, rgba(40, 40, 40, 0.16) 0%, rgba(40, 40, 40, 0) 100%)
+                                `
+                        }}
+                        className="text-[#030712] text-[1.2rem] px-[2.3rem] rounded-[2.3rem] py-[1.9rem]"
+                    >
+                        Analyze Wallets
+                    </Button>
+                </div>
+
+                <div className="bg-[#131E24] mt-[2rem] px-[3.45rem] py-[2.6rem] w-full border border-[#253A4699] flex justify-between rounded-[3rem]">
+                    {
+                        overView.map((item, i) => (
+                            <div key={item.title} className={`w-[30%] ${i < 2 ? "border-r border-[#253A4699]" : ""}`}>
+                                <p className="text-[#8EA2AD] text-[1.4rem]">{item.title}</p>
+                                <h2 className="mt-[2rem] text-center font-regular text-white text-[6.5rem]">{item.value}</h2>
+                            </div>
+                        ))
+                    }
+                </div>
+
+                <div className="bg-[#131E24] mt-[2rem] px-[3.45rem] py-[2.6rem] w-full border border-[#253A4699] flex justify-between rounded-[3rem]">
+                    <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
+
+
+                </div>
+            </div>
+        </>
+    );
 }
- 
+
 export default DashboardHome;
