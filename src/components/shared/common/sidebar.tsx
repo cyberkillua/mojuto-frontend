@@ -6,6 +6,7 @@ import Logo from "../icons/logo"
 import { useLocation } from "react-router-dom"
 import { useSidebar } from "@/components/ui/sidebar"
 import { MoreHorizontal } from "lucide-react"
+import Binoculars from "../icons/binoculars"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -54,10 +55,8 @@ export function AppSidebar() {
                             classname="h-[3rem] w-[10rem]"
                         />
                     ) : (
-                        <img
-                            src="/common/binoculars.svg"
-                            alt="logo"
-                            className="w-[3.5rem]"
+                        <Binoculars
+                            classname="w-[3.5rem]"
                         />
                     )
                 }
@@ -109,10 +108,10 @@ export function AppSidebar() {
                                     </a>
                                 </SidebarMenuButton>
                                 <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
+                                    <DropdownMenuTrigger asChild className="size-[2.5rem] hover:bg-[#21343F] mt-[.3rem]">
                                         <SidebarMenuAction>
                                             <MoreHorizontal
-                                                className="!size-[2rem] mt-[.7rem]"
+                                                className="!size-[2rem]"
                                             />
                                         </SidebarMenuAction>
                                     </DropdownMenuTrigger>

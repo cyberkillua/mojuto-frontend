@@ -10,8 +10,7 @@ const SidebarLayout = () => {
             <AppSidebar />
             <main className="w-full bg-[url(/common/dashboard-background.png)] bg-cover bg-no-repeat bg-center bg-fixed min-h-screen">
                 <DashboardNav />
-                {/* <SidebarTrigger /> */}
-                <section className="pt-[3.2rem] pl-[3.2rem]">
+                <section className="pt-[3.2rem] relative pl-[3.2rem]">
                     <Outlet />
                 </section>
             </main>

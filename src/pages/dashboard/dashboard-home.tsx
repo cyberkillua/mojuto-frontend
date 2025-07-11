@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/shared/tables/upload/data-table";
+import { uploadHistoryColumns } from "@/components/shared/tables/upload/columns";
 
 const DashboardHome = () => {
     const overView = [
@@ -18,10 +20,35 @@ const DashboardHome = () => {
             icon: "/icons/users.svg",
         }
     ]
-    
+
+    const data = [
+        {
+            id: "1",
+            name: "BTC FC",
+            wallets: "8",
+            date: "3 hours"
+        },
+        {
+            id: "2",
+            name: "August Batch",
+            wallets: "9",
+            date: "1 hour"
+        },
+        {
+            id: "3",
+            name: "Ilemobayo Babes",
+            wallets: "6",
+            date: "01/08/2025"
+        },
+    ]
+
     return (
         <>
-            <div className="max-w-[100rem] w-full">
+            <div className="max-w-[100rem] w-full pb-[5rem]">
+                <img
+                    src="/common/flare.png"
+                    className="absolute blur top-[-8rem] pointer-events-none left-[23rem] w-[55rem]"
+                />
                 <div className="flex justify-between">
                     <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
 
@@ -47,17 +74,24 @@ const DashboardHome = () => {
                     {
                         overView.map((item, i) => (
                             <div key={item.title} className={`w-[30%] ${i < 2 ? "border-r border-[#253A4699]" : ""}`}>
-                                <p className="text-[#8EA2AD] text-[1.4rem]">{item.title}</p>
-                                <h2 className="mt-[2rem] text-center font-regular text-white text-[6.5rem]">{item.value}</h2>
+                                <div className="w-[18rem]">
+                                    <p className="text-[#8EA2AD] text-[1.4rem]">{item.title}</p>
+                                    <h2 className="mt-[2rem] text-center font-regular text-white text-[6.5rem]">{item.value}</h2>
+                                </div>
                             </div>
                         ))
                     }
                 </div>
 
-                <div className="bg-[#131E24] mt-[2rem] px-[3.45rem] py-[2.6rem] w-full border border-[#253A4699] flex justify-between rounded-[3rem]">
+                <div className="bg-[#131E24] mt-[4rem] px-[3.45rem] py-[2.6rem] border border-[#253A4699] w-[65%] rounded-[3rem]">
                     <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
 
-
+                    <div className="mt-[2rem]">
+                        <DataTable
+                            columns={uploadHistoryColumns}
+                            data={data}
+                        />
+                    </div>
                 </div>
             </div>
         </>
