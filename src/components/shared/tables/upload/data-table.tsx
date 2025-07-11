@@ -33,7 +33,7 @@ export function DataTable<TData, TValue>({
     <div className="rounded-[1.5rem] bg-[#172329]">
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup, i) => (
+          {table.getHeaderGroups().map((headerGroup) => (
            <TableRow
               key={headerGroup.id}
               className="!border-0 hover:bg-transparent"
