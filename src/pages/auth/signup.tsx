@@ -3,7 +3,7 @@ import { useState, useRef } from "react";
 import AuthBtn from "@/components/shared/auth/authBtn";
 import SocialLogin from "@/components/shared/auth/socialLogin";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import useFetch from "@/hooks/use-fetch";
 import FormField from "@/components/shared/auth/formField";
@@ -229,6 +229,7 @@ const Enterprise = () => {
 };
 
 const SingleUser = () => {
+    const navigate = useNavigate();
     interface SingleUserFormData {
         FirstName: string;
         LastName: string;
@@ -275,6 +276,7 @@ const SingleUser = () => {
         onSuccess: (data) => {
             console.log("Success:", data);
             toast.success("Successfully created account!");
+            navigate("/login");
         },
         onError: (error) => {
             console.error("Error:", error);
