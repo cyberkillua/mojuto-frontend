@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom"
 import { useSidebar } from "@/components/ui/sidebar"
 import { MoreHorizontal } from "lucide-react"
 import Binoculars from "../icons/binoculars"
+import { Link } from "react-router-dom"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -68,12 +69,12 @@ export function AppSidebar() {
                             {items.map((item) => (
                                 <SidebarMenuItem className="!text-[1.4rem] mt-[.5rem]" key={item.title}>
                                     <SidebarMenuButton asChild className={`!text-[1.5rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem] ${currentPath === item.url ? "bg-[#21343F] text-[#D5F0FF]" : ""}`}>
-                                        <a href={item.url}>
+                                        <Link to={item.url}>
                                             <item.icon
                                                 classname="mr-[1rem] !size-[2rem]"
                                             />
                                             <span>{item.title}</span>
-                                        </a>
+                                        </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}

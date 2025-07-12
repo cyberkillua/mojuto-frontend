@@ -43,7 +43,7 @@ const DashboardHome = () => {
     ]
 
     return (
-        <>
+        <div className="pl-[3.2rem] pt-[4rem]">
             <div className="max-w-[100rem] w-full pb-[5rem]">
                 <img
                     src="/common/flare.png"
@@ -94,7 +94,7 @@ const DashboardHome = () => {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
 
