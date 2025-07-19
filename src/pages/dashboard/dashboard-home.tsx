@@ -1,46 +1,62 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/tables/upload/data-table";
 import { uploadHistoryColumns } from "@/components/shared/tables/upload/columns";
+import { useQuery } from "@tanstack/react-query";
+import useFetch from "@/hooks/use-fetch";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const DashboardHome = () => {
     const overView = [
         {
             title: "Total Uploads",
-            value: "4",
+            key: "totalUpload",
             icon: "/icons/upload.svg",
         },
         {
             title: "Total Wallets Tracked",
-            value: "120",
+            key: "totalWalletsUploaded",
             icon: "/icons/download.svg",
         },
         {
             title: "Total Analytics Requests",
-            value: "4",
+            key: "totalAnalyticsRequests",
             icon: "/icons/users.svg",
         }
     ]
 
-    const data = [
-        {
-            id: "1",
-            name: "BTC FC",
-            wallets: "8",
-            date: "3 hours"
+    const {
+        data: uploadHistory,
+        isLoading: isUploadHistoryLoading,
+    } = useQuery({
+        queryKey: ["uploadHistory"],
+        queryFn: async () => {
+            const response = await useFetch("/user/dashboard");
+            return response.data;
         },
-        {
-            id: "2",
-            name: "August Batch",
-            wallets: "9",
-            date: "1 hour"
-        },
-        {
-            id: "3",
-            name: "Ilemobayo Babes",
-            wallets: "6",
-            date: "01/08/2025"
-        },
-    ]
+    })
+
+    console.log("uploadHistory:", uploadHistory);
+
+    // const data = [
+    //     {
+    //         id: "1",
+    //         name: "BTC FC",
+    //         wallets: "8",
+    //         date: "3 hours"
+    //     },
+    //     {
+    //         id: "2",
+    //         name: "August Batch",
+    //         wallets: "9",
+    //         date: "1 hour"
+    //     },
+    //     {
+    //         id: "3",
+    //         name: "Ilemobayo Babes",
+    //         wallets: "6",
+    //         date: "01/08/2025"
+    //     },
+    // ]
 
     return (
         <div className="pl-[3.2rem] pt-[4rem]">
@@ -72,11 +88,17 @@ const DashboardHome = () => {
 
                 <div className="bg-[#131E24] mt-[2rem] px-[3.45rem] py-[2.6rem] w-full border border-[#253A4699] flex justify-between rounded-[3rem]">
                     {
-                        overView.map((item, i) => (
+                        overView?.map((item, i) => (
                             <div key={item.title} className={`w-[30%] ${i < 2 ? "border-r border-[#253A4699]" : ""}`}>
                                 <div className="w-[18rem]">
                                     <p className="text-[#8EA2AD] text-[1.4rem]">{item.title}</p>
-                                    <h2 className="mt-[2rem] text-center font-regular text-white text-[6.5rem]">{item.value}</h2>
+                                    {
+                                        isUploadHistoryLoading ? (
+                                            <Skeleton className="w-[8rem] mt-[2rem] bg-[#21343F] mx-auto h-[7rem]" />
+                                        ) : (
+                                            <h2 className="mt-[2rem] text-center font-regular text-white text-[6.5rem]">{uploadHistory?.[item?.key]}</h2>
+                                        )
+                                    }
                                 </div>
                             </div>
                         ))
@@ -89,7 +111,8 @@ const DashboardHome = () => {
                     <div className="mt-[2rem]">
                         <DataTable
                             columns={uploadHistoryColumns}
-                            data={data}
+                            data={uploadHistory?.uploadHistory}
+                            isLoading={isUploadHistoryLoading}
                         />
                     </div>
                 </div>

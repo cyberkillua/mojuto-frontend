@@ -8,6 +8,9 @@ import { useSidebar } from "@/components/ui/sidebar"
 import { MoreHorizontal } from "lucide-react"
 import Binoculars from "../icons/binoculars"
 import { Link } from "react-router-dom"
+import useFetch from "@/hooks/use-fetch"
+import { useQuery } from "@tanstack/react-query"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,7 +28,6 @@ import {
     SidebarMenuItem,
     SidebarFooter,
     SidebarMenuAction,
-
 } from "@/components/ui/sidebar"
 
 // Menu items.
@@ -46,6 +48,19 @@ export function AppSidebar() {
     const location = useLocation();
     const currentPath = location.pathname;
     const { open } = useSidebar();
+
+    const {
+        data: userData,
+        isPending
+    } = useQuery({
+        queryKey: ["userData"],
+        queryFn: async () => {
+            const response = await useFetch("/user/get-logged-in-user")
+            return response.data
+        },
+    })
+
+    console.log(userData)
 
     return (
         <Sidebar className="border-[#192830]" collapsible="icon">
@@ -99,33 +114,40 @@ export function AppSidebar() {
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
 
-                            <SidebarMenuItem
-                                className="!text-[1.4rem] p-0 mt-[2rem]"
-                            >
-                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.7rem] hover:bg-[#21343F] font-medium group-data-[collapsible=icon]:p-1! hover:text-[#D5F0FF] group-data-[collapsible=icon]:size-[3.5rem]! ">
-                                    <a href="#">
-                                        <UserAvatar initial="M" />
-                                        <span>Mojuto Mukhtar</span>
-                                    </a>
-                                </SidebarMenuButton>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild className="size-[2.5rem] hover:bg-[#21343F] mt-[.3rem]">
-                                        <SidebarMenuAction>
-                                            <MoreHorizontal
-                                                className="!size-[2rem]"
-                                            />
-                                        </SidebarMenuAction>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent side="right" align="start">
-                                        <DropdownMenuItem>
-                                            <span>Edit Project</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <span>Delete Project</span>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </SidebarMenuItem>
+                            {
+                                isPending ? (
+                                    <Skeleton
+                                        className="w-[100%] mt-[2rem] h-[2.5rem] rounded-[2.5rem] bg-[#21343F]"
+                                    />
+                                ) : (
+                                    <SidebarMenuItem
+                                        className="!text-[1.4rem] p-0 mt-[2rem]"
+                                    >
+                                        <div className="!text-[1.3rem] flex items-center !h-[3.7rem] hover:bg-transparent gap-[1rem] font-medium group-data-[collapsible=icon]:p-1! group-data-[collapsible=icon]:size-[3.5rem]! ">
+                                                <UserAvatar initial={userData?.firstName[0]} />
+                                                <span className="truncate capitalize">{`${userData?.firstName} ${userData?.lastName}`}</span>
+                                        </div>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild className="size-[2.5rem] hover:bg-[#21343F] hover:text-[#D5F0FF] mt-[.3rem]">
+                                                <SidebarMenuAction>
+                                                    <MoreHorizontal
+                                                        className="!size-[2rem]"
+                                                    />
+                                                </SidebarMenuAction>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent side="right" align="start">
+                                                <DropdownMenuItem>
+                                                    <span>Edit Project</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem>
+                                                    <span>Delete Project</span>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </SidebarMenuItem>
+                                )
+                            }
+
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

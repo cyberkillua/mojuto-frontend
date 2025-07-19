@@ -19,13 +19,13 @@ const AuthBtn = ({
     loading = false,
     ...props
 }: Props) => {
-    const defualtClass = "w-full mt-[3rem] !font-medium rounded-[2.5rem] py-[2.4rem] text-[1.3rem] shadow-[0px_0.5px_0px_0px_rgba(3,7,18,0.16),0px_0.25px_0px_0px_rgba(3,7,18,0.16),0px_1.75px_0px_0px_rgba(255,255,255,0.16)_inset] bg-[linear-gradient(0deg,#030712,#030712),linear-gradient(180deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0)_100%)]"
+    const defaultClass = "w-full mt-[3rem] !font-medium rounded-[2.5rem] py-[2.4rem] text-[1.3rem] shadow-[0px_0.5px_0px_0px_rgba(3,7,18,0.16),0px_0.25px_0px_0px_rgba(3,7,18,0.16),0px_1.75px_0px_0px_rgba(255,255,255,0.16)_inset] bg-[linear-gradient(0deg,#030712,#030712),linear-gradient(180deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0)_100%)]"
     return (
         <>
             {
                 link?.length ? (
                     <Button
-                        className={cn(defualtClass, classname)}
+                        className={cn(defaultClass, classname)}
                         onClick={onClick}
                         {...props}
                         asChild
@@ -36,7 +36,7 @@ const AuthBtn = ({
                     </Button>
                 ) : (
                     <Button
-                        className={cn(defualtClass, classname)}
+                        className={cn(defaultClass, classname)}
                         onClick={onClick}
                         {...props}
                     >
