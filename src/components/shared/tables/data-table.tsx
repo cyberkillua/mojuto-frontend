@@ -90,7 +90,7 @@ export function DataTable<TData, TValue>({
               ) : (
                 <TableRow className="hover:bg-transparent">
                   <TableCell colSpan={columns.length} className="h-24 text-[1.2rem] text-[#D5F0FF] text-center">
-                    No History.
+                    No Data Available.
                   </TableCell>
                 </TableRow>
               )

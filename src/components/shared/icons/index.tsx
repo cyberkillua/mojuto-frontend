@@ -1,0 +1,5 @@
+export * as ChangeLog from "./changelog"
+export * as Help from "./help"
+export * as LogOut from "./logout"
+export * as Settings from "./settings"
+export * as UserAvatar from "./user-avater" 

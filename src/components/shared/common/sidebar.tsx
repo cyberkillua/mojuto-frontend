@@ -1,20 +1,15 @@
 import Home from "../icons/home"
 import Analytics from "../icons/analytics"
-import Settings from "../icons/settings"
 import { SidebarHeader } from "@/components/ui/sidebar"
 import Logo from "../icons/logo"
 import { useLocation } from "react-router-dom"
 import { useSidebar } from "@/components/ui/sidebar"
-import { MoreHorizontal } from "lucide-react"
 import Binoculars from "../icons/binoculars"
 import { Link } from "react-router-dom"
 import useFetch from "@/hooks/use-fetch"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import Settings from "../icons/settings"
 import UserAvatar from "../icons/user-avater"
 import {
     Sidebar,
@@ -25,8 +20,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarFooter,
-    SidebarMenuAction,
 } from "@/components/ui/sidebar"
+import ChangeLog from "../icons/changelog"
+import Help from "../icons/help"
+import LogOut from "../icons/logout"
 
 // Menu items.
 const items = [
@@ -36,7 +33,7 @@ const items = [
         icon: Home,
     },
     {
-        title: "Analytics",
+        title: "Wallet Upload",
         url: "/dashboard/analytics",
         icon: Analytics,
     }
@@ -58,7 +55,6 @@ export function AppSidebar() {
         },
     })
 
-    console.log("userData:", userData);
 
     return (
         <Sidebar className="border-[#192830]" collapsible="icon">
@@ -100,14 +96,38 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu >
                             <SidebarMenuItem
-                                className="!text-[1.4rem] mt-[.5rem]"
+                                className="!text-[1.4rem] flex flex-col gap-[.7rem] mt-[.5rem]"
                             >
                                 <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
                                     <Link to={"/dashboard/settings"}>
-                                        <Settings
-                                            classname="mr-[1rem] !size-[2rem]"
+                                        <ChangeLog
+                                            className="mr-[1rem] !size-[2rem]"
                                         />
-                                        <span>Settings</span>
+                                        <span className="font-[400]">Changelog</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
+                                    <Link to={"/dashboard/settings"}>
+                                        <Settings
+                                            className="mr-[1rem] !size-[2rem]"
+                                        />
+                                        <span className="font-[400]">Settings</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
+                                    <Link to={"/dashboard/settings"}>
+                                        <Help
+                                            className="mr-[1rem] !size-[2rem]"
+                                        />
+                                        <span className="font-[400]">Help</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
+                                    <Link to={"/dashboard/settings"}>
+                                        <LogOut
+                                            className="mr-[1rem] !size-[2rem]"
+                                        />
+                                        <span className="font-[400]">Log Out</span>
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
@@ -122,26 +142,10 @@ export function AppSidebar() {
                                         className="!text-[1.4rem] p-0 mt-[2rem]"
                                     >
                                         <div className="!text-[1.3rem] flex items-center !h-[3.7rem] hover:bg-transparent gap-[1rem] font-medium group-data-[collapsible=icon]:p-1! group-data-[collapsible=icon]:size-[3.5rem]! ">
-                                                <UserAvatar initial={userData?.firstName[0]} />
-                                                <span className="truncate capitalize">{`${userData?.firstName} ${userData?.lastName}`}</span>
+                                            <UserAvatar initial={userData?.firstName[0]} />
+                                            <span className="truncate capitalize">{`${userData?.firstName} ${userData?.lastName}`}</span>
+
                                         </div>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild className="size-[2.5rem] hover:bg-[#21343F] hover:text-[#D5F0FF] mt-[.3rem]">
-                                                <SidebarMenuAction>
-                                                    <MoreHorizontal
-                                                        className="!size-[2rem]"
-                                                    />
-                                                </SidebarMenuAction>
-                                            </DropdownMenuTrigger>
-                                            {/* <DropdownMenuContent side="right" align="start">
-                                                <DropdownMenuItem>
-                                                    <span>Edit Project</span>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <span>Delete Project</span>
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent> */}
-                                        </DropdownMenu>
                                     </SidebarMenuItem>
                                 )
                             }
