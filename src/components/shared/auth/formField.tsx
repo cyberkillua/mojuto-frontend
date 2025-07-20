@@ -67,10 +67,10 @@ const FormField = forwardRef<FormFieldRef, FormFieldProps>(({
 
         // Password validation
         if (type === "password" && value.trim()) {
-            if (value.length < 8) {
+            if (value.length < 7) {
                 return {
                     isValid: false,
-                    errorMessage: "Password must be at least 8 characters long"
+                    errorMessage: "Password must be at least 7 characters long"
                 };
             }
         }

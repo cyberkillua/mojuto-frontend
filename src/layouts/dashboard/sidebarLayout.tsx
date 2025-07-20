@@ -8,7 +8,7 @@ const SidebarLayout = () => {
     return (
         <SidebarProvider>
             <AppSidebar />
-            <main className="w-full bg-[url(/common/dashboard-background.png)] bg-cover bg-no-repeat bg-center bg-fixed min-h-screen">
+            <main className="w-full bg-[#0F181D] bg-[url(/common/dashboard-background.png)] bg-cover bg-no-repeat bg-center bg-fixed min-h-screen">
                 <DashboardNav />
                 <section className="h-[calc(100vh-5.2rem)] overflow-y-auto">
                     <Outlet />

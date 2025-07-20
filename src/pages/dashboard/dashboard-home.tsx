@@ -1,28 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/shared/tables/upload/data-table";
-import { uploadHistoryColumns } from "@/components/shared/tables/upload/columns";
+import { DataTable } from "@/components/shared/tables/data-table";
+import { uploadHistoryColumns } from "@/components/shared/tables/columns/upload";
 import { useQuery } from "@tanstack/react-query";
 import useFetch from "@/hooks/use-fetch";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DashboardHome = () => {
-    const overView = [
-        {
-            title: "Total Uploads",
-            key: "totalUpload",
-            icon: "/icons/upload.svg",
-        },
-        {
-            title: "Total Wallets Tracked",
-            key: "totalWalletsUploaded",
-            icon: "/icons/download.svg",
-        },
-        {
-            title: "Total Analytics Requests",
-            key: "totalAnalyticsRequests",
-            icon: "/icons/users.svg",
-        }
-    ]
+
 
     const {
         data: uploadHistory,
@@ -35,7 +19,24 @@ const DashboardHome = () => {
         },
     })
 
-    console.log("uploadHistory:", uploadHistory);
+    const overView = [
+        {
+            title: uploadHistory?.users && uploadHistory?.users[0]?.userType === "ENTERPRISE" ? "Total Team Members" : "Total Uploads",
+            key: uploadHistory?.users && uploadHistory?.users[0]?.userType === "ENTERPRISE" ? "totalTeamMembers" : "totalUpload",
+            icon: "/icons/upload.svg",
+        },
+        {
+            title: uploadHistory?.users && uploadHistory?.users[0]?.userType === "ENTERPRISE" ? "Total Team Members" : "Total Wallets Analyzed",
+            key: uploadHistory?.users && uploadHistory?.users[0]?.userType === "ENTERPRISE" ? "totalTeamMembers" : "totalUpload",
+            icon: "/icons/download.svg",
+        },
+        {
+            title: uploadHistory?.users && uploadHistory?.users[0]?.userType === "ENTERPRISE" ? "Total Team Members" : "Total Analytics Requests",
+            key: uploadHistory?.users && uploadHistory?.users[0]?.userType === "ENTERPRISE" ? "totalTeamMembers" : "totalUpload",
+            icon: "/icons/users.svg",
+        }
+    ]
+
 
     // const data = [
     //     {

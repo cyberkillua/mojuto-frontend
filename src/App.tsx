@@ -10,6 +10,7 @@ import DashboardHome from './pages/dashboard/dashboard-home';
 import { AuthProvider } from './contexts/AuthContexts';
 import ProtectedRoute from '@/components/protectedRoute';
 import Analytics from './pages/dashboard/analytics';
+import Settings from './pages/dashboard/setting';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         >
           <Route path="home" element={<DashboardHome />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="settings" element={<Settings />} />
           {/* Redirect /dashboard to /dashboard/home */}
           <Route index element={<Navigate to="home" replace />} />
         </Route>

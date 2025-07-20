@@ -13,8 +13,6 @@ import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import UserAvatar from "../icons/user-avater"
@@ -60,7 +58,7 @@ export function AppSidebar() {
         },
     })
 
-    console.log(userData)
+    console.log("userData:", userData);
 
     return (
         <Sidebar className="border-[#192830]" collapsible="icon">
@@ -105,12 +103,12 @@ export function AppSidebar() {
                                 className="!text-[1.4rem] mt-[.5rem]"
                             >
                                 <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
-                                    <a href={"/dashboard/settings"}>
+                                    <Link to={"/dashboard/settings"}>
                                         <Settings
                                             classname="mr-[1rem] !size-[2rem]"
                                         />
                                         <span>Settings</span>
-                                    </a>
+                                    </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
 
@@ -135,14 +133,14 @@ export function AppSidebar() {
                                                     />
                                                 </SidebarMenuAction>
                                             </DropdownMenuTrigger>
-                                            <DropdownMenuContent side="right" align="start">
+                                            {/* <DropdownMenuContent side="right" align="start">
                                                 <DropdownMenuItem>
                                                     <span>Edit Project</span>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
                                                     <span>Delete Project</span>
                                                 </DropdownMenuItem>
-                                            </DropdownMenuContent>
+                                            </DropdownMenuContent> */}
                                         </DropdownMenu>
                                     </SidebarMenuItem>
                                 )
