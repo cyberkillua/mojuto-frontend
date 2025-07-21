@@ -1,4 +1,4 @@
-const useFetch = async (url: string, options?: RequestInit) => {
+export const useFetch = async (url: string, options?: RequestInit) => {
   // Get token from sessionStorage (more secure than localStorage)
   const token = sessionStorage.getItem('accessToken');
   const baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -42,4 +42,3 @@ const useFetch = async (url: string, options?: RequestInit) => {
   return response.json();
 };
 
-export default useFetch;

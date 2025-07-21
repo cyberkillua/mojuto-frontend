@@ -11,6 +11,8 @@ import { AuthProvider } from './contexts/AuthContexts';
 import ProtectedRoute from '@/components/protectedRoute';
 import Analytics from './pages/dashboard/analytics';
 import Settings from './pages/dashboard/setting';
+import ChangeLog from './pages/dashboard/changeLog';
+import Help from './pages/dashboard/help';
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
           <Route path="home" element={<DashboardHome />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="help" element={<Help />} />
+          <Route path="changeLog" element={<ChangeLog />} />
           {/* Redirect /dashboard to /dashboard/home */}
           <Route index element={<Navigate to="home" replace />} />
         </Route>

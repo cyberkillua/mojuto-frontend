@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import CheckIcon from "@/components/shared/icons/check";
 import { useState, useRef } from "react";
 import { useMutation } from "@tanstack/react-query";
-import useFetch from "@/hooks/use-fetch";
+import { useFetch } from "@/hooks/use-fetch";
 import FormField from "@/components/shared/auth/formField";
 import { toast } from "sonner";
 

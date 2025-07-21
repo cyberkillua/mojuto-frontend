@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/tables/data-table";
 import { uploadHistoryColumns } from "@/components/shared/tables/columns/upload";
 import { useQuery } from "@tanstack/react-query";
-import useFetch from "@/hooks/use-fetch";
+import{ useFetch }
+from "@/hooks/use-fetch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UsersColumns } from "@/components/shared/tables/columns/users";
 import { uploadHistoryEnterpriseColumns } from "@/components/shared/tables/columns/upload-enterpise";
@@ -36,8 +37,8 @@ const DashboardHome = () => {
                         icon: "/icons/download.svg",
                     },
                     {
-                        title: "Total Team Members",
-                        key: "totalTeamMembers",
+                        title: "Total Analytics Requests",
+                        key: "totalAnalyticsRequests",
                         icon: "/icons/users.svg",
                     }
                 ];

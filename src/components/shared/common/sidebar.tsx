@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom"
 import { useSidebar } from "@/components/ui/sidebar"
 import Binoculars from "../icons/binoculars"
 import { Link } from "react-router-dom"
-import useFetch from "@/hooks/use-fetch"
+import { useFetch } from "@/hooks/use-fetch"
 import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/components/ui/skeleton"
 import Settings from "../icons/settings"
@@ -99,7 +99,7 @@ export function AppSidebar() {
                                 className="!text-[1.4rem] flex flex-col gap-[.7rem] mt-[.5rem]"
                             >
                                 <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
-                                    <Link to={"/dashboard/settings"}>
+                                    <Link to={"/dashboard/changeLog"}>
                                         <ChangeLog
                                             className="mr-[1rem] !size-[2rem]"
                                         />
@@ -115,24 +115,29 @@ export function AppSidebar() {
                                     </Link>
                                 </SidebarMenuButton>
                                 <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
-                                    <Link to={"/dashboard/settings"}>
+                                    <Link to={"/dashboard/help"}>
                                         <Help
                                             className="mr-[1rem] !size-[2rem]"
                                         />
                                         <span className="font-[400]">Help</span>
                                     </Link>
                                 </SidebarMenuButton>
-                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]">
-                                    <Link to={"/dashboard/settings"}>
+                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]" onClick={() => {
+                                    sessionStorage.removeItem('accessToken')
+                                    window.location.reload();
+
+                                }
+                                }>
+                                    <span>
                                         <LogOut
                                             className="mr-[1rem] !size-[2rem]"
                                         />
                                         <span className="font-[400]">Log Out</span>
-                                    </Link>
+                                    </span>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
 
-                            
+
 
                             {
                                 isPending ? (

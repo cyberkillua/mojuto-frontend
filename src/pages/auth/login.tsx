@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import SocialLogin from "@/components/shared/auth/socialLogin";
 import { useMutation } from "@tanstack/react-query";
-import useFetch from "@/hooks/use-fetch";
+import  { useFetch } from "@/hooks/use-fetch";
 import FormField from "@/components/shared/auth/formField";
 import { useAuth } from "@/contexts/AuthContexts";
 import { toast } from "sonner"; 
