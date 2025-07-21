@@ -122,7 +122,7 @@ export function AppSidebar() {
                                         <span className="font-[400]">Help</span>
                                     </Link>
                                 </SidebarMenuButton>
-                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] px-[.9rem]" onClick={() => {
+                                <SidebarMenuButton asChild className="!text-[1.3rem] !h-[3.2rem] hover:bg-[#21343F] font-medium hover:text-[#D5F0FF] cursor-pointer px-[.9rem]" onClick={() => {
                                     sessionStorage.removeItem('accessToken')
                                     window.location.reload();
 
