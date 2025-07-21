@@ -7,6 +7,7 @@ from "@/hooks/use-fetch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UsersColumns } from "@/components/shared/tables/columns/users";
 import { uploadHistoryEnterpriseColumns } from "@/components/shared/tables/columns/upload-enterpise";
+import { formatRelativeTime } from "@/utils/formatTime";
 
 const DashboardHome = () => {
     const {
@@ -133,7 +134,11 @@ const DashboardHome = () => {
                                      <div className="mt-[2rem]">
                                          <DataTable
                                              columns={uploadHistoryEnterpriseColumns}
-                                             data={uploadHistory?.uploadHistory}
+                                              data={uploadHistory?.uploadHistory?.map((item: any) => ({
+                                            ...item,
+                                            uploadedBy: `${item?.user?.firstName} ${item?.user?.lastName}`,
+                                            time: formatRelativeTime(item?.createdAt),
+                                        }))}
                                              isLoading={isUploadHistoryLoading}
                                          />
                                      </div>

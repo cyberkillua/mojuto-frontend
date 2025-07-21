@@ -19,25 +19,25 @@ export type uploadHistoryEnterprise = {
 
 export const uploadHistoryEnterpriseColumns: ColumnDef<uploadHistoryEnterprise>[] = [
     {
-        accessorKey: "name",
+        accessorKey: "fileName",
         header: "Upload Name",
         cell: info => info.getValue(),
     },
     {
-        accessorKey: "wallets",
+        accessorKey: "uploadedBy",
         header: "Uploaded By",
         cell: info => info.getValue(),
     },
     {
-        accessorKey: "wallets",
+        accessorKey: "noOfWallets",
         header: "Wallets",
         cell: info => info.getValue(),
     },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: info => info.getValue(),
-    },
+    // {
+    //     accessorKey: "status",
+    //     header: "Status",
+    //     cell: info => info.getValue(),
+    // },
     {
         accessorKey: "time",
         header: "Time",
