@@ -9,7 +9,7 @@ import SidebarLayout from './layouts/dashboard/sidebarLayout';
 import DashboardHome from './pages/dashboard/dashboard-home';
 import { AuthProvider } from './contexts/AuthContexts';
 import ProtectedRoute from '@/components/protectedRoute';
-import Analytics from './pages/dashboard/analytics';
+import Analytics from './pages/dashboard/upload';
 import Settings from './pages/dashboard/setting';
 import ChangeLog from './pages/dashboard/changeLog';
 import Help from './pages/dashboard/help';
