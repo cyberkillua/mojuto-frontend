@@ -91,7 +91,7 @@ const DashboardHome = () => {
                         className="text-[#030712] text-[1.2rem] px-[2.3rem] rounded-[2.3rem] py-[1.9rem]"
                     >
                         Analyze Wallets
-                    </Button>
+                    </Button> 
                 </div>
 
                 <div className="bg-[#131E24] mt-[2rem] px-[3.45rem] py-[2.6rem] w-full border border-[#253A4699] flex justify-between rounded-[3rem]">

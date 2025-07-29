@@ -2,12 +2,15 @@ export const useFetch = async (url: string, options?: RequestInit) => {
   // Get token from sessionStorage (more secure than localStorage)
   const token = sessionStorage.getItem('accessToken');
   const baseURL = import.meta.env.VITE_API_BASE_URL;
-  
+
+  // Check if body is FormData
+  const isFormData = options?.body instanceof FormData;
 
   const response = await fetch(`${baseURL}${url}`, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      // Only set Content-Type for non-FormData requests
+      ...(!isFormData && { 'Content-Type': 'application/json' }),
       ...(token && { 'Authorization': `Bearer ${token}` }),
       ...options?.headers,
     },
@@ -41,4 +44,3 @@ export const useFetch = async (url: string, options?: RequestInit) => {
 
   return response.json();
 };
-

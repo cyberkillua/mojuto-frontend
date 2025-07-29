@@ -3,6 +3,8 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  RowSelectionState,
+  OnChangeFn,
 } from "@tanstack/react-table"
 
 import { LoaderCircle } from "lucide-react"
@@ -18,19 +20,30 @@ import {
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[],
+  data: TData[]
   isLoading?: boolean
+  rowSelection?: RowSelectionState
+  onRowSelectionChange?: OnChangeFn<RowSelectionState>
+  enableRowSelection?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  isLoading
+  isLoading,
+  rowSelection = {},
+  onRowSelectionChange,
+  enableRowSelection = false
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    enableRowSelection,
+    onRowSelectionChange,
+    state: {
+      rowSelection,
+    },
   })
 
   return (
@@ -46,7 +59,7 @@ export function DataTable<TData, TValue>({
                 return (
                   <TableHead
                     key={header.id}
-                    className={`text-[#8EA2AD]  border-r border-r-[#192830] text-[1.3rem] font-medium px-[2rem] py-[1.7rem]`}
+                    className={`text-[#8EA2AD] border-r border-r-[#192830] text-[1.3rem] font-medium px-[2rem] py-[1.7rem]`}
                   >
                     {header.isPlaceholder
                       ? null
@@ -54,7 +67,6 @@ export function DataTable<TData, TValue>({
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-
                   </TableHead>
                 )
               })}
