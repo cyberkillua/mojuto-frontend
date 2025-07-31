@@ -24,14 +24,25 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
         id: "select",
         header: ({ table }) => (
             <Checkbox
+                className="size-[1.9rem] rounded-full border border-[#D5F0FF66]"
                 checked={
                     table.getIsAllPageRowsSelected() ||
                     (table.getIsSomePageRowsSelected() && "indeterminate")
                 }
-                // onCheckedChange={(value: AnyAaaaRecord) => table.toggleAllPageRowsSelected(!!value)}
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
                 aria-label="Select all"
             />
         ),
+        cell: ({ row }) => (
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+                className="size-[1.9rem] rounded-full border border-[#D5F0FF66]"
+            />
+        ),
+        enableSorting: false,
+        enableHiding: false,
     },
     {
         accessorKey: "fileName",

@@ -140,6 +140,8 @@ const AddWallet = () => {
     const [walletAddresses, setWalletAddresses] = useState<string[]>([]);
     const [uploadName, setUploadName] = useState<string>("");
 
+    const [isSuccess, setIsSuccess] = useState(false);
+
     const {
         mutate: addWalletMutation,
         isPending: isAddWalletPending,
@@ -153,6 +155,7 @@ const AddWallet = () => {
         }),
         onSuccess: (data) => {
             console.log("Success:", data);
+            setIsSuccess(true);
             toast.success("Successfully added wallet!");
         },
         onError: (error) => {
@@ -194,6 +197,7 @@ const AddWallet = () => {
 
     return (
         <div className=" flex flex-col w-[58rem] gap-[2.5rem]">
+             <SucessDialog open={isSuccess} />
             <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] w- px-[2rem] py-[1.5rem]">
                 <p className="text-[#D5F0FF] text-[1.35rem]">Upload Name</p>
                 <Input
@@ -301,9 +305,7 @@ const ImportWallets = ({
             toast.success("Successfully uploaded CSV file!");
         },
         onError: (error) => {
-            console.error("File upload error:", error);
             toast.error(error.message || "Failed to upload file. Please try again.");
-            setIsSuccess(true);
         },
     });
 
