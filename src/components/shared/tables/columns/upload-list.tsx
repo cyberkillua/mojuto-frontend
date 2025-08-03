@@ -1,16 +1,11 @@
 import { ColumnDef } from "@tanstack/react-table";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button";
 // import { AnyAaaaRecord } from "dns";
 import { Checkbox } from "@/components/ui/checkbox";
+import DropDown from "../../common/dropdown";
+import { SquarePen, Trash2 } from "lucide-react";
 
 export type uploadList = {
     id: string;
@@ -24,7 +19,7 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
         id: "select",
         header: ({ table }) => (
             <Checkbox
-                className="size-[1.9rem] rounded-full border border-[#D5F0FF66]"
+                className="size-[2.1rem] rounded-full data-[state=checked]:bg-[linear-gradient(145.74deg,#A2F8FF_10.32%,#99F7FF_20.28%,#39CBD8_44.55%,#14C1D0_57.31%,#43C9D5_95.05%)] [&_svg]:size-[1.5rem] border border-[#D5F0FF66]"
                 checked={
                     table.getIsAllPageRowsSelected() ||
                     (table.getIsSomePageRowsSelected() && "indeterminate")
@@ -38,7 +33,7 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
                 checked={row.getIsSelected()}
                 onCheckedChange={(value) => row.toggleSelected(!!value)}
                 aria-label="Select row"
-                className="size-[1.9rem] rounded-full border border-[#D5F0FF66]"
+                className="size-[2.1rem] rounded-full data-[state=checked]:bg-[linear-gradient(145.74deg,#A2F8FF_10.32%,#99F7FF_20.28%,#39CBD8_44.55%,#14C1D0_57.31%,#43C9D5_95.05%)] data-[state=checked]-border-[#76F5FF] border [&_svg]:size-[1.3rem] border-[#D5F0FF66]"
             />
         ),
         enableSorting: false,
@@ -62,28 +57,29 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
     {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original
+        cell: () => {
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-12 w-12 p-0 hover:bg-[#21343F]">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="size-8 text-[#D5F0FF66]" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
-                        >
-                            Copy payment ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>View payment details</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <DropDown
+                    dropdownMenuIems={[
+                        <>
+                            <SquarePen
+                                className="text-[#ADB1B8] !size-[1.7rem]"
+                            />
+                            Edit
+                        </>,
+                        <>
+                            <Trash2
+                                className="text-[#ADB1B8] !size-[1.7rem]"
+                            />
+                            Delete
+                        </>
+                    ]}
+                >
+                    <Button variant="ghost" className="h-12 w-12 p-0 hover:bg-[#21343F]">
+                        <span className="sr-only">Open menu</span>
+                        <MoreVertical className="size-8 text-[#D5F0FF66]" />
+                    </Button>
+                </DropDown>
             )
         },
     },

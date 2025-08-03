@@ -29,10 +29,17 @@ const Upload = () => {
         setShowUpload(true);
     };
 
+    // Reset function to go back to beginning
+    const resetToBeginning = () => {
+        setShowUpload(false);
+        setAddWallet(false);
+        setRowSelection({});
+    };
 
     const {
         data: uploads,
         isLoading: isUploadsLoading,
+        refetch: refetchUploads, // Add refetch to refresh data after upload
     } = useQuery({
         queryKey: ["uploads"],
         queryFn: () => useFetch('/upload/get-uploads', {
@@ -44,73 +51,81 @@ const Upload = () => {
         setRowSelection(updaterOrValue)
     }
 
-    console.log("Uploads:", uploads)
-   // Loading state
-if (isUploadsLoading) {
-    return (
-        <div className="w-full h-[100%] grid place-content-center">
-            <LoaderCircle className="animate-spin size-[2.5rem] text-[#D5F0FF] mx-auto" />
-        </div>
-    )
-}
-
-// Upload flow - can happen from any state (empty or with data)
-if (showUpload) {
-    return (
-        <div className="w-full h-[100%] grid place-content-center">
-            {addWallet ? (
-                <AddWallet />
-            ) : (
-                <ImportWallets setAddWallet={setAddWallet} />
-            )}
-        </div>
-    )
-}
-
-// Empty state - no uploads and not in upload flow
-if (uploads?.data?.length === 0) {
-    return (
-        <div className="w-full h-[100%] grid place-content-center">
-            <NoWallet onContinue={handleContinue} />
-        </div>
-    )
-}
-
-// Main content - uploads exist
-return (
-    <div className="w-full pl-[3rem] pt-[4.6rem]">
-        <div className="max-w-[88rem] w-full">
-            {/* Header section with search and upload button */}
-            <div className="flex justify-between items-center">
-                <Input
-                    className="w-[27rem] h-[4rem] bg-white rounded-[2rem] pl-[1.8rem] placeholder:text-[1.3rem] placeholder:text-[#9CA3AF] !text-[1.3rem]"
-                    placeholder="Search Uploads"
-                />
-                <Button
-                    onClick={() => setShowUpload(true)}
-                    className="bg-white hover:bg-white cursor-pointer px-[1.2rem] text-[#030712] text-[1.1rem] py-[1.8rem] rounded-[2rem]"
-                >
-                    Upload Wallets
-                </Button>
+    // Loading state
+    if (isUploadsLoading) {
+        return (
+            <div className="w-full h-[100%] grid place-content-center">
+                <LoaderCircle className="animate-spin size-[2.5rem] text-[#D5F0FF] mx-auto" />
             </div>
+        )
+    }
 
-            {/* Data table section */}
-            <div className="mt-[4rem]">
-                <DataTable
-                    columns={uploadListColumns}
-                    data={uploads?.data?.map((item: any, idx: number) => ({
-                        ...item,
-                        id: idx,
-                        uploadedOn: formatRelativeTime(item.createdAt),
-                    })) || []}
-                    rowSelection={rowSelection}
-                    onRowSelectionChange={handleRowSelectionChange}
-                    enableRowSelection={true}
-                />
+    // Upload flow - can happen from any state (empty or with data)
+    if (showUpload) {
+        return (
+            <div className="w-full h-[100%] grid place-content-center">
+                {addWallet ? (
+                    <AddWallet onSuccess={() => {
+                        resetToBeginning();
+                        refetchUploads(); // Refresh the uploads data
+                    }} />
+                ) : (
+                    <ImportWallets 
+                        setAddWallet={setAddWallet} 
+                        onSuccess={() => {
+                            resetToBeginning();
+                            refetchUploads(); // Refresh the uploads data
+                        }}
+                    />
+                )}
+            </div>
+        )
+    }
+
+    // Empty state - no uploads and not in upload flow
+    if (uploads?.data?.length === 0) {
+        return (
+            <div className="w-full h-[100%] grid place-content-center">
+                <NoWallet onContinue={handleContinue} />
+            </div>
+        )
+    }
+
+    // Main content - uploads exist
+    return (
+        <div className="w-full pl-[3rem] pt-[4.6rem]">
+            <div className="max-w-[88rem] w-full">
+                {/* Header section with search and upload button */}
+                <div className="flex justify-between items-center">
+                    <Input
+                        className="w-[27rem] h-[4rem] bg-white rounded-[2rem] pl-[1.8rem] placeholder:text-[1.3rem] placeholder:text-[#9CA3AF] !text-[1.3rem]"
+                        placeholder="Search Uploads"
+                    />
+                    <Button
+                        onClick={() => setShowUpload(true)}
+                        className="bg-white hover:bg-white cursor-pointer px-[1.2rem] text-[#030712] text-[1.1rem] py-[1.8rem] rounded-[2rem]"
+                    >
+                        Upload Wallets
+                    </Button>
+                </div>
+
+                {/* Data table section */}
+                <div className="mt-[4rem]">
+                    <DataTable
+                        columns={uploadListColumns}
+                        data={uploads?.data?.map((item: any, idx: number) => ({
+                            ...item,
+                            id: idx,
+                            uploadedOn: formatRelativeTime(item.createdAt),
+                        })) || []}
+                        rowSelection={rowSelection}
+                        onRowSelectionChange={handleRowSelectionChange}
+                        enableRowSelection={true}
+                    />
+                </div>
             </div>
         </div>
-    </div>
-)
+    )
 };
 
 const NoWallet = ({ onContinue }: { onContinue: () => void }) => {
@@ -135,11 +150,10 @@ const NoWallet = ({ onContinue }: { onContinue: () => void }) => {
     );
 };
 
-const AddWallet = () => {
+const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
     const [walletAddress, setWalletAddress] = useState<string>("");
     const [walletAddresses, setWalletAddresses] = useState<string[]>([]);
     const [uploadName, setUploadName] = useState<string>("");
-
     const [isSuccess, setIsSuccess] = useState(false);
 
     const {
@@ -188,16 +202,24 @@ const AddWallet = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         setWalletAddress(newValue);
-        console.log(newValue); // Log the new value directly
+        console.log(newValue);
     }
 
     const removeWallet = (index: number) => {
         setWalletAddresses(prev => prev.filter((_, i) => i !== index));
     }
 
+    const closeDialog = () => {
+        setIsSuccess(false);
+        onSuccess(); // Call the onSuccess callback to reset the entire flow
+    }
+
     return (
         <div className=" flex flex-col w-[58rem] gap-[2.5rem]">
-             <SucessDialog open={isSuccess} />
+            <SucessDialog
+                onClose={closeDialog}
+                open={isSuccess}
+            />
             <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] w- px-[2rem] py-[1.5rem]">
                 <p className="text-[#D5F0FF] text-[1.35rem]">Upload Name</p>
                 <Input
@@ -274,9 +296,11 @@ const AddWallet = () => {
 }
 
 const ImportWallets = ({
-    setAddWallet
+    setAddWallet,
+    onSuccess
 }: {
     setAddWallet: React.Dispatch<React.SetStateAction<boolean>>
+    onSuccess: () => void
 }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [dragActive, setDragActive] = useState(false);
@@ -290,7 +314,7 @@ const ImportWallets = ({
         mutationFn: (file: File) => {
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('uploadName', 'Wallet Upload'); // You can customize this as needed
+            formData.append('uploadName', 'Wallet Upload');
 
             console.log(formData)
 
@@ -360,9 +384,17 @@ const ImportWallets = ({
         }
     };
 
+    const closeDialog = () => {
+        setIsSuccess(false);
+        onSuccess(); // Call the onSuccess callback to reset the entire flow
+    }
+
     return (
         <div className="flex flex-col gap-[2rem]">
-            <SucessDialog open={isSuccess} />
+            <SucessDialog
+                open={isSuccess}
+                onClose={closeDialog}
+            />
             <div className="w-full max-w-[45rem] mx-auto">
                 <div
                     className={`
@@ -447,11 +479,12 @@ const ImportWallets = ({
     );
 };
 
-
 const SucessDialog = ({
     open,
+    onClose
 }: {
     open: boolean
+    onClose: () => void
 }) => {
     return (
         <Dialog open={open} >
@@ -463,7 +496,7 @@ const SucessDialog = ({
                         className="size-[13rem] mx-auto"
                     />
                     <p className="text-center text-[#030712] font-[600] text-[1.7rem] mt-[1.8rem] mb-[2.8rem]">Upload Successful!</p>
-                    <Button className="w-full text-[1.3rem] py-[2rem] rounded-[2rem]">Continue</Button>
+                    <Button onClick={onClose} className="w-full text-[1.3rem] py-[2rem] rounded-[2rem]">Continue</Button>
                 </div>
             </DialogContent>
         </Dialog>

@@ -1,11 +1,11 @@
-const Wallet = (props: any) => (
+import { cn } from "@/lib/utils";
+const SVGComponent = ({ classname }: { classname?: string }) => (
   <svg
-    width={16}
-    height={16}
     viewBox="0 0 16 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
-    {...props}
+    className={cn("", classname)}
+
   >
     <path
       fillRule="evenodd"
@@ -15,4 +15,4 @@ const Wallet = (props: any) => (
     />
   </svg>
 );
-export default Wallet;
+export default SVGComponent;

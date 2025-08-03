@@ -1,5 +1,5 @@
 import Home from "../icons/home"
-import Analytics from "../icons/analytics"
+import Wallet from "../icons/wallet"
 import { SidebarHeader } from "@/components/ui/sidebar"
 import Logo from "../icons/logo"
 import { useLocation } from "react-router-dom"
@@ -35,7 +35,7 @@ const items = [
     {
         title: "Wallet Upload",
         url: "/dashboard/analytics",
-        icon: Analytics,
+        icon: Wallet,
     }
 ]
 

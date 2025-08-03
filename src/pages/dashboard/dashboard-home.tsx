@@ -21,6 +21,8 @@ const DashboardHome = () => {
         },
     })
 
+    console.log(uploadHistory)
+
     const isEnterprise = uploadHistory?.users?.[0]?.userType === "ENTERPRISE";
 
     const getOverviewItems = () => {
@@ -150,7 +152,10 @@ const DashboardHome = () => {
                                 <div className="mt-[2rem]">
                                     <DataTable
                                         columns={uploadHistoryColumns}
-                                        data={uploadHistory?.uploadHistory}
+                                        data={uploadHistory?.uploadHistory?.map((item: any) => ({
+                                            ...item,
+                                            date: formatRelativeTime(item?.createdAt),
+                                        }))}
                                         isLoading={isUploadHistoryLoading}
                                     />
                                 </div>
