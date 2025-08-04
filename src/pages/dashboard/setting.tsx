@@ -381,6 +381,7 @@ const EditPassword = () => {
 }
 
 interface TeamMemberFormData {
+    email: string;
     firstName: string;
     lastName: string;
     role: string;
@@ -397,9 +398,10 @@ const TeamManagement = ({
 }) => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [formData, setFormData] = useState<TeamMemberFormData>({
+        email: "",
         firstName: "",
         lastName: "",
-        role: "User",
+        role: "USER ",
     });
 
     const {
@@ -416,9 +418,10 @@ const TeamManagement = ({
             refetchTeamData();
             setIsDialogOpen(false);
             setFormData({
+                email: "",
                 firstName: "",
                 lastName: "",
-                role: "User",
+                role: "USER",
             });
         },
         onError: (error) => {
@@ -442,6 +445,7 @@ const TeamManagement = ({
 
         // Trigger the mutation
         addTeamMember({
+            email: formData.email.trim(),
             firstName: formData.firstName.trim(),
             lastName: formData.lastName.trim(),
             role: formData.role,
@@ -476,6 +480,18 @@ const TeamManagement = ({
                             </DialogHeader>
 
                             <div className="grid gap-[3.2rem] mt-[2rem]">
+                                <div className="grid gap-3">
+                                    <Label className="text-[1.3rem] text-[#667485]">First Name</Label>
+                                    <Input
+                                        id="email"
+                                        name="Email"
+                                        value={formData.email}
+                                        onChange={(e) => handleInputChange("email", e.target.value)}
+                                        className="h-[4rem] rounded-[3rem] pl-[1.5rem] focus-visible:ring-0 !text-[1.3rem]"
+                                        placeholder="Enter first name"
+                                        disabled={isAddingMember}
+                                    />
+                                </div>
                                 <div className="grid gap-3">
                                     <Label className="text-[1.3rem] text-[#667485]">First Name</Label>
                                     <Input
@@ -515,16 +531,16 @@ const TeamManagement = ({
                                         <SelectContent className="rounded-[1.5rem] shadow-[0px_8px_16px_0px_#03071214]">
                                             <SelectGroup>
                                                 <SelectItem
-                                                    value="Admin"
+                                                    value="ADMIN"
                                                     className="!text-[1.3rem] pl-[1.5rem] py-[1rem]"
                                                 >
-                                                    Admin
+                                                    ADMIN
                                                 </SelectItem>
                                                 <SelectItem
-                                                    value="User"
+                                                    value="USER"
                                                     className="!text-[1.3rem] pl-[1.5rem] py-[1rem]"
                                                 >
-                                                    User
+                                                    USER
                                                 </SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
