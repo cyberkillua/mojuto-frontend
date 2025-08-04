@@ -10,6 +10,23 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useFetch } from "@/hooks/use-fetch";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 
 interface AccountDetailsFormData {
     firstName: string;
@@ -32,10 +49,11 @@ const Settings = () => {
     } = useQuery({
         queryKey: ["userData"],
         queryFn: async () => {
-            const response = await useFetch("/user/profile"); // placeholder endpoint
+            const response = await useFetch("/user/get-logged-in-user"); // placeholder endpoint
             return response.data;
         },
     });
+
 
     const {
         data: teamData,
@@ -44,11 +62,12 @@ const Settings = () => {
     } = useQuery({
         queryKey: ["teamData"],
         queryFn: async () => {
-            const response = await useFetch("/user/team"); // placeholder endpoint
+            const response = await useFetch(`/user/all?organizationId=${userData?.organizationId}`); // placeholder endpoint
             return response.data;
         },
         enabled: userData?.userType === "ENTERPRISE", // only fetch if enterprise user
     });
+
 
     const isEnterprise = userData?.userType === "ENTERPRISE";
 
@@ -56,21 +75,21 @@ const Settings = () => {
         <div className="w-full h-full pl-[3.8rem] pt-[3.2rem] pb-[4rem]">
             <div className="max-w-[98rem] flex flex-col gap-[3rem] w-[100%]">
                 <div className="flex gap-[3rem]">
-                    <Profile 
-                        userData={userData} 
-                        isLoading={isUserDataLoading} 
+                    <Profile
+                        userData={userData}
+                        isLoading={isUserDataLoading}
                     />
-                    <AccountDetails 
-                        userData={userData} 
-                        isLoading={isUserDataLoading} 
+                    <AccountDetails
+                        userData={userData}
+                        isLoading={isUserDataLoading}
                     />
                     <EditPassword />
                 </div>
-                
+
                 {/* Only show team management for enterprise users */}
                 {isEnterprise && (
-                    <TeamManagement 
-                        teamData={teamData} 
+                    <TeamManagement
+                        teamData={teamData}
                         isLoading={isTeamDataLoading}
                         refetchTeamData={refetchTeamData}
                     />
@@ -88,7 +107,7 @@ const Profile = ({ userData, isLoading }: { userData: any, isLoading: boolean })
         mutationFn: (file: File) => {
             const formData = new FormData();
             formData.append('profileImage', file);
-            
+
             return useFetch('/user/upload-profile-image', { // placeholder endpoint
                 method: "POST",
                 body: formData,
@@ -128,7 +147,7 @@ const Profile = ({ userData, isLoading }: { userData: any, isLoading: boolean })
                         src={userData?.profileImage}
                     />
                 )}
-                
+
                 <input
                     type="file"
                     accept="image/*"
@@ -136,7 +155,7 @@ const Profile = ({ userData, isLoading }: { userData: any, isLoading: boolean })
                     className="hidden"
                     id="profile-upload"
                 />
-                
+
                 <Button
                     className="bg-white hover:bg-[white] hover:cursor-pointer py-[2rem] rounded-[3rem] text-[#030712] text-[1.3rem]"
                     onClick={() => document.getElementById('profile-upload')?.click()}
@@ -224,8 +243,8 @@ const AccountDetails = ({ userData, isLoading }: { userData: any, isLoading: boo
                         (Object.keys(formData) as Array<keyof AccountDetailsFormData>).map((key, index) => (
                             <div key={index} className="">
                                 <Label className="capitalize mb-[.8rem] text-[#667485] text-[1.3rem]">
-                                    {key === 'firstName' ? 'First Name' : 
-                                     key === 'lastName' ? 'Last Name' : key}
+                                    {key === 'firstName' ? 'First Name' :
+                                        key === 'lastName' ? 'Last Name' : key}
                                 </Label>
                                 <Input
                                     type={key === 'email' ? 'email' : 'text'}
@@ -243,8 +262,8 @@ const AccountDetails = ({ userData, isLoading }: { userData: any, isLoading: boo
                         ))
                     )}
                 </div>
-                
-                <Button 
+
+                <Button
                     className="bg-white hover:bg-[white] hover:cursor-pointer mt-[2rem] py-[2rem] rounded-[3rem] text-[#030712] text-[1.3rem]"
                     onClick={handleSubmit}
                     disabled={isUpdatingProfile || isLoading}
@@ -299,17 +318,17 @@ const EditPassword = () => {
             toast.error("Please fill in all fields");
             return;
         }
-        
+
         if (formData.newPassword !== formData.confirmPassword) {
             toast.error("New passwords do not match");
             return;
         }
-        
+
         if (formData.newPassword.length < 6) {
             toast.error("Password must be at least 6 characters long");
             return;
         }
-        
+
         changePassword();
     };
 
@@ -323,9 +342,9 @@ const EditPassword = () => {
                     {(Object.keys(formData) as Array<keyof EditPasswordFormData>).map((key, index) => (
                         <div key={index} className="">
                             <Label className="capitalize mb-[.8rem] text-[#667485] text-[1.3rem]">
-                                {key === 'oldPassword' ? 'Old Password' : 
-                                 key === 'newPassword' ? 'New Password' : 
-                                 'Confirm Password'}
+                                {key === 'oldPassword' ? 'Old Password' :
+                                    key === 'newPassword' ? 'New Password' :
+                                        'Confirm Password'}
                             </Label>
                             <Input
                                 type="password"
@@ -341,8 +360,8 @@ const EditPassword = () => {
                         </div>
                     ))}
                 </div>
-                
-                <Button 
+
+                <Button
                     className="bg-white hover:bg-[white] hover:cursor-pointer mt-[2rem] py-[2rem] rounded-[3rem] text-[#030712] text-[1.3rem]"
                     onClick={handleSubmit}
                     disabled={isChangingPassword}
@@ -361,42 +380,77 @@ const EditPassword = () => {
     )
 }
 
-const TeamManagement = ({ 
-    teamData, 
-    isLoading, 
-    refetchTeamData 
-}: { 
-    teamData: any, 
+interface TeamMemberFormData {
+    firstName: string;
+    lastName: string;
+    role: string;
+}
+
+const TeamManagement = ({
+    teamData,
+    isLoading,
+    refetchTeamData
+}: {
+    teamData: any,
     isLoading: boolean,
-    refetchTeamData: () => void 
+    refetchTeamData: () => void
 }) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [formData, setFormData] = useState<TeamMemberFormData>({
+        firstName: "",
+        lastName: "",
+        role: "User",
+    });
+
     const {
         mutate: addTeamMember,
         isPending: isAddingMember,
     } = useMutation({
-        mutationFn: (memberData: { email: string, role: string }) => 
-            useFetch('/user/add-team-member', { // placeholder endpoint
+        mutationFn: (memberData: TeamMemberFormData) =>
+            useFetch('/user/invite-user', {
                 method: "POST",
                 body: JSON.stringify(memberData),
             }),
         onSuccess: () => {
             toast.success("Team member added successfully!");
             refetchTeamData();
+            setIsDialogOpen(false);
+            setFormData({
+                firstName: "",
+                lastName: "",
+                role: "User",
+            });
         },
         onError: (error) => {
             toast.error(error.message || "Failed to add team member");
         },
     });
 
-    const handleAddUser = () => {
-        // This would typically open a modal or form
-        // For now, just a placeholder
-        const email = prompt("Enter email address:");
-        const role = prompt("Enter role (Admin/User):");
-        
-        if (email && role) {
-            addTeamMember({ email, role });
+    const handleInputChange = (field: keyof TeamMemberFormData, value: string) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleSubmit = () => {
+        // Validate form data
+        if (!formData.firstName.trim() || !formData.lastName.trim()) {
+            toast.error("Please fill in all required fields");
+            return;
         }
+
+        // Trigger the mutation
+        addTeamMember({
+            firstName: formData.firstName.trim(),
+            lastName: formData.lastName.trim(),
+            role: formData.role,
+        });
+    };
+
+    const handleResendInvite = () => {
+        // You can implement resend functionality here
+        toast.info("Resend invite functionality not implemented yet");
     };
 
     return (
@@ -408,25 +462,114 @@ const TeamManagement = ({
                         <p className="text-[1.2rem] mt-[.3rem] font-[400] text-[#D5F0FF]">Manage your team's access and roles.</p>
                     </div>
 
-                    <Button 
-                        className="bg-white hover:bg-[white] hover:cursor-pointer text-[1.3rem] !px-[2rem] rounded-[2rem] !py-[1.9rem] text-[#030712]"
-                        onClick={handleAddUser}
-                        disabled={isAddingMember}
-                    >
-                        {isAddingMember ? (
-                            <LoaderCircle className="animate-spin !size-[1.5rem]" />
-                        ) : (
-                            <>
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button
+                                className="bg-white hover:bg-[white] hover:cursor-pointer text-[1.3rem] !px-[2rem] rounded-[2rem] !py-[1.9rem] text-[#030712]"
+                            >
                                 Add User <Plus className="!size-[1.5rem]" />
-                            </>
-                        )}
-                    </Button>
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px] rounded-[1.5rem] px-[2.5rem] py-[2rem]">
+                            <DialogHeader>
+                                <DialogTitle className="!text-[1.6rem]">Add New User</DialogTitle>
+                            </DialogHeader>
+
+                            <div className="grid gap-[3.2rem] mt-[2rem]">
+                                <div className="grid gap-3">
+                                    <Label className="text-[1.3rem] text-[#667485]">First Name</Label>
+                                    <Input
+                                        id="firstName"
+                                        name="firstName"
+                                        value={formData.firstName}
+                                        onChange={(e) => handleInputChange("firstName", e.target.value)}
+                                        className="h-[4rem] rounded-[3rem] pl-[1.5rem] focus-visible:ring-0 !text-[1.3rem]"
+                                        placeholder="Enter first name"
+                                        disabled={isAddingMember}
+                                    />
+                                </div>
+
+                                <div className="grid gap-3">
+                                    <Label className="text-[1.3rem] text-[#667485]">Last Name</Label>
+                                    <Input
+                                        id="lastName"
+                                        name="lastName"
+                                        value={formData.lastName}
+                                        onChange={(e) => handleInputChange("lastName", e.target.value)}
+                                        className="h-[4rem] rounded-[3rem] pl-[1.5rem] focus-visible:ring-0 !text-[1.3rem]"
+                                        placeholder="Enter last name"
+                                        disabled={isAddingMember}
+                                    />
+                                </div>
+
+                                <div className="grid gap-3">
+                                    <Label className="text-[1.3rem] text-[#667485]">Role</Label>
+                                    <Select
+                                        value={formData.role}
+                                        onValueChange={(value) => handleInputChange("role", value)}
+                                        disabled={isAddingMember}
+                                    >
+                                        <SelectTrigger className="w-full !h-[4rem] rounded-[3rem] pl-[1.2rem] text-[1.3rem]">
+                                            <SelectValue placeholder="Select role" />
+                                        </SelectTrigger>
+                                        <SelectContent className="rounded-[1.5rem] shadow-[0px_8px_16px_0px_#03071214]">
+                                            <SelectGroup>
+                                                <SelectItem
+                                                    value="Admin"
+                                                    className="!text-[1.3rem] pl-[1.5rem] py-[1rem]"
+                                                >
+                                                    Admin
+                                                </SelectItem>
+                                                <SelectItem
+                                                    value="User"
+                                                    className="!text-[1.3rem] pl-[1.5rem] py-[1rem]"
+                                                >
+                                                    User
+                                                </SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
+                            <DialogFooter className="mt-[3rem] flex flex-col gap-[1.5rem]">
+                                <div className="flex flex-col w-full">
+                                    <Button
+                                        onClick={handleSubmit}
+                                        disabled={isAddingMember || !formData.firstName.trim() || !formData.lastName.trim()}
+                                        className="w-full hover:bg-[#030712] text-white py-[2.2rem] rounded-[3rem] text-[1.3rem] shadow-[0_0.5px_0_0_#03071229,0_0.25px_0_0_#03071229,inset_0_1.75px_0_0_#FFFFFF29] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isAddingMember ? (
+                                            <>
+                                                <LoaderCircle className="animate-spin mr-2" />
+                                                Sending Invite...
+                                            </>
+                                        ) : (
+                                            "Send Invite"
+                                        )}
+                                    </Button>
+
+                                    <p className="text-[1.3rem] mt-[1.5rem] text-[#098289]">
+                                        Link not received?{" "}
+                                        <Button
+                                            variant="ghost"
+                                            onClick={handleResendInvite}
+                                            disabled={isAddingMember}
+                                            className="p-0 text-[#098289] text-[1.3rem] hover:bg-transparent disabled:opacity-50"
+                                        >
+                                            Resend
+                                        </Button>
+                                    </p>
+                                </div>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
                 <div className="w-[64rem]">
                     <DataTable
                         columns={TeamManagementColumns}
-                        data={teamData?.teamMembers?.map((member: any) => ({
+                        data={teamData?.map((member: any) => ({
                             ...member,
                             name: `${member.firstName} ${member.lastName}`,
                         })) || []}

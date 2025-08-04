@@ -21,7 +21,6 @@ const DashboardHome = () => {
         },
     })
 
-    console.log(uploadHistory)
 
     const isEnterprise = uploadHistory?.users?.[0]?.userType === "ENTERPRISE";
 
