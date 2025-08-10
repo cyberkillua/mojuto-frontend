@@ -22,6 +22,7 @@ const DashboardHome = () => {
     })
 
 
+
     const isEnterprise = uploadHistory?.users?.[0]?.userType === "ENTERPRISE";
 
     const getOverviewItems = () => {
@@ -124,6 +125,8 @@ const DashboardHome = () => {
                                             data={uploadHistory?.users?.map((item: any) => ({
                                                 ...item,
                                                 name: `${item.firstName} ${item.lastName}`,
+                                                lastActiveAt: formatRelativeTime(item.lastActiveAt),
+                                                
                                             }))}
                                             isLoading={isUploadHistoryLoading}
                                         />

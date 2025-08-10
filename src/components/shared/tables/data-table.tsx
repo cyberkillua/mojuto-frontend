@@ -25,6 +25,11 @@ interface DataTableProps<TData, TValue> {
   rowSelection?: RowSelectionState
   onRowSelectionChange?: OnChangeFn<RowSelectionState>
   enableRowSelection?: boolean
+  // Optional row click configuration
+  rowClickable?: boolean
+  onRowClick?: (rowData: TData) => void
+  rowHoverStyle?: string
+  rowClickStyle?: string
 }
 
 export function DataTable<TData, TValue>({
@@ -33,7 +38,11 @@ export function DataTable<TData, TValue>({
   isLoading,
   rowSelection = {},
   onRowSelectionChange,
-  enableRowSelection = false
+  enableRowSelection = false,
+  rowClickable = false,
+  onRowClick,
+  rowHoverStyle = "hover:bg-[#21343F]",
+  rowClickStyle = "cursor-pointer"
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -45,6 +54,22 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   })
+
+  const handleRowClick = (rowData: TData, event: React.MouseEvent) => {
+    // Only handle click if rowClickable is true and onRowClick is provided
+    console.log(event)
+    if (rowClickable && onRowClick) {
+      onRowClick(rowData)
+    }
+  }
+
+  const handleCellClick = (event: React.MouseEvent, columnId: string) => {
+    // Prevent row click for specific columns (like checkboxes and actions)
+    const preventRowClick = ['select', 'actions']
+    if (preventRowClick.includes(columnId)) {
+      event.stopPropagation()
+    }
+  }
 
   return (
     <div className="rounded-[1.5rem] bg-[#172329]">
@@ -87,12 +112,18 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="text-[#D5F0FF] hover:bg-transparent !border-0 text-[1.2rem] data-[state=selected]:bg-transperent"
+                    className={`
+                      text-[#D5F0FF] !border-0 text-[1.2rem] data-[state=selected]:bg-transperent transition-colors
+                      ${rowClickable ? rowClickStyle : 'hover:bg-transparent'}
+                      ${rowClickable ? rowHoverStyle : ''}
+                    `}
+                    onClick={(e) => handleRowClick(row.original, e)}
                   >
                     {row.getVisibleCells().map((cell, idx) => (
                       <TableCell
                         key={cell.id}
                         className={`${idx == 3 ? "px-[2rem] w-[4rem]" : "px-[2rem] py-[1.7rem]"} border-r border-r-[#192830]`}
+                        onClick={(e) => handleCellClick(e, cell.column.id)}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>

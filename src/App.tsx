@@ -9,10 +9,11 @@ import SidebarLayout from './layouts/dashboard/sidebarLayout';
 import DashboardHome from './pages/dashboard/dashboard-home';
 import { AuthProvider } from './contexts/AuthContexts';
 import ProtectedRoute from '@/components/protectedRoute';
-import Analytics from './pages/dashboard/upload';
+import Analytics from './pages/dashboard/uploads';
 import Settings from './pages/dashboard/setting';
 import ChangeLog from './pages/dashboard/changeLog';
 import Help from './pages/dashboard/help';
+import Upload from './pages/dashboard/upload';
 
 function App() {
   return (
@@ -37,10 +38,11 @@ function App() {
           }
         >
           <Route path="home" element={<DashboardHome />} />
-          <Route path="analytics" element={<Analytics />} />
+          <Route path="uploads" element={<Analytics />} />
           <Route path="settings" element={<Settings />} />
           <Route path="help" element={<Help />} />
           <Route path="changeLog" element={<ChangeLog />} />
+          <Route path="uploads/:fileName" element={<Upload />} />
           {/* Redirect /dashboard to /dashboard/home */}
           <Route index element={<Navigate to="home" replace />} />
         </Route>

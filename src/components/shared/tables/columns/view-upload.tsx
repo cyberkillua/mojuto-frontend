@@ -1,21 +1,17 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-import { MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+
 // import { AnyAaaaRecord } from "dns";
 import { Checkbox } from "@/components/ui/checkbox";
-import DropDown from "../../common/dropdown";
-import { SquarePen, Trash2 } from "lucide-react";
 
-export type uploadList = {
+export type viewUpload = {
     id: string;
-    name: string;
-    wallets: string
-    date: string;
-    fileName?: string
+    walletsAddress: string;
+    chain: string
 }
 
-export const uploadListColumns: ColumnDef<uploadList>[] = [
+export const viewUploadColumns: ColumnDef<viewUpload>[] = [
     {
         id: "select",
         header: ({ table }) => (
@@ -41,48 +37,29 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "fileName",
-        header: "Upload Title",
+        accessorKey: "walletsAddress",
+        header: "Wallet Address",
         cell: info => info.getValue(),
     },
     {
-        accessorKey: "uploadedOn",
-        header: "Uploaded on",
+        accessorKey: "chain",
+        header: "Chain",
         cell: info => info.getValue(),
     },
     {
         accessorKey: "noOfWallets",
-        header: "# Wallets",
-        cell: info => info.getValue(),
+        header: "Actions",
+        cell: () => (
+            <div className="flex items-center gap-[1.2rem]">
+                <Button className="!text-[1.2rem] px-[1.2rem] py-[1.5rem] rounded-[3rem] bg-white text-black">
+                    Analyze
+                </Button>
+                <Button className="rounded-full size-[3.5rem] bg-[#AF1100]">
+                    <Trash2
+                        className="text-[#D5F0FF] size-[1.4rem]" 
+                    />
+                </Button>
+            </div>
+        )
     },
-    {
-        id: "actions",
-        enableHiding: false,
-        cell: () => {
-            return (
-                <DropDown
-                    dropdownMenuIems={[
-                        <>
-                            <SquarePen
-                                className="text-[#ADB1B8] !size-[1.7rem]"
-                            />
-                            Edit
-                        </>,
-                        <>
-                            <Trash2
-                                className="text-[#ADB1B8] !size-[1.7rem]"
-                            />
-                            Delete
-                        </>
-                    ]}
-                >
-                    <Button variant="ghost" className="h-12 w-12 p-0 hover:bg-[#21343F]">
-                        <span className="sr-only">Open menu</span>
-                        <MoreVertical className="size-8 text-[#D5F0FF66]" />
-                    </Button>
-                </DropDown>
-            )
-        },
-    },
-
 ];

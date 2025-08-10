@@ -34,7 +34,7 @@ const items = [
     },
     {
         title: "Wallet Upload",
-        url: "/dashboard/analytics",
+        url: "/dashboard/uploads",
         icon: Wallet,
     }
 ]
@@ -55,9 +55,8 @@ export function AppSidebar() {
         },
     })
 
-
     return (
-        <Sidebar className="border-[#192830]" collapsible="icon">
+        <Sidebar className="border-[#192830] overflow-hidden" collapsible="icon">
             <SidebarHeader className="pt-[3rem] pl-[1.2rem]">
                 {
                     open ? (
@@ -148,11 +147,22 @@ export function AppSidebar() {
                                     <SidebarMenuItem
                                         className="!text-[1.4rem] p-0 mt-[2rem]"
                                     >
-                                        <div className="!text-[1.3rem] flex items-center !h-[3.7rem] hover:bg-transparent gap-[1rem] font-medium group-data-[collapsible=icon]:p-1! group-data-[collapsible=icon]:size-[3.5rem]! ">
+                                        <SidebarMenuButton className="!text-[1.3rem] flex items-center hover:text-[#7FA1B4] !h-[3.7rem] hover:bg-transparent gap-[1rem] font-medium group-data-[collapsible=icon]:p-1! group-data-[collapsible=icon]:size-[3.5rem]! ">
                                             <UserAvatar initial={userData?.firstName[0]} />
-                                            <span className="truncate capitalize">{`${userData?.firstName} ${userData?.lastName}`}</span>
 
-                                        </div>
+                                            <SidebarGroup className=" ">
+                                                {
+                                                    userData?.userType === "ENTERPRISE" ? (
+                                                        <span>{userData?.email}</span>
+                                                    ) : (
+                                                        <span className="truncate capitalize">{`${userData?.firstName} ${userData?.lastName}`}</span>
+                                                    )
+                                                }
+
+                                                {userData?.userType === "ENTERPRISE" && <span className="">{userData.role}</span>}
+                                            </SidebarGroup>
+
+                                        </SidebarMenuButton>
                                     </SidebarMenuItem>
                                 )
                             }
@@ -161,6 +171,6 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarFooter>
-        </Sidebar>
+        </Sidebar >
     )
 }

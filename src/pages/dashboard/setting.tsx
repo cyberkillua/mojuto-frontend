@@ -1,6 +1,6 @@
 import Avatar from "@/components/shared/icons/avater";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Plus, LoaderCircle } from "lucide-react";
@@ -183,17 +183,35 @@ const AccountDetails = ({ userData, isLoading }: { userData: any, isLoading: boo
         role: userData?.role || "",
     });
 
+    // Store original data for comparison
+    const [originalData, setOriginalData] = useState<AccountDetailsFormData>({
+        firstName: userData?.firstName || "",
+        lastName: userData?.lastName || "",
+        email: userData?.email || "",
+        role: userData?.role || "",
+    });
+
     // Update form when userData changes
     useEffect(() => {
         if (userData) {
-            setFormData({
+            const newData = {
                 firstName: userData.firstName || "",
                 lastName: userData.lastName || "",
                 email: userData.email || "",
                 role: userData.role || "",
-            });
+            };
+            setFormData(newData);
+            setOriginalData(newData);
         }
     }, [userData]);
+
+    // Check if any editable field has been changed
+    const hasChanges = useMemo(() => {
+        return formData.firstName !== originalData.firstName ||
+               formData.lastName !== originalData.lastName ||
+               formData.email !== originalData.email;
+        // Note: role is not included since it's not editable
+    }, [formData, originalData]);
 
     const {
         mutate: updateProfile,
@@ -209,6 +227,13 @@ const AccountDetails = ({ userData, isLoading }: { userData: any, isLoading: boo
         }),
         onSuccess: () => {
             toast.success("Profile updated successfully!");
+            // Update original data after successful update
+            setOriginalData({
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                role: formData.role,
+            });
         },
         onError: (error) => {
             toast.error(error.message || "Failed to update profile");
@@ -264,9 +289,9 @@ const AccountDetails = ({ userData, isLoading }: { userData: any, isLoading: boo
                 </div>
 
                 <Button
-                    className="bg-white hover:bg-[white] hover:cursor-pointer mt-[2rem] py-[2rem] rounded-[3rem] text-[#030712] text-[1.3rem]"
+                    className="bg-white hover:bg-[white] hover:cursor-pointer mt-[2rem] py-[2rem] rounded-[3rem] text-[#030712] text-[1.3rem] disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleSubmit}
-                    disabled={isUpdatingProfile || isLoading}
+                    disabled={isUpdatingProfile || isLoading || !hasChanges}
                 >
                     {isUpdatingProfile ? (
                         <>
@@ -481,7 +506,7 @@ const TeamManagement = ({
 
                             <div className="grid gap-[3.2rem] mt-[2rem]">
                                 <div className="grid gap-3">
-                                    <Label className="text-[1.3rem] text-[#667485]">First Name</Label>
+                                    <Label className="text-[1.3rem] text-[#667485]">Email</Label>
                                     <Input
                                         id="email"
                                         name="Email"
