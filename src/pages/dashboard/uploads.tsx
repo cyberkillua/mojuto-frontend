@@ -126,8 +126,7 @@ const Upload = () => {
                         enableRowSelection={true}
                         rowClickable={true}
                         onRowClick={(rowData) => {
-                            console.log("Row clicked:", rowData);
-                            navigate(`/dashboard/uploads/${rowData?.fileName}`);
+                            navigate(`/dashboard/uploads/${rowData?.id}`);
                         }}
                         rowHoverStyle="hover:bg-[#21343F]"
                         rowClickStyle="cursor-pointer"

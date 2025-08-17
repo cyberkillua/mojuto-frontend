@@ -14,6 +14,7 @@ import Settings from './pages/dashboard/setting';
 import ChangeLog from './pages/dashboard/changeLog';
 import Help from './pages/dashboard/help';
 import Upload from './pages/dashboard/upload';
+import Analyze from './pages/dashboard/analyze';
 
 function App() {
   return (
@@ -42,7 +43,8 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="help" element={<Help />} />
           <Route path="changeLog" element={<ChangeLog />} />
-          <Route path="uploads/:fileName" element={<Upload />} />
+          <Route path="uploads/:id" element={<Upload />} />
+          <Route path="analyze/:id" element={<Analyze />} />
           {/* Redirect /dashboard to /dashboard/home */}
           <Route index element={<Navigate to="home" replace />} />
         </Route>

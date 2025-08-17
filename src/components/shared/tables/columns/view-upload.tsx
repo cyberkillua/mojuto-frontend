@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 // import { AnyAaaaRecord } from "dns";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -49,10 +50,10 @@ export const viewUploadColumns: ColumnDef<viewUpload>[] = [
     {
         accessorKey: "noOfWallets",
         header: "Actions",
-        cell: () => (
+        cell: ({ row }) => (
             <div className="flex items-center gap-[1.2rem]">
-                <Button className="!text-[1.2rem] px-[1.2rem] py-[1.5rem] rounded-[3rem] bg-white text-black">
-                    Analyze
+                <Button asChild className="!text-[1.2rem] px-[1.2rem] py-[1.5rem] rounded-[3rem] bg-white hover:bg-white text-black">
+                    <Link to={`/dashboard/analyze/${row.id}`}>Analyze</Link>
                 </Button>
                 <Button className="rounded-full size-[3.5rem] bg-[#AF1100]">
                     <Trash2
