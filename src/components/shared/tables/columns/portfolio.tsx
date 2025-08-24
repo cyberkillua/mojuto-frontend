@@ -47,8 +47,7 @@ export const portfolioColumns: ColumnDef<PortfolioData>[] = [
             const value = row.getValue("native") as string
             return (
                 <div className="text-right">
-                    <div className="text-[#D5F0FF] text-[1.3rem] font-medium">${value}</div>
-                    <div className="text-[#8EA2AD] text-[1.1rem]">({row.original.nativeToken})</div>
+                    <div className="text-[#D5F0FF] text-[1.3rem] font-medium">{value}</div>
                 </div>
             )
         },

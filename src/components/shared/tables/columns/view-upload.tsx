@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 export type viewUpload = {
     id: string;
-    walletsAddress: string;
+    address: string;
     chain: string
 }
 
@@ -38,7 +38,7 @@ export const viewUploadColumns: ColumnDef<viewUpload>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "walletsAddress",
+        accessorKey: "address",
         header: "Wallet Address",
         cell: info => info.getValue(),
     },
