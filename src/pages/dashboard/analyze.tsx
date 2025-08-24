@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { ChevronRight } from "lucide-react";
 import { chainsColumns } from "@/components/shared/tables/columns/chains";
 import { DataTable } from "@/components/shared/tables/data-table";
+import { Link } from "react-router-dom";
 
 function CustomLegend({ data, config }: { data: any[]; config: ChartConfig }) {
     return (
@@ -242,7 +243,7 @@ const Analyze = () => {
                     <Card>
                         <ChartContainer config={chartConfig} className="h-[40rem] w-full">
                             <BarChart accessibilityLayer data={chartData}>
-                                <CartesianGrid vertical={false} />
+                                <CartesianGrid horizontal={false} vertical={false} />
                                 <XAxis
                                     dataKey="coin"
                                     tickLine={false}
@@ -280,12 +281,15 @@ const Analyze = () => {
 
                         <Button
                             variant={"ghost"}
-                            className="text-[#00EAFF] text-[1.4rem]"
+                            className="text-[#00EAFF] hover:bg-transparent hover:text-[#00EAFF] text-[1.4rem]"
+                            asChild
                         >
-                            Details
-                            <ChevronRight
-                                className="ml-2 size-[1.8rem]"
-                            />
+                            <Link to="/dashboard/analyze/1/evm-chains">
+                                Details
+                                <ChevronRight
+                                    className="ml-2 size-[1.8rem]"
+                                />
+                            </Link>
                         </Button>
                     </div>
 

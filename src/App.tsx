@@ -15,6 +15,7 @@ import ChangeLog from './pages/dashboard/changeLog';
 import Help from './pages/dashboard/help';
 import Upload from './pages/dashboard/upload';
 import Analyze from './pages/dashboard/analyze';
+import EvmChains from './pages/dashboard/evm-chains';
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="changeLog" element={<ChangeLog />} />
           <Route path="uploads/:id" element={<Upload />} />
           <Route path="analyze/:id" element={<Analyze />} />
+          <Route path="analyze/:id/evm-chains" element={<EvmChains />} />
           {/* Redirect /dashboard to /dashboard/home */}
           <Route index element={<Navigate to="home" replace />} />
         </Route>

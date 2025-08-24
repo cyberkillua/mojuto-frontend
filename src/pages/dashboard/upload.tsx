@@ -2,28 +2,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTable } from "@/components/shared/tables/data-table";
 import { viewUploadColumns } from "@/components/shared/tables/columns/view-upload";
-// import { useQuery } from "@tanstack/react-query";
-// import { useParams } from "react-router-dom";
-// import { useFetch } from "@/hooks/use-fetch";
+import { useQuery } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
+import { useFetch } from "@/hooks/use-fetch";
 
 
 const Upload = () => {
 
-    // const { id } = useParams();
+    const { id } = useParams();
 
 
-    // const {
-    //     data: _uploads,
-    //     isLoading,
-    //     error   
-    // } = useQuery({
-    //     queryKey: ["upload", id],
-    //     queryFn: () => useFetch(`/upload/get-upload-by-id?id=${id}`, {
-    //         method: "GET",
-    //     }),
-    // })
+    const {
+        data: _uploads,
+        isLoading,
+        error   
+    } = useQuery({
+        queryKey: ["upload", id],
+        queryFn: () => useFetch(`/upload/get-upload-by-id?id=${id}`, {
+            method: "GET",
+        }),
+    })
 
-    // console.log(_uploads)
 
     const uploads = [
         {

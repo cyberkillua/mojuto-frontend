@@ -116,9 +116,9 @@ const Upload = () => {
                 <div className="mt-[4rem]">
                     <DataTable
                         columns={uploadListColumns}
-                        data={uploads?.data?.map((item: any, idx: number) => ({
+                        data={uploads?.data?.map((item: any) => ({
                             ...item,
-                            id: idx,
+                            // id: idx,
                             uploadedOn: formatRelativeTime(item.createdAt),
                         })) || []}
                         rowSelection={rowSelection}
