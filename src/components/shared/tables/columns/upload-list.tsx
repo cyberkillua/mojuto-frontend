@@ -1,11 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-
 import { MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button";
-// import { AnyAaaaRecord } from "dns";
 import { Checkbox } from "@/components/ui/checkbox";
 import DropDown from "../../common/dropdown";
 import { SquarePen, Trash2 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useFetch } from "@/hooks/use-fetch";
+import { toast } from "sonner";
 
 export type uploadList = {
     id: string;
@@ -14,6 +15,28 @@ export type uploadList = {
     date: string;
     fileName?: string
 }
+
+// Hook for deleting uploads
+const useDeleteUpload = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (uploadId: string) =>
+            useFetch(`/upload/delete-upload?id=${uploadId}`, {
+                method: "DELETE",
+            }),
+        onSuccess: () => {
+            toast.success("Upload deleted successfully!");
+            // Invalidate uploads query to refresh the list
+            queryClient.invalidateQueries({ queryKey: ["uploads"] });
+        },
+        onError: (error: any) => {
+            toast.error("Failed to delete upload", {
+                description: error?.message || "Something went wrong. Please try again.",
+            });
+        },
+    });
+};
 
 export const uploadListColumns: ColumnDef<uploadList>[] = [
     {
@@ -58,22 +81,55 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
     {
         id: "actions",
         enableHiding: false,
-        cell: () => {
+        cell: ({ row }) => {
+            const deleteUpload = useDeleteUpload();
+
+            const handleEdit = () => {
+                toast.info("Edit functionality coming soon!");
+                // You can implement edit navigation here
+                // navigate(`/dashboard/uploads/edit/${row.original.id}`);
+            };
+
+            const handleDelete = () => {
+                const uploadId = row.original.id;
+                const uploadName = row.original.fileName || row.original.name;
+
+                // Show confirmation toast before deleting
+                toast.promise(
+                    deleteUpload.mutateAsync(uploadId),
+                    {
+                        loading: `Deleting "${uploadName}"...`,
+                        success: `"${uploadName}" deleted successfully!`,
+                        error: "Failed to delete upload. Please try again."
+                    }
+                );
+            };
+
             return (
                 <DropDown
                     dropdownMenuIems={[
-                        <>
+                        <div
+                            key="edit"
+                            onClick={handleEdit}
+                            className="flex items-center gap-[0.8rem] cursor-pointer"
+                        >
                             <SquarePen
                                 className="text-[#ADB1B8] !size-[1.7rem]"
                             />
                             Edit
-                        </>,
-                        <>
+                        </div>,
+                        <div
+                            key="delete"
+                            onClick={handleDelete}
+                            className="flex items-center gap-[0.8rem] cursor-pointer"
+                        >
                             <Trash2
-                                className="text-[#ADB1B8] !size-[1.7rem]"
+                                className="text-[#AF1100] !size-[1.7rem]"
                             />
-                            Delete
-                        </>
+                            <span className="text-[#AF1100] hover:text-[#8F0E00]">
+                                Delete
+                            </span>
+                        </div>
                     ]}
                 >
                     <Button variant="ghost" className="h-12 w-12 p-0 hover:bg-[#21343F]">
@@ -84,5 +140,4 @@ export const uploadListColumns: ColumnDef<uploadList>[] = [
             )
         },
     },
-
 ];

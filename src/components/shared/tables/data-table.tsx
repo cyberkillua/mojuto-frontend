@@ -50,6 +50,7 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     enableRowSelection,
     onRowSelectionChange,
+    getRowId: (row: any) => row.id,
     state: {
       rowSelection,
     },

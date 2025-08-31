@@ -8,7 +8,7 @@ import { Plus } from "lucide-react";
 import { SquarePen, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useFetch } from "@/hooks/use-fetch";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle } from "lucide-react";
 import { uploadListColumns } from "@/components/shared/tables/columns/upload-list";
 import { DataTable } from "@/components/shared/tables/data-table";
@@ -26,6 +26,7 @@ const Upload = () => {
     const [addWallet, setAddWallet] = useState(false);
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     const handleContinue = () => {
         setShowUpload(true);
@@ -49,10 +50,68 @@ const Upload = () => {
         }),
     });
 
+    // Bulk delete mutation
+    const bulkDeleteMutation = useMutation({
+        mutationFn: async (uploadIds: string[]) => {
+            // Delete uploads one by one or implement a bulk delete endpoint
+            const deletePromises = uploadIds.map(id =>
+                useFetch(`/upload/delete-upload?id=${id}`, {
+                    method: "DELETE",
+                })
+            );
+            return Promise.all(deletePromises);
+        },
+        onSuccess: () => {
+            toast.success("Selected uploads deleted successfully!");
+            setRowSelection({}); // Clear selection
+            queryClient.invalidateQueries({ queryKey: ["uploads"] });
+        },
+        onError: (error: any) => {
+            toast.error("Failed to delete uploads", {
+                description: error?.message || "Something went wrong. Please try again.",
+            });
+        },
+    });
 
     const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (updaterOrValue) => {
         setRowSelection(updaterOrValue)
     }
+
+    // Get selected upload IDs (these will now be actual IDs, not indices)
+    const selectedUploadIds = Object.keys(rowSelection);
+    const selectedCount = selectedUploadIds.length;
+
+    // Get selected upload data for analysis
+    // const selectedUploads = uploads?.data?.filter((upload: any) =>
+    //     selectedUploadIds.includes(upload.id)
+    // ) || [];
+
+    const handleBulkDelete = () => {
+        if (selectedUploadIds.length === 0) {
+            toast.error("Please select uploads to delete");
+            return;
+        }
+
+        toast.promise(
+            bulkDeleteMutation.mutateAsync(selectedUploadIds),
+            {
+                loading: `Deleting ${selectedCount} upload${selectedCount > 1 ? 's' : ''}...`,
+                success: `${selectedCount} upload${selectedCount > 1 ? 's' : ''} deleted successfully!`,
+                error: "Failed to delete uploads. Please try again."
+            }
+        );
+    };
+
+    const handleBulkAnalyze = () => {
+        if (selectedUploadIds.length === 0) {
+            toast.error("Please select uploads to analyze");
+            return;
+        }
+
+        // Navigate to analysis page with selected upload IDs
+        const idsParam = selectedUploadIds.join(',');
+        navigate(`/dashboard/analyze?uploads=${idsParam}`);
+    };
 
     // Loading state
     if (isUploadsLoading) {
@@ -94,6 +153,7 @@ const Upload = () => {
         )
     }
 
+  
     // Main content - uploads exist
     return (
         <div className="w-full pl-[3rem] pt-[4.6rem]">
@@ -118,7 +178,6 @@ const Upload = () => {
                         columns={uploadListColumns}
                         data={uploads?.data?.map((item: any) => ({
                             ...item,
-                            // id: idx,
                             uploadedOn: formatRelativeTime(item.createdAt),
                         })) || []}
                         rowSelection={rowSelection}
@@ -132,6 +191,31 @@ const Upload = () => {
                         rowClickStyle="cursor-pointer"
                     />
                 </div>
+
+                {/* Bulk actions section - only show when items are selected */}
+                {selectedCount > 1 && (
+                    <div className="bg-[#172228] w-fit mt-[1.7rem] px-[1.15rem] rounded-[1.7rem] py-[1.1rem]">
+                        <p className="text-center text-[#D5F0FF] text-[1.3rem] mb-[1.5rem]">
+                            {selectedCount} Upload{selectedCount > 1 ? 's' : ''} Selected
+                        </p>
+
+                        <div className="flex gap-[1rem]">
+                            <Button
+                                onClick={handleBulkAnalyze}
+                                className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-[#18181A] bg-white hover:bg-gray-100"
+                            >
+                                Analyze
+                            </Button>
+                            <Button
+                                onClick={handleBulkDelete}
+                                disabled={bulkDeleteMutation.isPending}
+                                className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-white bg-[#AF1100] hover:bg-[#8F0E00] flex items-center gap-[0.5rem]"
+                            >
+                                Delete
+                            </Button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )
@@ -164,8 +248,6 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
     const [walletAddresses, setWalletAddresses] = useState<string[]>([]);
     const [uploadName, setUploadName] = useState<string>("");
     const [isSuccess, setIsSuccess] = useState(false);
-
-
 
     const {
         mutate: addWalletMutation,
@@ -247,7 +329,7 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                     <Input
                         placeholder="7 Digit Wallet Address"
                         className="bg-white pl-[1.5rem] !text-[1.4rem] 
-                        placeholder:text-[1.2rem] placeholder:text-[#9CA3AF] h-[4rem] placeholder:font-[500] focus:outline-none rounded-[3.5rem] mt-[1.2rem] focus-visible:ring-none"
+                        placeholder:text-[1.2rem] placeholder:text-[#9CA3AF] h-[4rem] placeholder:font-[500] focus:outline-none rounded-[3.5rem]  focus-visible:ring-none"
                         onChange={handleChange}
                         value={walletAddress}
                     />
@@ -344,7 +426,6 @@ const ImportWallets = ({
         },
     });
 
-
     const {
         data: userData,
         isPending
@@ -355,7 +436,6 @@ const ImportWallets = ({
             return response.data
         },
     })
-
 
     const handleFileUpload = (files: FileList) => {
         if (files && files.length > 0) {

@@ -52,10 +52,8 @@ export const viewUploadColumns: ColumnDef<viewUpload>[] = [
         header: "Actions",
         cell: ({ row }) => (
             <div className="flex items-center gap-[1.2rem]">
-                <Button asChild className="!text-[1.2rem] px-[1.2rem] py-[1.5rem] rounded-[3rem] bg-white hover:bg-white text-black">
-                    <Link to={`/dashboard/analyze/${row.id}`}>Analyze</Link>
-                </Button>
-                <Button className="rounded-full size-[3.5rem] bg-[#AF1100]">
+                
+                <Button className="rounded-full cursor-pointer hover:bg-[#AF1100] size-[3.5rem] bg-[#AF1100]">
                     <Trash2
                         className="text-[#D5F0FF] size-[1.4rem]" 
                     />

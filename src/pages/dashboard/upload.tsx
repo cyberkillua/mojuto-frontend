@@ -5,8 +5,9 @@ import { viewUploadColumns } from "@/components/shared/tables/columns/view-uploa
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useFetch } from "@/hooks/use-fetch";
-import { LoaderCircle, RefreshCw } from "lucide-react";
+import {  LoaderCircle, RefreshCw } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Link } from "react-router-dom";
 import { formatRelativeTime } from "@/utils/formatTime";
 import { toast } from "sonner";
 import { useEffect } from "react";
@@ -96,7 +97,7 @@ const Upload = () => {
                     ) : (
                         <Pill>
                             <span>
-                                {uploads?.createdAt && uploads?.updatedAt 
+                                {uploads?.createdAt && uploads?.updatedAt
                                     ? `${formatRelativeTime(uploads.createdAt)} - ${formatRelativeTime(uploads.updatedAt)}`
                                     : "No date available"
                                 }
@@ -111,15 +112,20 @@ const Upload = () => {
                         placeholder="Search Uploads"
                         disabled={isLoading}
                     />
-                    <Button
-                        className="bg-white hover:bg-white cursor-pointer px-[1.2rem] text-[#030712] text-[1.1rem] py-[1.8rem] rounded-[2rem]"
-                        disabled={isLoading}
-                        onClick={() => {
-                            toast.success("Upload functionality coming soon!");
-                        }}
-                    >
-                        Upload Wallets
-                    </Button>
+                    <div className="flex items gap-[1.5rem] items-center">
+                        <Button
+                            className="bg-white hover:bg-white cursor-pointer px-[1.2rem] text-[#030712] text-[1.1rem] py-[1.8rem] rounded-[2rem]"
+                            disabled={isLoading}
+                            onClick={() => {
+                                toast.success("Upload functionality coming soon!");
+                            }}
+                        >
+                            Upload Wallets
+                        </Button>
+                        <Button asChild className="bg-white hover:bg-white cursor-pointer !px-[1.8rem] text-[#030712] text-[1.1rem] py-[1.8rem] rounded-[2rem]">
+                            <Link to={`/dashboard/analyze/${uploads?.id}`}>Analyze</Link>
+                        </Button>
+                    </div>
                 </div>
 
                 {isLoading ? (
