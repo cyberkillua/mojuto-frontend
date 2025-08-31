@@ -1,7 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
 
 // import { AnyAaaaRecord } from "dns";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -50,7 +49,7 @@ export const viewUploadColumns: ColumnDef<viewUpload>[] = [
     {
         accessorKey: "noOfWallets",
         header: "Actions",
-        cell: ({ row }) => (
+        cell: () => (
             <div className="flex items-center gap-[1.2rem]">
                 
                 <Button className="rounded-full cursor-pointer hover:bg-[#AF1100] size-[3.5rem] bg-[#AF1100]">
