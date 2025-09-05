@@ -1,6 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useFetch } from "@/hooks/use-fetch";
 
 // import { AnyAaaaRecord } from "dns";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,6 +13,29 @@ export type viewUpload = {
     address: string;
     chain: string
 }
+
+const useDeleteWallet = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (walletId: string) =>
+            useFetch(`/upload/delete-wallet?id=${walletId}`, {
+                method: "DELETE",
+            }),
+        onSuccess: () => {
+            toast.success("Wallet deleted successfully!");
+            // Invalidate uploads query to refresh the list
+            queryClient.invalidateQueries({ queryKey: ["upload"] });
+        },
+        onError: (error: any) => {
+            toast.error("Failed to delete wallet", {
+                description: error?.message || "Something went wrong. Please try again.",
+            });
+        },
+    });
+};
+
+
 
 export const viewUploadColumns: ColumnDef<viewUpload>[] = [
     {
@@ -49,15 +75,37 @@ export const viewUploadColumns: ColumnDef<viewUpload>[] = [
     {
         accessorKey: "noOfWallets",
         header: "Actions",
-        cell: () => (
-            <div className="flex items-center gap-[1.2rem]">
-                
-                <Button className="rounded-full cursor-pointer hover:bg-[#AF1100] size-[3.5rem] bg-[#AF1100]">
-                    <Trash2
-                        className="text-[#D5F0FF] size-[1.4rem]" 
-                    />
-                </Button>
-            </div>
-        )
+        cell: ({ row }) => {
+
+            const deleteWallet = useDeleteWallet();
+
+            const handleDelete = () => {
+                const walletId = row.original.id;
+
+                // Show confirmation toast before deleting
+                toast.promise(
+                    deleteWallet.mutateAsync(walletId),
+                    {
+                        loading: `Deleting "${walletId}"...`,
+                    }
+                );
+            };
+
+            return (
+                (
+                    <div className="flex items-center gap-[1.2rem]">
+
+                        <Button
+                            className="rounded-full cursor-pointer hover:bg-[#AF1100] size-[3.5rem] bg-[#AF1100]"
+                            onClick={handleDelete}
+                        >
+                            <Trash2
+                                className="text-[#D5F0FF] size-[1.4rem]"
+                            />
+                        </Button>
+                    </div>
+                )
+            )
+        }
     },
 ];

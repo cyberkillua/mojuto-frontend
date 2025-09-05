@@ -50,6 +50,7 @@ const Upload = () => {
         }),
     });
 
+
     // Bulk delete mutation
     const bulkDeleteMutation = useMutation({
         mutationFn: async (uploadIds: string[]) => {
@@ -153,7 +154,7 @@ const Upload = () => {
         )
     }
 
-  
+
     // Main content - uploads exist
     return (
         <div className="w-full pl-[3rem] pt-[4.6rem]">
@@ -248,6 +249,41 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
     const [walletAddresses, setWalletAddresses] = useState<string[]>([]);
     const [uploadName, setUploadName] = useState<string>("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [invalidWallets, setInvalidWallets] = useState<string | string[] | null>(null);
+    const [editingIndex, setEditingIndex] = useState<number | null>(null); // Track which wallet is being edited
+
+    const extractInvalidWallets = (errorMessage: string | null | undefined | Error): string | string[] => {
+        // Handle falsy values (null, undefined, empty string, false, etc.)
+        if (!errorMessage) {
+            return ["Unknown wallet validation error"];
+        }
+
+        // Convert to string in case it's not a string
+        const messageString = String(errorMessage);
+
+        const prefix = "Invalid wallet addresses found: ";
+
+        if (!messageString.startsWith(prefix)) {
+            // Not the expected error format - return the original message in array
+            return [messageString];
+        }
+
+        const walletsString = messageString.substring(prefix.length).trim();
+
+        // Handle empty wallets string after prefix
+        if (!walletsString) {
+            return ["No wallet addresses specified"];
+        }
+
+        // Split by comma and clean up each wallet
+        const wallets = walletsString
+            .split(',')
+            .map(wallet => wallet.trim())
+            .filter(wallet => wallet.length > 0);
+
+        // Return array (even if single wallet)
+        return wallets.length > 0 ? wallets : ["No valid wallet addresses found"];
+    };
 
     const {
         mutate: addWalletMutation,
@@ -261,12 +297,11 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
             }),
         }),
         onSuccess: (data) => {
-            console.log("Success:", data);
             setIsSuccess(true);
             toast.success("Successfully added wallet!");
         },
         onError: (error) => {
-            console.error("Error:", error);
+            setInvalidWallets(extractInvalidWallets(error?.message))
             toast.error(error.message || "Failed to send reset link. Please try again.");
         },
     })
@@ -277,6 +312,7 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
             return;
         }
         addWalletMutation();
+        console.log(invalidWallets);
     };
 
     const addWallet = (walletAddress: string) => {
@@ -284,22 +320,73 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
             toast.error("Please enter a wallet address");
             return;
         }
-        if (walletAddresses.includes(walletAddress)) {
-            toast.error("Wallet already added");
-            return;
+
+        if (editingIndex !== null) {
+            // We're editing an existing wallet
+            if (walletAddresses.includes(walletAddress) && walletAddresses[editingIndex] !== walletAddress) {
+                toast.error("Wallet already added");
+                return;
+            }
+            
+            // Update the wallet at the editing index
+            setWalletAddresses(prev => {
+                const updated = [...prev];
+                updated[editingIndex] = walletAddress;
+                return updated;
+            });
+            
+            // Clear editing state
+            setEditingIndex(null);
+            setWalletAddress("");
+            toast.success("Wallet updated successfully");
+        } else {
+            // We're adding a new wallet
+            if (walletAddresses.includes(walletAddress)) {
+                toast.error("Wallet already added");
+                return;
+            }
+            setWalletAddresses(prev => [...prev, walletAddress]);
+            setWalletAddress("");
+            toast.success("Wallet added successfully");
         }
-        setWalletAddresses(prev => [...prev, walletAddress]);
-        setWalletAddress("");
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         setWalletAddress(newValue);
-        console.log(newValue);
     }
 
     const removeWallet = (index: number) => {
+        // If we're editing this wallet, cancel the edit
+        if (editingIndex === index) {
+            setEditingIndex(null);
+            setWalletAddress("");
+        }
+        
         setWalletAddresses(prev => prev.filter((_, i) => i !== index));
+        toast.success("Wallet removed");
+    }
+
+    const editWallet = (index: number) => {
+        // Cancel any existing edit
+        if (editingIndex !== null) {
+            setEditingIndex(null);
+        }
+        
+        // Set up editing state
+        setEditingIndex(index);
+        setWalletAddress(walletAddresses[index]);
+        
+        // Optional: Focus the input
+        setTimeout(() => {
+            const input = document.querySelector('input[placeholder="7 Digit Wallet Address"]') as HTMLInputElement;
+            input?.focus();
+        }, 0);
+    }
+
+    const cancelEdit = () => {
+        setEditingIndex(null);
+        setWalletAddress("");
     }
 
     const closeDialog = () => {
@@ -307,87 +394,165 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
         onSuccess(); // Call the onSuccess callback to reset the entire flow
     }
 
+    // Check if current wallet address is valid (for styling)
+    const isCurrentWalletInvalid = Array.isArray(invalidWallets) 
+        ? invalidWallets.includes(walletAddress)
+        : false;
+
     return (
-        <div className=" flex flex-col w-[58rem] gap-[2.5rem]">
+        <div className="flex flex-col w-[58rem] gap-[2.5rem]">
             <SucessDialog
                 onClose={closeDialog}
                 open={isSuccess}
             />
-            <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] w- px-[2rem] py-[1.5rem]">
+            <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] px-[2rem] py-[1.5rem]">
                 <p className="text-[#D5F0FF] text-[1.35rem]">Upload Name</p>
                 <Input
                     placeholder="BTC Holders"
                     value={uploadName}
                     onChange={(e) => setUploadName(e.target.value)}
-                    className="bg-white pl-[1.5rem] !text-[1.6rem] placeholder:text-[1.2rem] h-[4rem] placeholder:text-[#030712] placeholder:font-[500] rounded-[3.5rem] mt-[1.2rem]  focus-visible:ring-none"
+                    className="bg-white pl-[1.5rem] !text-[1.6rem] placeholder:text-[1.2rem] h-[4rem] placeholder:text-[#030712] placeholder:font-[500] rounded-[3.5rem] mt-[1.2rem] focus-visible:ring-none"
                 />
             </div>
 
-            <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] w- px-[2rem] py-[1.5rem]">
+            <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] px-[2rem] py-[1.5rem]">
                 <p className="text-[#D5F0FF] text-[1.35rem]">Import Wallets</p>
+                
+                {/* Show edit mode indicator */}
+                {editingIndex !== null && (
+                    <div className="bg-[#1E3A8A]/20 border border-[#1E3A8A] rounded-[1rem] px-[1rem] py-[0.5rem] mt-[1rem]">
+                        <p className="text-[#60A5FA] text-[1.1rem]">
+                            Editing wallet #{editingIndex + 1}
+                        </p>
+                    </div>
+                )}
+                
                 <div className="flex gap-[1rem] mt-[1.2rem] items-center">
                     <Input
                         placeholder="7 Digit Wallet Address"
-                        className="bg-white pl-[1.5rem] !text-[1.4rem] 
-                        placeholder:text-[1.2rem] placeholder:text-[#9CA3AF] h-[4rem] placeholder:font-[500] focus:outline-none rounded-[3.5rem]  focus-visible:ring-none"
+                        className={`bg-white pl-[1.5rem] !text-[1.4rem] placeholder:text-[1.2rem] placeholder:text-[#9CA3AF] h-[4rem] placeholder:font-[500] focus:outline-none rounded-[3.5rem] focus-visible:ring-none ${
+                            isCurrentWalletInvalid ? 'border-[#E11D48] border-2' : ''
+                        }`}
                         onChange={handleChange}
                         value={walletAddress}
                     />
 
-                    <Button
-                        className="bg-white hover:bg-white cursor-pointer rounded-full size-[4rem]"
-                        onClick={() => addWallet(walletAddress)}
-                    >
-                        <Plus
-                            className="size-[1.7rem]  text-[#000000]"
-                        />
-                    </Button>
+                    <div className="flex gap-[0.5rem]">
+                        {editingIndex !== null ? (
+                            <>
+                                {/* Update button when editing */}
+                                <Button
+                                    className="bg-[#16A34A] hover:bg-[#15803D] cursor-pointer rounded-full size-[4rem]"
+                                    onClick={() => addWallet(walletAddress)}
+                                    title="Save changes"
+                                >
+                                    <Plus className="size-[1.7rem] text-white" />
+                                </Button>
+                                {/* Cancel button when editing */}
+                                <Button
+                                    className="bg-[#6B7280] hover:bg-[#4B5563] cursor-pointer rounded-full size-[4rem]"
+                                    onClick={cancelEdit}
+                                    title="Cancel edit"
+                                >
+                                    <span className="text-white text-[1.2rem]">✕</span>
+                                </Button>
+                            </>
+                        ) : (
+                            /* Add button when not editing */
+                            <Button
+                                className="bg-white hover:bg-white cursor-pointer rounded-full size-[4rem]"
+                                onClick={() => addWallet(walletAddress)}
+                                title="Add wallet"
+                            >
+                                <Plus className="size-[1.7rem] text-[#000000]" />
+                            </Button>
+                        )}
+                    </div>
                 </div>
-                <p className="text-[#E11D48] text-[1.2rem] mt-[.9rem]">Max Upload: {10 - (+walletAddresses.length)} /  10</p>
+
+                {/* Show validation error for current input */}
+                {isCurrentWalletInvalid && walletAddress && (
+                    <p className="text-[#E11D48] text-[1.1rem] mt-[0.5rem] ml-[1.5rem]">
+                        This wallet address is invalid
+                    </p>
+                )}
+
+                <p className="text-[#E11D48] text-[1.2rem] mt-[.9rem]">
+                    Max Upload: {10 - (+walletAddresses.length)} / 10
+                </p>
 
                 <div className="">
                     <div className="bg-[#131E24] rounded-[1.5rem] mt-[1.5rem] border border-[#192830]">
-                        {
-                            walletAddresses.map((item, i) => (
-                                <div className="flex rounded-[1.5rem]  pl-[2rem] pr-[1.5rem] items-center justify-between border py-[1.4rem] border-[#192830]" key={i}>
-                                    <p className="text-[#D5F0FF] font-[400] text-[1.2rem]">{item}</p>
-
-                                    <div className="flex gap-[1rem]">
-                                        <Button className="bg-[#FFFFFF] rounded-full hover:bg-white cursor-pointer size-[3.5rem]">
-                                            <SquarePen
-                                                className="size-[1.4rem] text-[#131E24]"
-                                            />
-                                        </Button>
-
-                                        <Button
-                                            className="bg-[#AF1100] hover:bg-[#AF1100] cursor-pointer border border-[#951709] rounded-full size-[3.7rem]"
-                                            onClick={() => removeWallet(i)}
-                                        >
-                                            <Trash2
-                                                className="size-[1.4rem] text-white"
-                                            />
-                                        </Button>
-                                    </div>
+                        {walletAddresses.map((item, i) => (
+                            <div 
+                                className={`flex rounded-[1.5rem] pl-[2rem] pr-[1.5rem] items-center justify-between border py-[1.4rem] border-[#192830] ${
+                                    editingIndex === i ? 'bg-[#1E3A8A]/10 border-[#1E3A8A]' : ''
+                                }`} 
+                                key={i}
+                            >
+                                <div className="">
+                                    <p className={`${
+                                        Array.isArray(invalidWallets) && invalidWallets.includes(item) 
+                                            ? "text-[#E11D48]" 
+                                            : editingIndex === i 
+                                                ? "text-[#60A5FA]" 
+                                                : "text-[#D5F0FF]"
+                                    } font-[400] text-[1.2rem]`}>
+                                        {item}
+                                        {editingIndex === i && <span className="text-[#60A5FA] ml-[0.5rem]">(editing)</span>}
+                                    </p>
+                                    {Array.isArray(invalidWallets) && invalidWallets.includes(item) && (
+                                        <p className="text-[1rem] mt-[.2rem] text-[#E11D48]">
+                                            Invalid Wallet Address
+                                        </p>
+                                    )}
                                 </div>
-                            ))
-                        }
+
+                                <div className="flex gap-[1rem]">
+                                    <Button 
+                                        className={`${
+                                            editingIndex === i 
+                                                ? 'bg-[#6B7280] hover:bg-[#4B5563]' 
+                                                : 'bg-[#FFFFFF] hover:bg-white'
+                                        } rounded-full cursor-pointer size-[3.5rem]`}
+                                        onClick={() => editingIndex === i ? cancelEdit() : editWallet(i)}
+                                        title={editingIndex === i ? "Cancel edit" : "Edit wallet"}
+                                    >
+                                        {editingIndex === i ? (
+                                            <span className="text-white text-[1.2rem]">✕</span>
+                                        ) : (
+                                            <SquarePen className="size-[1.4rem] text-[#131E24]" />
+                                        )}
+                                    </Button>
+
+                                    <Button
+                                        className="bg-[#AF1100] hover:bg-[#AF1100] cursor-pointer border border-[#951709] rounded-full size-[3.7rem]"
+                                        onClick={() => removeWallet(i)}
+                                        disabled={editingIndex === i} // Disable delete while editing
+                                        title="Delete wallet"
+                                    >
+                                        <Trash2 className="size-[1.4rem] text-white" />
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
 
                     <Button
                         onClick={handleContinue}
-                        disabled={walletAddresses.length >= 10 || walletAddresses.length === 0}
-                        className="w-full py-[2rem] mt-[2.5rem] text-[1.3rem] hover:bg-white cursor-pointer rounded-[3rem] bg-white text-[#030712]">
-                        Continue
-                        {
-                            isAddWalletPending && (<LoaderCircle className="ml-[1rem] text-[#030712] animate-spin" />)
-                        }
+                        disabled={walletAddresses.length >= 10 || walletAddresses.length === 0 || editingIndex !== null}
+                        className="w-full py-[2rem] mt-[2.5rem] text-[1.3rem] hover:bg-white cursor-pointer rounded-[3rem] bg-white text-[#030712]"
+                    >
+                        {editingIndex !== null ? "Finish editing to continue" : "Continue"}
+                        {isAddWalletPending && (
+                            <LoaderCircle className="ml-[1rem] text-[#030712] animate-spin" />
+                        )}
                     </Button>
                 </div>
             </div>
         </div>
     )
 }
-
 const ImportWallets = ({
     setAddWallet,
     onSuccess

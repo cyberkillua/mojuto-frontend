@@ -1,5 +1,5 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { AutoBreadcrumb } from "@/components/shared/common/autobreadCrumb";
+import { AutoBreadcrumb } from "@/components/shared/common/autobreadcrumb";
 const DashboardNav = () => {
     return (
         <div className="bg-[#131E24] border-[#192830] w-full">
