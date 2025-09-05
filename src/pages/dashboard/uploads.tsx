@@ -296,7 +296,7 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                 wallets: walletAddresses,
             }),
         }),
-        onSuccess: (data) => {
+        onSuccess: () => {
             setIsSuccess(true);
             toast.success("Successfully added wallet!");
         },
