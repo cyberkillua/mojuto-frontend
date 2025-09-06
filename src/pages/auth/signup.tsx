@@ -84,12 +84,10 @@ const Enterprise = () => {
             method: "POST",
             body: JSON.stringify(transformFormData(formData)),
         }),
-        onSuccess: (data) => {
-            console.log("Success:", data);
+        onSuccess: () => {
             toast.success("Successfully created account!");
         },
         onError: (error) => {
-            console.error("Error:", error);
             toast.error(error.message || "Failed to send reset link. Please try again.");
         },
     });
@@ -309,7 +307,6 @@ const SingleUser = () => {
 
     const handleSubmit = () => {
         setShowErrors(true);
-
         setTimeout(() => {
             const isValid = validateForm();
 

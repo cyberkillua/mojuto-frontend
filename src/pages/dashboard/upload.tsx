@@ -21,6 +21,7 @@ const Upload = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+    const [selectedWalletAddresses, setSelectedWalletAddresses] = useState<string[]>([]);
     const selectedUploadIds = Object.keys(rowSelection);
     const queryClient = useQueryClient();
     const selectedCount = selectedUploadIds.length;
@@ -42,7 +43,6 @@ const Upload = () => {
 
     const bulkDeleteMutation = useMutation({
         mutationFn: async (uploadIds: string[]) => {
-            // Delete uploads one by one or implement a bulk delete endpoint
             const deletePromises = uploadIds.map(id =>
                 useFetch(`/upload/delete-wallet?id=${id}`, {
                     method: "DELETE",
@@ -52,7 +52,8 @@ const Upload = () => {
         },
         onSuccess: () => {
             toast.success("Selected uploads deleted successfully!");
-            setRowSelection({}); // Clear selection
+            setRowSelection({}); 
+            setSelectedWalletAddresses([]); // Clear selected wallet addresses
             queryClient.invalidateQueries({ queryKey: ["upload", id] });
         },
         onError: (error: any) => {
@@ -62,7 +63,6 @@ const Upload = () => {
         },
     });
 
-    // Handle error with toast
     useEffect(() => {
         if (error) {
             toast.error("Failed to load upload data", {
@@ -90,15 +90,20 @@ const Upload = () => {
         setRowSelection(updaterOrValue)
     }
 
+    const handleWalletSelectionChange = (walletAddresses: string[]) => {
+        setSelectedWalletAddresses(walletAddresses);
+    };
+
     const handleBulkAnalyze = () => {
-        if (selectedUploadIds.length === 0) {
+        if (selectedWalletAddresses.length === 0) {
             toast.error("Please select wallets to analyze");
             return;
         }
 
-        // Navigate to analysis page with selected upload IDs
-        const idsParam = selectedUploadIds.join(',');
-        navigate(`/dashboard/analyze?uploads=${idsParam}`);
+        // Navigate with wallet addresses instead of upload IDs
+        navigate(`/dashboard/uploads/${uploads?.upload?.id}/analyze`, {
+            state: { selectedUploadIds: selectedWalletAddresses }
+        });
     };
 
     const handleBulkDelete = () => {
@@ -109,16 +114,29 @@ const Upload = () => {
 
         toast.promise(
             bulkDeleteMutation.mutateAsync(selectedUploadIds),
-
             {
                 loading: `Deleting ${selectedCount} upload${selectedCount > 1 ? 's' : ''}...`,
                 error: "Failed to delete wallet. Please try again."
             }
         );
-
     };
 
-    // Show error state with toast handling
+    const handleAnalyzeAll = () => {
+        const allWalletAddresses = uploads?.upload?.wallets?.map((wallet: any) => wallet.address).filter(Boolean) || [];
+        
+        if (allWalletAddresses.length === 0) {
+            toast.error("No wallet addresses available to analyze");
+            return;
+        }
+
+        navigate(`/dashboard/uploads/${uploads?.upload?.id}/analyze`, {
+            state: { selectedUploadIds: allWalletAddresses }
+        });
+    };
+
+    console.log("Row Selection:", rowSelection);
+    console.log("Selected Wallet Addresses:", selectedWalletAddresses);
+
     if (error) {
         return (
             <div className="w-full pl-[3rem] pt-[4.6rem]">
@@ -178,9 +196,7 @@ const Upload = () => {
                     />
                     <Button
                         className="bg-white hover:bg-white cursor-pointer !px-[1.8rem] text-[#030712] text-[1.1rem] py-[1.8rem] rounded-[2rem]"
-                        onClick={() => {
-                            navigate("/dashboard/analyze");
-                        }}
+                        onClick={handleAnalyzeAll}
                         disabled={uploads?.upload?.wallets.length == 0}
                     >
                         Analyze All
@@ -191,20 +207,22 @@ const Upload = () => {
                     <div className="flex justify-center mt-[3rem]">
                         <LoaderCircle className="animate-spin text-white h-[3rem] w-[3rem]" />
                     </div>
-                ) :(
+                ) : (
                     <div className="mt-[3rem]">
                         <DataTable
                             columns={viewUploadColumns}
-                            data={uploads?.upload?.wallets ||  []}
+                            data={uploads?.upload?.wallets || []}
                             isLoading={false}
                             enableRowSelection={true}
                             rowSelection={rowSelection}
                             onRowSelectionChange={handleRowSelectionChange}
+                            onWalletSelectionChange={handleWalletSelectionChange}
+                            walletAddressKey="address" // Adjust this based on your data structure
                         />
                     </div>
                 )}
 
-                {!!selectedCount && selectedCount > 1  && (
+                {!!selectedCount && (
                     <div className="bg-[#172228] w-fit mt-[1.7rem] px-[1.15rem] rounded-[1.7rem] py-[1.1rem]">
                         <p className="text-center text-[#D5F0FF] text-[1.3rem] mb-[1.5rem]">
                             {selectedCount} wallet{selectedCount > 1 ? 's' : ''} Selected
@@ -214,6 +232,7 @@ const Upload = () => {
                             <Button
                                 onClick={handleBulkAnalyze}
                                 className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-[#18181A] bg-white hover:bg-gray-100"
+                                disabled={selectedCount === 0}
                             >
                                 Analyze
                             </Button>

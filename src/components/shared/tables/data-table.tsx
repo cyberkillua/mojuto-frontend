@@ -30,6 +30,9 @@ interface DataTableProps<TData, TValue> {
   onRowClick?: (rowData: TData) => void
   rowHoverStyle?: string
   rowClickStyle?: string
+  // New props for wallet address selection
+  onWalletSelectionChange?: (selectedWallets: string[]) => void
+  walletAddressKey?: string // Key to access wallet address in row data (e.g., 'address', 'walletAddress')
 }
 
 export function DataTable<TData, TValue>({
@@ -42,14 +45,40 @@ export function DataTable<TData, TValue>({
   rowClickable = false,
   onRowClick,
   rowHoverStyle = "hover:bg-[#21343F]",
-  rowClickStyle = "cursor-pointer"
+  rowClickStyle = "cursor-pointer",
+  onWalletSelectionChange,
+  walletAddressKey = "address" // Default key for wallet address
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     enableRowSelection,
-    onRowSelectionChange,
+    onRowSelectionChange: (updaterOrValue) => {
+      // Call the original onRowSelectionChange if provided
+      if (onRowSelectionChange) {
+        onRowSelectionChange(updaterOrValue)
+      }
+      
+      // Handle wallet address selection
+      if (onWalletSelectionChange) {
+        // Get the new selection state
+        const newSelection = typeof updaterOrValue === 'function' 
+          ? updaterOrValue(rowSelection) 
+          : updaterOrValue;
+        
+        // Extract wallet addresses from selected rows
+        const selectedWalletAddresses: string[] = Object.keys(newSelection)
+          .filter(rowId => newSelection[rowId])
+          .map(rowId => {
+            const rowData = data.find((row: any) => row.id === rowId) as any;
+            return rowData?.[walletAddressKey] || rowId; // Fallback to rowId if address not found
+          })
+          .filter(Boolean); // Remove any undefined/null values
+        
+        onWalletSelectionChange(selectedWalletAddresses);
+      }
+    },
     getRowId: (row: any) => row.id,
     state: {
       rowSelection,
@@ -145,3 +174,22 @@ export function DataTable<TData, TValue>({
     </div>
   )
 }
+
+// Example usage in your component:
+/*
+const [selectedWalletAddresses, setSelectedWalletAddresses] = useState<string[]>([]);
+const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+<DataTable
+  columns={columns}
+  data={walletData}
+  enableRowSelection={true}
+  rowSelection={rowSelection}
+  onRowSelectionChange={setRowSelection}
+  onWalletSelectionChange={setSelectedWalletAddresses}
+  walletAddressKey="address" // or "walletAddress", "id", etc. based on your data structure
+/>
+
+// selectedWalletAddresses will now contain an array of wallet addresses
+console.log("Selected wallets:", selectedWalletAddresses);
+*/
