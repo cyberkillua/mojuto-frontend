@@ -147,7 +147,7 @@ export function AppSidebar() {
                                     <SidebarMenuItem
                                         className="!text-[1.4rem] p-0 mt-[2rem]"
                                     >
-                                        <SidebarMenuButton className="!text-[1.3rem] flex items-center hover:text-[#7FA1B4] !h-[3.7rem] hover:bg-transparent gap-[1rem] font-medium group-data-[collapsible=icon]:p-1! group-data-[collapsible=icon]:size-[3.5rem]! ">
+                                        <SidebarMenuButton className="!text-[1.3rem] flex items-center hover:text-[#7FA1B4]  !h-[3.7rem] hover:bg-transparent gap-[1rem] font-medium group-data-[collapsible=icon]:p-1! group-data-[collapsible=icon]:size-[3.5rem]! ">
                                             <UserAvatar initial={userData?.firstName[0]} />
 
                                             <SidebarGroup className=" ">

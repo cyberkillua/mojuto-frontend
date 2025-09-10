@@ -102,7 +102,7 @@ export function DataTable<TData, TValue>({
   }
 
   return (
-    <div className="rounded-[1.5rem] bg-[#172329]">
+    <div className="rounded-[1.5rem]   overflow-hidden bg-[#172329]">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

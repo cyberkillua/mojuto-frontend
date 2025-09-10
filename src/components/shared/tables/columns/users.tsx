@@ -1,12 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import DropDown from "../../common/dropdown";
+import { SquarePen, Trash2 } from "lucide-react";
 import {  MoreVertical } from "lucide-react"
 import { Button } from "@/components/ui/button";
 
@@ -46,28 +40,31 @@ export const UsersColumns: ColumnDef<Users>[] = [
     {
         id: "actions",
         enableHiding: false,
-        cell: ({ row }) => {
-            const payment = row.original
-            return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-12 w-12 p-0 hover:bg-[#21343F]">
-                            <span className="sr-only">Open menu</span>
-                            <MoreVertical className="size-8 text-[#D5F0FF66]" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() => navigator.clipboard.writeText(payment.id)}
-                        >
-                            Copy payment ID
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>View customer</DropdownMenuItem>
-                        <DropdownMenuItem>View payment details</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+        cell: () => {
+            // const payment = row.originalk
+           return (
+                <DropDown
+                    dropdownMenuIems={[
+                        <>
+                            <SquarePen
+                                className="text-[#ADB1B8] !size-[1.7rem]"
+                            />
+                            Edit
+                        </>,
+                        <>
+                            <Trash2
+                                className="text-[#ADB1B8] !size-[1.7rem]"
+                            />
+                            Delete
+                        </>
+                    ]}
+                >
+                    <Button variant="ghost" className="h-12 w-12 p-0 hover:bg-[#21343F]">
+                        {/* <span className="sr-only">Open menu</span> */}
+                        <MoreVertical className="size-8 text-[#D5F0FF66]" />
+                    </Button>
+                </DropDown>
+
             )
         },
     },

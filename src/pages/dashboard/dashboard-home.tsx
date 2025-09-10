@@ -2,8 +2,8 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/shared/tables/data-table";
 import { uploadHistoryColumns } from "@/components/shared/tables/columns/upload";
 import { useQuery } from "@tanstack/react-query";
-import{ useFetch }
-from "@/hooks/use-fetch";
+import { useFetch }
+    from "@/hooks/use-fetch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UsersColumns } from "@/components/shared/tables/columns/users";
 import { uploadHistoryEnterpriseColumns } from "@/components/shared/tables/columns/upload-enterpise";
@@ -21,8 +21,6 @@ const DashboardHome = () => {
         },
     })
 
-
-
     const isEnterprise = uploadHistory?.users?.[0]?.userType === "ENTERPRISE";
 
     const getOverviewItems = () => {
@@ -32,17 +30,17 @@ const DashboardHome = () => {
                     {
                         title: "Total Team Members",
                         key: "totalTeamMembers",
-                        icon: "/icons/upload.svg",
+                        icon: "/common/profile.png",
                     },
                     {
                         title: "Total Wallets Uploaded",
                         key: "totalWalletsUploaded",
-                        icon: "/icons/download.svg",
+                        icon: "/common/wallet.png",
                     },
                     {
                         title: "Total Analytics Requests",
                         key: "totalAnalyticsRequests",
-                        icon: "/icons/users.svg",
+                        icon: "/common/chart.png",
                     }
                 ];
             default:
@@ -50,17 +48,17 @@ const DashboardHome = () => {
                     {
                         title: "Total Uploads",
                         key: "totalUpload",
-                        icon: "/icons/upload.svg",
+                        icon: "/common/arrow.png",
                     },
                     {
                         title: "Total Wallets Uploaded",
                         key: "totalWalletsUploaded",
-                        icon: "/icons/download.svg",
+                        icon: "/common/wallet.png",
                     },
                     {
                         title: "Total Analytics Requests",
                         key: "totalAnalyticsRequests",
-                        icon: "/icons/users.svg",
+                        icon: "/common/chart.png",
                     }
                 ];
         }
@@ -93,14 +91,22 @@ const DashboardHome = () => {
                         className="text-[#030712] text-[1.2rem] px-[2.3rem] rounded-[2.3rem] py-[1.9rem]"
                     >
                         Analyze Wallets
-                    </Button> 
+                    </Button>
                 </div>
 
                 <div className="bg-[#131E24] mt-[2rem] px-[3.45rem] py-[2.6rem] w-full border border-[#253A4699] flex justify-between rounded-[3rem]">
                     {getOverviewItems().map((item, i) => (
                         <div key={item.title} className={`w-[30%] ${i < 2 ? "border-r border-[#253A4699]" : ""}`}>
-                            <div className="w-[18rem]">
-                                <p className="text-[#8EA2AD] text-[1.4rem]">{item.title}</p>
+                            <div className="w-[25rem]">
+                                <p
+                                    className="text-[#8EA2AD] text-[1.4rem]"
+                                >
+                                    <img src={item.icon}
+                                        className="inline mr-[.7rem] size-[1.8rem]"
+                                        alt={item.title}
+                                    />
+                                    {item.title}
+                                </p>
                                 {isUploadHistoryLoading ? (
                                     <Skeleton className="w-[8rem] mt-[2rem] bg-[#21343F] mx-auto h-[7rem]" />
                                 ) : (
@@ -126,7 +132,7 @@ const DashboardHome = () => {
                                                 ...item,
                                                 name: `${item.firstName} ${item.lastName}`,
                                                 lastActiveAt: formatRelativeTime(item.lastActiveAt),
-                                                
+
                                             }))}
                                             isLoading={isUploadHistoryLoading}
                                         />
@@ -134,18 +140,18 @@ const DashboardHome = () => {
                                 </div>
 
                                 <div className="mt-[5rem]">
-                                     <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
-                                     <div className="mt-[2rem]">
-                                         <DataTable
-                                             columns={uploadHistoryEnterpriseColumns}
-                                              data={uploadHistory?.uploadHistory?.map((item: any) => ({
-                                            ...item,
-                                            uploadedBy: `${item?.user?.firstName} ${item?.user?.lastName}`,
-                                            time: formatRelativeTime(item?.createdAt),
-                                        }))}
-                                             isLoading={isUploadHistoryLoading}
-                                         />
-                                     </div>
+                                    <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
+                                    <div className="mt-[2rem]">
+                                        <DataTable
+                                            columns={uploadHistoryEnterpriseColumns}
+                                            data={uploadHistory?.uploadHistory?.map((item: any) => ({
+                                                ...item,
+                                                uploadedBy: `${item?.user?.firstName} ${item?.user?.lastName}`,
+                                                time: formatRelativeTime(item?.createdAt),
+                                            }))}
+                                            isLoading={isUploadHistoryLoading}
+                                        />
+                                    </div>
                                 </div>
                             </>
                         ) : (
