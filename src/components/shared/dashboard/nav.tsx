@@ -2,8 +2,8 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { AutoBreadcrumb } from "@/components/shared/common/autobreadcrumb";
 const DashboardNav = () => {
     return (
-        <div className="bg-[#131E24] border-[#192830] w-full">
-            <div className="flex items-center pl-[3rem] py-[1.5rem]">
+        <div className="bg-[#131E24] pl-[3rem] py-[2rem] border-[#192830] w-full">
+            <div className="flex items-center">
                 <SidebarTrigger
                   className="text-[#7FA1B4] hover:bg-[#21343F] hover:text-[#D5F0FF]"
                 />

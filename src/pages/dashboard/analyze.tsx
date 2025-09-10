@@ -8,7 +8,8 @@ import { chainsColumns } from "@/components/shared/tables/columns/chains";
 import { DataTable } from "@/components/shared/tables/data-table";
 import {
     Link,
-    useLocation
+    useLocation,
+    useParams
 } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useFetch } from "@/hooks/use-fetch";
@@ -47,7 +48,7 @@ const Analyze = () => {
     const location = useLocation();
     const state = location.state as { selectedUploadIds: string[] } | null;
     const selectedUploadIds = state?.selectedUploadIds || [];
-    console.log("selectedUploadIds:", selectedUploadIds);
+    const { id } = useParams();
 
     const {
         mutate: getAnalyzeDataMutation,
@@ -76,7 +77,6 @@ const Analyze = () => {
     }, [selectedUploadIds]);
 
     const analyzeData = _analyzeData?.data;
-    console.log("Analyze Data:", analyzeData);
 
     // Updated EVM data integration
     const evmData = analyzeData?.evm_chains?.map((chain: any, index: number) => ({
@@ -127,58 +127,64 @@ const Analyze = () => {
     const headerData = [
         {
             value: formatToDollars(analyzeData?.totalPortfolioValue || 0),
-            text: <><img src="/common/native.png" alt="native icon" className="size-[1.8rem] inline" /> Total Portfolio Value</>,
+            text: "Total Portfolio Value",
             border: false,
-            tooltip: "The combined total value of all assets across all wallets analyzed."
+            tooltip: "The combined total value of all assets across all wallets analyzed.",
+            icon: "/common/value.png"
         },
         {
             value: analyzeData?.totalWallets || 0,
             text: "Total Wallets",
             border: false,
-            tooltip: "The combined total value of all assets across all wallets analyzed."
+            tooltip: "The combined total value of all assets across all wallets analyzed.",
+            icon: "/common/wallet.png"
         },
         {
             value: formatToDollars(analyzeData?.stablecoins || 0),
             text: "Stablecoin",
             border: true,
-            tooltip: "The combined total value of all assets across all wallets analyzed."
+            tooltip: "The combined total value of all assets across all wallets analyzed.",
+            icon: "/common/stablecoin.png"
         },
         {
             value: formatToDollars(analyzeData?.nft || 0),
             text: "NFT",
             border: true,
-            tooltip: "The combined total value of all assets across all wallets analyzed."
+            tooltip: "The combined total value of all assets across all wallets analyzed.",
+            icon: "/common/nft.png"
         },
         {
             value: formatToDollars(analyzeData?.native || 0),
             text: "Native",
             border: true,
-            tooltip: "The combined total value of all assets across all wallets analyzed."
+            tooltip: "The combined total value of all assets across all wallets analyzed.",
+            icon: "/common/native.png"
         },
         {
             value: formatToDollars(analyzeData?.altcoin || 0),
             text: "Altcoins",
             border: true,
-            tooltip: "The combined total value of all assets across all wallets analyzed."
+            tooltip: "The combined total value of all assets across all wallets analyzed.",
+            icon: "/common/alt.png"
         },
     ]
 
     // Updated VM data integration
     const vmData = [
-        { 
-            name: "BTC", 
-            value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.BTC !== undefined)?.BTC || 0, 
-            fill: "var(--color-btc)" 
+        {
+            name: "BTC",
+            value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.BTC !== undefined)?.BTC || 0,
+            fill: "var(--color-btc)"
         },
-        { 
-            name: "SVM", 
-            value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.SOL !== undefined)?.SOL || 0, 
-            fill: "var(--color-svm)" 
+        {
+            name: "SVM",
+            value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.SOL !== undefined)?.SOL || 0,
+            fill: "var(--color-svm)"
         },
-        { 
-            name: "EVM", 
-            value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.EVM !== undefined)?.EVM || 0, 
-            fill: "var(--color-evm)" 
+        {
+            name: "EVM",
+            value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.EVM !== undefined)?.EVM || 0,
+            fill: "var(--color-evm)"
         },
     ];
 
@@ -188,11 +194,11 @@ const Analyze = () => {
         value: item.value,
         fill: `var(--color-${item.type})`
     })) || [
-        { name: "Altcoin", value: 0, fill: "var(--color-altcoin)" },
-        { name: "Stablecoin", value: 0, fill: "var(--color-stablecoin)" },
-        { name: "Native", value: 0, fill: "var(--color-native)" },
-        { name: "NFT", value: 0, fill: "var(--color-nft)" },
-    ];
+            { name: "Altcoin", value: 0, fill: "var(--color-altcoin)" },
+            { name: "Stablecoin", value: 0, fill: "var(--color-stablecoin)" },
+            { name: "Native", value: 0, fill: "var(--color-native)" },
+            { name: "NFT", value: 0, fill: "var(--color-nft)" },
+        ];
 
     const vmChartConfig = {
         btc: {
@@ -242,7 +248,7 @@ const Analyze = () => {
                 >
                     <p className="text-[1.6rem] text-white">
                         <LoaderCircle className="animate-spin inline mr-[.7rem] text-[#00EAFF] size-[2rem]" />
-                        Analyzing {selectedUploadIds.length} wallet{selectedUploadIds.length > 1 ? 's' : ''}...
+                        Analyzing {selectedUploadIds.length} Wallet{selectedUploadIds.length > 1 ? 's' : ''} ...
                     </p>
                 </div>) : (
                     <section className="pt-[3rem] pb-[6rem] px-[2.5rem]">
@@ -269,16 +275,22 @@ const Analyze = () => {
                                             className={`p-[2.5rem] rounded-[3rem] ${item.border ? "border border-[#253A46]" : ""}`}
                                             key={idx}
                                         >
-                                            <p className={`text-[1.4rem] font-[400] mb-[1.5rem] ${item.border ? "text-[#8EA2AD]" : "text-white"}`}>{item.text}
-
+                                            <p className={`text-[1.4rem] font-[400] mb-[1.5rem] ${item.border ? "text-[#8EA2AD]" : "text-white"}`}>
+                                                <img
+                                                    src={item.icon}
+                                                    alt="native icon"
+                                                    className="size-[1.8rem] inline"
+                                                />
+                                                {"  "}
+                                                {item.text}
                                                 <Tooltip>
                                                     <TooltipTrigger>
                                                         <Info
-                                                            className="inline size-[1.4rem] ml-[.5rem] text-[#8EA2AD] cursor-pointer"
+                                                            className="inline size-[1.8rem] ml-[.8rem] text-[#8EA2AD] cursor-pointer"
                                                         />
                                                     </TooltipTrigger>
                                                     <TooltipContent className="bg-[#131E24] border border-[#253A46] !w-fit">
-                                                        <p className="text-[.8rem] max-w-[20rem]">{item.tooltip}</p>
+                                                        <p className="text-[.8rem] max-w-[15rem] w-full">{item.tooltip}</p>
                                                     </TooltipContent>
                                                 </Tooltip>
                                             </p>
@@ -299,8 +311,18 @@ const Analyze = () => {
                                         <div className="flex items-center justify-between">
                                             <ChartContainer config={vmChartConfig} className="size-[20rem] mt-[3rem]">
                                                 <PieChart>
-                                                    <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                                                    <Pie data={vmData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={82} strokeWidth={0} />
+                                                    <ChartTooltip
+                                                        cursor={false}
+                                                        content={<ChartTooltipContent hideLabel />}
+                                                    />
+                                                    <Pie
+                                                        data={vmData}
+                                                        dataKey="value"
+                                                        nameKey="name"
+                                                        innerRadius={50}
+                                                        outerRadius={82}
+                                                        strokeWidth={0}
+                                                    />
                                                 </PieChart>
                                             </ChartContainer>
 
@@ -318,7 +340,7 @@ const Analyze = () => {
                                         <div className="flex justify-between items-center">
                                             <ChartContainer
                                                 config={assetChartConfig}
-                                                className="size-[18rem] rounded-full mt-[3rem]"
+                                                className="size-[20rem] rounded-full mt-[3rem]"
                                             >
                                                 <PieChart>
                                                     <ChartTooltip
@@ -349,13 +371,18 @@ const Analyze = () => {
                                 <p className="text-[1.6rem] text-[#AACDE1] my-[2.5rem]">Blockchain Value</p>
 
                                 <Card>
-                                    <ChartContainer config={chartConfig} className="h-[40rem] w-full">
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="h-[45rem] w-full"
+                                    >
                                         <BarChart accessibilityLayer data={chartData}>
-                                            <CartesianGrid horizontal={false} vertical={false} />
+                                            <CartesianGrid
+                                                horizontal={false}
+                                                vertical={false}
+                                            />
                                             <XAxis
                                                 dataKey="coin"
                                                 tickLine={false}
-                                                tickMargin={10}
                                                 axisLine={false}
                                                 tickFormatter={(value) => value}
                                                 className="text-[1.6rem] !text-[#8EA2AD]"
@@ -364,7 +391,7 @@ const Analyze = () => {
                                                 tickLine={false}
                                                 axisLine={false}
                                                 tickFormatter={(value) => `$${value.toLocaleString()}`}
-                                                className="text-[1.6rem] !text-[#8EA2AD]"
+                                                className="text-[1.4rem] !text-[#8EA2AD]"
                                             />
                                             <ChartTooltip
                                                 cursor={false}
@@ -394,7 +421,13 @@ const Analyze = () => {
                                         className="text-[#00EAFF] hover:bg-transparent hover:text-[#00EAFF] text-[1.4rem]"
                                         asChild
                                     >
-                                        <Link to="/dashboard/analyze/1/evm-chains">
+                                        <Link
+                                            state={{
+                                                selectedUploadIds: selectedUploadIds,
+                                                chain: "evm_chains"
+                                            }}
+                                            to={`/dashboard/uploads/${id}/analyze/evm-chains`}
+                                        >
                                             Details
                                             <ChevronRight
                                                 className="ml-2 size-[1.8rem]"
@@ -410,7 +443,7 @@ const Analyze = () => {
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="mt-[2.5rem]">
                                 <div className="flex justify-between">
                                     <div className="">
@@ -418,15 +451,28 @@ const Analyze = () => {
                                         <p className="text-[1.4rem] mt-[.8rem] text-[#7FA1B4]">{formatToDollars(solTotalValue)}</p>
                                     </div>
 
-                                    <Button
-                                        variant={"ghost"}
-                                        className="text-[#00EAFF] hover:bg-transparent hover:text-[#00EAFF] text-[1.4rem]"
-                                    >
-                                        Details
-                                        <ChevronRight
-                                            className="ml-2 size-[1.8rem]"
-                                        />
-                                    </Button>
+                                    {
+                                        solTotalValue > 0 && (
+                                            <Button
+                                                asChild
+                                                variant={"ghost"}
+                                                className="text-[#00EAFF] hover:bg-transparent hover:text-[#00EAFF] text-[1.4rem]"
+                                            >
+                                                <Link
+                                                    state={{
+                                                        selectedUploadIds: selectedUploadIds,
+                                                        chain: "sol_chains"
+                                                    }}
+                                                    to={`/dashboard/uploads/${id}/analyze/evm-chains`}
+                                                >
+                                                    Details
+                                                    <ChevronRight
+                                                        className="ml-2 size-[1.8rem]"
+                                                    />
+                                                </Link>
+                                            </Button>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="mt-[2rem]">
@@ -436,7 +482,7 @@ const Analyze = () => {
                                     />
                                 </div>
                             </div>
-                            
+
                             <div className="mt-[2.5rem]">
                                 <div className="flex justify-between">
                                     <div className="">
@@ -444,15 +490,28 @@ const Analyze = () => {
                                         <p className="text-[1.4rem] mt-[.8rem] text-[#7FA1B4]">{formatToDollars(btcTotalValue)}</p>
                                     </div>
 
-                                    <Button
-                                        variant={"ghost"}
-                                        className="text-[#00EAFF] hover:bg-transparent hover:text-[#00EAFF] text-[1.4rem]"
-                                    >
-                                        Details
-                                        <ChevronRight
-                                            className="ml-2 size-[1.8rem]"
-                                        />
-                                    </Button>
+                                    {
+                                        btcTotalValue > 0 && (
+                                            <Button
+                                                asChild
+                                                variant={"ghost"}
+                                                className="text-[#00EAFF] hover:bg-transparent hover:text-[#00EAFF] text-[1.4rem]"
+                                            >
+                                                <Link
+                                                    state={{
+                                                        selectedUploadIds: selectedUploadIds,
+                                                        chain: "btc_chains"
+                                                    }}
+                                                    to={`/dashboard/uploads/${id}/analyze/evm-chains`}
+                                                >
+                                                    Details
+                                                    <ChevronRight
+                                                        className="ml-2 size-[1.8rem]"
+                                                    />
+                                                </Link>
+                                            </Button>
+                                        )
+                                    }
                                 </div>
 
                                 <div className="mt-[2rem]">

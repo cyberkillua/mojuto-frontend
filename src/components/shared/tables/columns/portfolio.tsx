@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+// import { formatToDollars } from "@/utils/formatamount";
 
 // Portfolio data type
 export interface PortfolioData {
@@ -8,12 +9,27 @@ export interface PortfolioData {
     chain: string;
     native: string;
     nativeToken: string;
+    nativeTokens?: Array<{
+        symbol: string;
+        amount: number;
+        value: string;
+    }>;
     stablecoin: string;
     stablecoinTokens: string;
+    stablecoinTokensList?: Array<{
+        symbol: string;
+        amount: number;
+        value: string;
+    }>;
     nft: string;
     nftCount: string;
     altcoin: string;
     altcoinCount: string;
+    altcoinTokens?: Array<{
+        symbol: string;
+        amount: number;
+        value: string;
+    }>;
     totalValue: string;
     style: string;
     riskLevel: string;
@@ -26,10 +42,9 @@ export const portfolioColumns: ColumnDef<PortfolioData>[] = [
         header: "Address",
         cell: ({ row }) => (
             <div className="flex items-center gap-[1rem]">
-                {/* <div className="w-[2.4rem] h-[2.4rem] rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-[1rem] font-semibold">
-                    {row.original.address.slice(0, 2)}
-                </div> */}
-                <span className="text-[#D5F0FF] text-[1.3rem]">{row.getValue("address")}</span>
+                <span className="text-[#D5F0FF] text-[1.3rem] font-mono">
+                    {`${row.getValue("address")}`}
+                </span>
             </div>
         ),
     },
@@ -37,32 +52,51 @@ export const portfolioColumns: ColumnDef<PortfolioData>[] = [
         accessorKey: "chain",
         header: "Chain",
         cell: ({ row }) => (
-            <span className="text-[#8EA2AD] text-[1.3rem]">{row.getValue("chain")}</span>
+            <span className="text-[#8EA2AD] text-[1.3rem] capitalize font-medium">
+                {row.getValue("chain")}
+            </span>
         ),
     },
     {
         accessorKey: "native",
         header: "Native ($)",
         cell: ({ row }) => {
-            const value = row.getValue("native") as string
+            const value = row.getValue("native") as string;
+            // const nativeTokens = row.original.nativeTokens;
+
             return (
                 <div className="text-right">
-                    <div className="text-[#D5F0FF] text-[1.3rem] font-medium">{value}</div>
+                    <div className="text-[#8EA2AD] text-start max-w-[8rem] text-[1.3rem]">
+                        {row.original.nativeToken}
+                    </div>
+                    <div className="text-[1.3rem] text-start">(${value})</div>
                 </div>
-            )
+            );
         },
     },
     {
         accessorKey: "stablecoin",
         header: "Stablecoin ($)",
         cell: ({ row }) => {
-            const value = row.getValue("stablecoin") as string
+            // const value = row.getValue("stablecoin") as string;
+            const stablecoinTokensList = row.original.stablecoinTokens.split(',');
+
+
             return (
                 <div className="text-right">
-                    <div className="text-[#D5F0FF] text-[1.3rem] font-medium">${value}</div>
-                    <div className="text-[#8EA2AD] text-[1.1rem]">({row.original.stablecoinTokens})</div>
+                    {/* <div className="text-[#D5F0FF] text-[1.3rem] font-medium">${value}</div> */}
+                    <div className="text-[#8EA2AD] text-start !whitespace-normal  text-[1.1rem]">
+                        {
+                            stablecoinTokensList.map((token, idx) => (
+                                <p key={idx} className={`text-[1.2rem] mt-[.2rem]`}>
+                                    {token.length > 0 ? token : 'No stablecoins'}
+                                    {/* <span className="block">({formatToDollars(row.original.stablecoin)})</span> */}
+                                </p>
+                            ))
+                        }
+                    </div>
                 </div>
-            )
+            );
         },
     },
     {
@@ -73,7 +107,9 @@ export const portfolioColumns: ColumnDef<PortfolioData>[] = [
             return (
                 <div className="text-right">
                     <div className="text-[#D5F0FF] text-[1.3rem] font-medium">${value}</div>
-                    <div className="text-[#8EA2AD] text-[1.1rem]">({row.original.nftCount})</div>
+                    <div className="text-[#8EA2AD] text-[1.1rem]">
+                        {row.original.nftCount} <span className="">NFTs</span>
+                    </div>
                 </div>
             )
         },
@@ -82,13 +118,39 @@ export const portfolioColumns: ColumnDef<PortfolioData>[] = [
         accessorKey: "altcoin",
         header: "Altcoin ($)",
         cell: ({ row }) => {
-            const value = row.getValue("altcoin") as string
+            const value = row.getValue("altcoin") as string;
+            const altcoinTokens = row.original.altcoinTokens;
+            // const hasAltcoins = parseFloat(value) > 0;
+
             return (
                 <div className="text-right">
-                    <div className="text-[#D5F0FF] text-[1.3rem] font-medium">${value}</div>
-                    <div className="text-[#8EA2AD] text-[1.1rem]">({row.original.altcoinCount})</div>
+                    <div>
+                        ${value}
+                        {/* {hasAltcoins && <span className="ml-1 text-[#7EF9FF] text-[1rem]">●</span>} */}
+                    </div>
+                    {altcoinTokens && altcoinTokens.length > 0 ? (
+                        <div className="text-[#8EA2AD] text-[1.1rem] space-y-1">
+                            {altcoinTokens.slice(0, 3).map((token, index) => (
+                                <div key={index} className="flex justify-end items-center gap-1">
+                                    <span className="">
+                                        {token.symbol}
+                                    </span>
+                                    {/* <span>{token.amount.toFixed(4)}</span> */}
+                                </div>
+                            ))}
+                            {/* {altcoinTokens.length > 3 && (
+                                <div className="">
+                                    +{altcoinTokens.length - 3} more
+                                </div>
+                            )} */}
+                        </div>
+                    ) : (
+                        <div className="text-[#8EA2AD] text-[1.1rem]">
+                            {/* <span className="text-[#7EF9FF]">Tokens:</span> {row.original.altcoinCount} */}
+                        </div>
+                    )}
                 </div>
-            )
+            );
         },
     },
     {
@@ -96,13 +158,6 @@ export const portfolioColumns: ColumnDef<PortfolioData>[] = [
         header: "Total Value",
         cell: ({ row }) => (
             <span className="text-[#D5F0FF] text-[1.3rem] font-semibold">${row.getValue("totalValue")}</span>
-        ),
-    },
-    {
-        accessorKey: "style",
-        header: "Style",
-        cell: ({ row }) => (
-            <span className="text-[#8EA2AD] text-[1.3rem]">{row.getValue("style")}</span>
         ),
     },
     {

@@ -46,7 +46,7 @@ function App() {
           <Route path="changeLog" element={<ChangeLog />} />
           <Route path="uploads/:id" element={<Upload />} />
           <Route path="uploads/:id/analyze" element={<Analyze />} />
-          <Route path="analyze/:id/evm-chains" element={<EvmChains />} />
+          <Route path="uploads/:id/analyze/evm-chains" element={<EvmChains />} />
           {/* Redirect /dashboard to /dashboard/home */}
           <Route index element={<Navigate to="home" replace />} />
         </Route>

@@ -7,31 +7,35 @@ import {
 import { cn } from "@/lib/utils";
 
 interface TabsProps {
-    options: string[];
+    options: (string | null)[];
     classNames?: {
         tabs?: string;
         list?: string;
         trigger?: string;
     },
     content: React.ReactNode[];
+    onTabChange?: (tab: string) => void
 }
 
 const CustomTab = ({
     options,
     classNames,
-    content: Content
+    content: Content,
+    onTabChange
+    
 }: TabsProps) => {
     return (
         <Tabs
-            defaultValue={options[0]}
+            defaultValue={options[0] || ""}
+            onValueChange={(value) => onTabChange?.(value)}
             className={cn("w-full mt-[4rem] rounded-[2rem]", classNames?.tabs)}
         >
             <TabsList className={cn("h-full mx-auto !bg-[#F6F8FB] rounded-[2rem] !p-0 shadow", classNames?.list)}>
                 {
-                    options.map((option, index) => (
+                    options.map((option: string | null, index) => (
                         <TabsTrigger
                             key={index}
-                            value={option}
+                            value={option || ""}
                             className={cn("px-[2.7rem] py-[.8rem] text-[1.6rem] rounded-[2rem] !h-full text-grey-300 data-[state=active]:text-fg-base", classNames?.trigger)}
                         >
                             {option}
@@ -43,7 +47,7 @@ const CustomTab = ({
                 Content.map((content, index) => (
                     <TabsContent
                         key={index}
-                        value={options[index]}
+                        value={options[index] || ""}
                     >
                         {content}
                     </TabsContent>
