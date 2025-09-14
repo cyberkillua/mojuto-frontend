@@ -1,7 +1,7 @@
 import CustomTab from "@/components/shared/common/tabs";
 import { DataTable } from "@/components/shared/tables/data-table";
 import { Pie, PieChart } from "recharts"
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartConfig, ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 import { portfolioColumns } from "@/components/shared/tables/columns/portfolio";
 import { chainsColumns } from "@/components/shared/tables/columns/chains";
@@ -13,19 +13,101 @@ import { formatToDollars } from "@/utils/formatamount";
 import { LoaderCircle } from "lucide-react";
 import { useState } from "react";
 
-function CustomLegend({ data, config }: { data: any[]; config: ChartConfig }) {
+// Types
+interface ChartDataItem {
+    name: string;
+    value: number;
+    fill: string;
+    displayValue?: number;
+    originalValue?: number;
+    totalOriginalValue?: number;
+}
+
+interface ChainDictionary {
+    [key: string]: string;
+}
+
+interface TokenHolding {
+    symbol: string;
+    amount: number;
+    value: string;
+}
+
+// Helper function to calculate percentage values with minimum 1% for non-zero values
+const calculatePercentageData = (data: ChartDataItem[]): ChartDataItem[] => {
+    const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+    
+    if (totalValue === 0) {
+        return data.map(item => ({ ...item, displayValue: 0, originalValue: item.value }));
+    }
+    
+    let adjustedData = data.map(item => {
+        const percentage = (item.value / totalValue) * 100;
+        const displayValue = item.value > 0 && percentage < 1 ? 1 : percentage;
+        
+        return {
+            ...item,
+            displayValue: displayValue,
+            originalValue: item.value
+        };
+    });
+    
+    // Normalize to ensure total is 100%
+    const totalDisplayValue = adjustedData.reduce((sum, item) => sum + (item.displayValue || 0), 0);
+    if (totalDisplayValue > 100) {
+        const scaleFactor = 100 / totalDisplayValue;
+        adjustedData = adjustedData.map(item => ({
+            ...item,
+            displayValue: (item.displayValue || 0) * scaleFactor
+        }));
+    }
+    
+    return adjustedData;
+};
+
+// Custom Tooltip component that shows original values
+const CustomChartTooltip = (showDollars: boolean = true) => ({ active, payload }: { active?: boolean; payload?: any[] }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        const totalValue = payload[0].payload.totalOriginalValue || 1;
+        const actualPercentage = ((data.originalValue / totalValue) * 100).toFixed(1);
+        
+        return (
+            <div className="bg-gray-800 p-3 rounded-lg border border-gray-600">
+                <p className="text-white font-medium">{data.name}</p>
+                <p className="text-blue-400">
+                    {showDollars ? `$${data.originalValue.toLocaleString()}` : data.originalValue.toLocaleString()}
+                </p>
+                <p className="text-gray-400 text-sm">{actualPercentage}%</p>
+            </div>
+        );
+    }
+    return null;
+};
+
+function CustomLegend({ data, config, showDollars = true }: { data: ChartDataItem[]; config: ChartConfig; showDollars?: boolean }) {
+    const percentageData = calculatePercentageData(data);
+    const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+    
     return (
         <div className="flex flex-col gap-3">
-            {data.map((item) => {
+            {percentageData.map((item) => {
                 const configKey = item.name.toLowerCase()
                 const itemConfig = config[configKey as keyof typeof config]
+                const actualPercentage = totalValue > 0 ? ((item.originalValue! / totalValue) * 100).toFixed(1) : "0.0";
+                
                 return (
                     <div key={item.name} className="flex items-center justify-between gap-[3rem]">
                         <div className="flex items-center gap-[.7rem]">
                             <div className="size-[1rem] rounded-full" style={{ backgroundColor: itemConfig?.color }} />
                             <span className="text-[#8EA2AD] font-[400] text-[1.4rem]">{item.name}</span>
                         </div>
-                        <span className="text-white text-[1.8rem] font-medium">${item.value.toLocaleString()}</span>
+                        <div className="text-right">
+                            <span className="text-white text-[1.8rem] font-medium">{actualPercentage}%</span>
+                            <div className="text-[#8EA2AD] text-[1.2rem]">
+                                {showDollars ? `$${item.originalValue!.toLocaleString()}` : item.originalValue!.toLocaleString()}
+                            </div>
+                        </div>
                     </div>
                 )
             })}
@@ -34,7 +116,7 @@ function CustomLegend({ data, config }: { data: any[]; config: ChartConfig }) {
 }
 
 // Helper function to parse token holdings from API format and calculate values
-const parseTokenHoldingsWithValues = (tokenString: string, totalValue: number) => {
+const parseTokenHoldingsWithValues = (tokenString: string, totalValue: number): TokenHolding[] => {
     if (!tokenString || tokenString === "") return [];
 
     const tokens = tokenString.split(',').map(token => {
@@ -66,10 +148,11 @@ const MultiChainAnalytics = () => {
     const {
         mutate: getAnalyzeDataMutation,
         data: _analyzeData,
-        isPending: analyzeDataLoading
+        isPending: analyzeDataLoading,
+        isError: analyzeDataError,
     } = useMutation({
         mutationFn: async () => {
-            const response = await useFetch(`/upload/analyze-wallets`, { 
+            const response = await useFetch(`/upload/analyze-wallets`, {
                 method: "POST",
                 body: JSON.stringify({ addresses: selectedUploadIds }),
             });
@@ -87,13 +170,9 @@ const MultiChainAnalytics = () => {
         if (selectedUploadIds.length > 0) {
             getAnalyzeDataMutation();
         }
-    }, [selectedUploadIds]);
+    }, [selectedUploadIds, getAnalyzeDataMutation]);
 
     const analyzeData = _analyzeData?.data;
-
-    interface ChainDictionary {
-        [key: string]: any;
-    }
 
     const chainDictionary: ChainDictionary = {
         evm_chains: "EVM",
@@ -177,7 +256,7 @@ const MultiChainAnalytics = () => {
 
     // Chain-specific asset distribution
     const currentChainAssetDistribution = analyzeData?.details?.vm_asset_distribution?.[chainDictionary?.[selectedChain]];
-    const assetData = currentChainAssetDistribution ? [
+    const assetData: ChartDataItem[] = currentChainAssetDistribution ? [
         { name: "Altcoin", value: currentChainAssetDistribution.altcoin || 0, fill: "var(--color-altcoin)" },
         { name: "Stablecoin", value: currentChainAssetDistribution.stablecoin || 0, fill: "var(--color-stablecoin)" },
         { name: "Native", value: currentChainAssetDistribution.native || 0, fill: "var(--color-native)" },
@@ -191,7 +270,7 @@ const MultiChainAnalytics = () => {
 
     // Chain-specific risk distribution
     const currentChainRiskDistribution = analyzeData?.details?.vm_risk_distribution?.[chainDictionary?.[selectedChain]];
-    const riskData = currentChainRiskDistribution ? [
+    const riskData: ChartDataItem[] = currentChainRiskDistribution ? [
         { name: "Low", value: currentChainRiskDistribution.low || 0, fill: "var(--color-low)" },
         { name: "Medium", value: currentChainRiskDistribution.medium || 0, fill: "var(--color-medium)" },
         { name: "High", value: currentChainRiskDistribution.high || 0, fill: "var(--color-high)" },
@@ -200,6 +279,23 @@ const MultiChainAnalytics = () => {
         { name: "Medium", value: 0, fill: "var(--color-medium)" },
         { name: "High", value: 0, fill: "var(--color-high)" },
     ];
+
+    // Prepare data for pie charts with percentage display values
+    const assetPercentageData = calculatePercentageData(assetData);
+    const totalAssetValue = assetData.reduce((sum, item) => sum + item.value, 0);
+    const assetChartData = assetPercentageData.map(item => ({
+        ...item,
+        value: item.displayValue!, // Use display value for chart rendering
+        totalOriginalValue: totalAssetValue
+    }));
+
+    const riskPercentageData = calculatePercentageData(riskData);
+    const totalRiskValue = riskData.reduce((sum, item) => sum + item.value, 0);
+    const riskChartData = riskPercentageData.map(item => ({
+        ...item,
+        value: item.displayValue!, // Use display value for chart rendering
+        totalOriginalValue: totalRiskValue
+    }));
 
     const riskChartConfig = {
         low: {
@@ -257,135 +353,151 @@ const MultiChainAnalytics = () => {
                         Analyzing {chainDictionary?.[selectedChain]} chains for {selectedUploadIds.length} wallet{selectedUploadIds.length > 1 ? 's' : ''}...
                     </p>
                 </div>
+            ) : analyzeDataError ? (
+                <>
+                </>
             ) : (
-                <section className="pt-[4rem] pl-[2.8rem] pb-[6rem]">
-                    <div className="max-w-[110rem] w-full">
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <h2 className="text-[#AACDE1] text-[1.8rem] mb-[1rem]">
-                                    {chainDictionary?.[selectedChain]} Analytics
-                                </h2>
-                                <p className="text-[#7FA1B4] text-[1.4rem]">
-                                    {currentChainTotalWallets} Wallet{currentChainTotalWallets > 1 ? 's' : ''} • {formatToDollars(currentChainTotalValue)} Total Value • {formatToDollars(currentChainAvgValue)} Avg
-                                </p>
-                            </div>
+                <>
+                    <section className="pt-[4rem] pl-[2.8rem] pb-[6rem]">
+                        <div className="max-w-[110rem] w-full">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-[#AACDE1] text-[1.8rem] mb-[1rem]">
+                                        {chainDictionary?.[selectedChain]} Analytics
+                                    </h2>
+                                    <p className="text-[#7FA1B4] text-[1.4rem]">
+                                        {currentChainTotalWallets} Wallet{currentChainTotalWallets > 1 ? 's' : ''} • {formatToDollars(currentChainTotalValue)} Total Value • {formatToDollars(currentChainAvgValue)} Avg
+                                    </p>
+                                </div>
 
-                            <div className="flex gap-[2.8rem] items-center">
-                                {/* <Button className="px-[1.5rem] py-[1.8rem] text-[1.4rem] bg-white rounded-[2rem] text-[#030712]">
+                                <div className="flex gap-[2.8rem] items-center">
+                                    {/* <Button className="px-[1.5rem] py-[1.8rem] text-[1.4rem] bg-white rounded-[2rem] text-[#030712]">
                                     All Chains
                                 </Button> */}
-                                {
-                                    !!evmTotalWallets && !!solTotalWallets && !!btcTotalWallets ? (
-                                        <CustomTab
-                                            options={
-                                                [
-                                                    `EVM (${evmTotalWallets})`,
-                                                    (solTotalWallets > 0) ? `SVM (${solTotalWallets})` : null,
-                                                    (btcTotalWallets > 0) ? `BTC (${btcTotalWallets})` : null
-                                                ]
-                                            }
-                                            content={[
-                                                <></>,
-                                                <></>,
-                                                <></>,
-                                            ]}
-                                            onTabChange={(tab) => {
-                                                const key = tab.split(' ')[0];
-                                                Object.entries(chainDictionary).map((v) => {
-                                                    if (v[1] === key) {
-                                                        setSelectedChain(v[0]);
-                                                    }
-                                                })
-                                            }}
-                                            classNames={
-                                                {
-                                                    tabs: "w-fit mt-0",
-                                                    list: "!bg-[#172228] rounded-[3.5rem] !p-[1rem]",
-                                                    trigger: "data-[state=active]:bg-[#172228] data-[state=active]:shadow-[0px_2px_4px_0px_#00000066,0px_1px_2px_-1px_#FFFFFF29] data-[state=active]:text-[#D5F0FF] data-[state=active]:border data-[state=active]:border-[#253A46] text-[#7FA1B4] py-[.7rem] px-[1.5rem] text-[1.4rem] rounded-[3rem]"
+                                    {
+                                        !!evmTotalWallets && !!solTotalWallets && !!btcTotalWallets ? (
+                                            <CustomTab
+                                                options={
+                                                    [
+                                                        `EVM (${evmTotalWallets})`,
+                                                        (solTotalWallets > 0) ? `SVM (${solTotalWallets})` : null,
+                                                        (btcTotalWallets > 0) ? `BTC (${btcTotalWallets})` : null
+                                                    ]
                                                 }
-                                            }
-                                        />
-                                    ) : (
-                                        ""
-                                    )
-                                }
+                                                content={[
+                                                    <></>,
+                                                    <></>,
+                                                    <></>,
+                                                ]}
+                                                onTabChange={(tab: string) => {
+                                                    const key = tab.split(' ')[0];
+                                                    Object.entries(chainDictionary).map((v) => {
+                                                        if (v[1] === key) {
+                                                            setSelectedChain(v[0]);
+                                                        }
+                                                    })
+                                                }}
+                                                classNames={
+                                                    {
+                                                        tabs: "w-fit mt-0",
+                                                        list: "!bg-[#172228] rounded-[3.5rem] !p-[1rem]",
+                                                        trigger: "data-[state=active]:bg-[#172228] data-[state=active]:shadow-[0px_2px_4px_0px_#00000066,0px_1px_2px_-1px_#FFFFFF29] data-[state=active]:text-[#D5F0FF] data-[state=active]:border data-[state=active]:border-[#253A46] text-[#7FA1B4] py-[.7rem] px-[1.5rem] text-[1.4rem] rounded-[3rem]"
+                                                    }
+                                                }
+                                            />
+                                        ) : (
+                                            ""
+                                        )
+                                    }
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="mt-[2rem]">
-                            <DataTable
-                                columns={chainsColumns}
-                                data={chainData}
-                            />
-                        </div>
+                            <div className="mt-[2rem]">
+                                <DataTable
+                                    columns={chainsColumns}
+                                    data={chainData}
+                                />
+                            </div>
 
-                        <div className="mt-[2.8rem]">
-                            <h2 className="text-[1.8rem] text-[#AACDE1] mb-[1.8rem]">{chainDictionary?.[selectedChain]} Distribution</h2>
+                            <div className="mt-[2.8rem]">
+                                <h2 className="text-[1.8rem] text-[#AACDE1] mb-[1.8rem]">{chainDictionary?.[selectedChain]} Distribution</h2>
 
-                            <div className="grid grid-cols-2 gap-[3rem]">
-                                <Card className="">
-                                    <p className="text-[1.4rem] text-[#8EA2AD]">Asset Distribution</p>
-                                    <div className="flex items-center justify-between">
-                                        <ChartContainer
-                                            config={assetChartConfig}
-                                            className="size-[20rem] mt-[3rem]">
-                                            <PieChart>
-                                                <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-                                                <Pie data={assetData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={82} strokeWidth={0} />
-                                            </PieChart>
-                                        </ChartContainer>
-
-                                        <div className="">
-                                            <CustomLegend
-                                                data={assetData}
+                                <div className="grid grid-cols-2 gap-[3rem]">
+                                    <Card className="">
+                                        <p className="text-[1.4rem] text-[#8EA2AD]">Asset Distribution</p>
+                                        <div className="flex items-center justify-between">
+                                            <ChartContainer
                                                 config={assetChartConfig}
-                                            />
+                                                className="size-[20rem] mt-[3rem]">
+                                                <PieChart>
+                                                    <ChartTooltip
+                                                        cursor={false}
+                                                        content={CustomChartTooltip(true)}
+                                                    />
+                                                    <Pie
+                                                        data={assetChartData}
+                                                        dataKey="value"
+                                                        nameKey="name"
+                                                        innerRadius={"60%"}
+                                                        outerRadius={"100%"}
+                                                        strokeWidth={0}
+                                                    />
+                                                </PieChart>
+                                            </ChartContainer>
+
+                                            <div className="">
+                                                <CustomLegend
+                                                    data={assetData}
+                                                    config={assetChartConfig}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                </Card>
+                                    </Card>
 
-                                <Card className="">
-                                    <p className="text-[1.4rem] text-[#8EA2AD]">Risk Distribution</p>
-                                    <div className="flex justify-between items-center">
-                                        <ChartContainer
-                                            config={riskChartConfig}
-                                            className="size-[20rem] mt-[3rem]">
-                                            <PieChart>
-                                                <ChartTooltip
-                                                    cursor={false}
-                                                    content={<ChartTooltipContent hideLabel />}
-                                                />
-                                                <Pie
-                                                    data={riskData}
-                                                    dataKey="value"
-                                                    nameKey="name"
-                                                    innerRadius={50}
-                                                    outerRadius={82}
-                                                    strokeWidth={0}
-                                                />
-                                            </PieChart>
-                                        </ChartContainer>
-
-                                        <div className="w-[35%]">
-                                            <CustomLegend
-                                                data={riskData}
+                                    <Card className="">
+                                        <p className="text-[1.4rem] text-[#8EA2AD]">Risk Distribution</p>
+                                        <div className="flex justify-between items-center">
+                                            <ChartContainer
                                                 config={riskChartConfig}
-                                            />
+                                                className="size-[20rem] mt-[3rem]">
+                                                <PieChart>
+                                                    <ChartTooltip
+                                                        cursor={false}
+                                                        content={CustomChartTooltip(false)}
+                                                    />
+                                                    <Pie
+                                                        data={riskChartData}
+                                                        dataKey="value"
+                                                        nameKey="name"
+                                                        innerRadius={"60%"}
+                                                        outerRadius={"100%"}
+                                                        strokeWidth={0}
+                                                    />
+                                                </PieChart>
+                                            </ChartContainer>
+
+                                            <div className="w-[35%]">
+                                                <CustomLegend
+                                                    data={riskData}
+                                                    config={riskChartConfig}
+                                                    showDollars={false}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                </Card>
+                                    </Card>
+                                </div>
+                            </div>
+
+                            <div className="mt-[2.8rem]">
+                                <h2 className="text-[1.8rem] text-[#AACDE1] mb-[1.8rem]">{chainDictionary?.[selectedChain]} Portfolio Details</h2>
+                                <DataTable
+                                    columns={portfolioColumns}
+                                    data={portfolioData}
+                                />
                             </div>
                         </div>
-
-                        <div className="mt-[2.8rem]">
-                            <h2 className="text-[1.8rem] text-[#AACDE1] mb-[1.8rem]">{chainDictionary?.[selectedChain]} Portfolio Details</h2>
-                            <DataTable
-                                columns={portfolioColumns}
-                                data={portfolioData}
-                            />
-                        </div>
-                    </div>
-                </section>
+                    </section>
+                </>
             )}
         </>
     );

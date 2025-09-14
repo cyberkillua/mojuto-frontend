@@ -319,8 +319,8 @@ const Analyze = () => {
                                                         data={vmData}
                                                         dataKey="value"
                                                         nameKey="name"
-                                                        innerRadius={50}
-                                                        outerRadius={82}
+                                                        innerRadius={"60%"}
+                                                        outerRadius={"100%"}
                                                         strokeWidth={0}
                                                     />
                                                 </PieChart>
@@ -351,8 +351,8 @@ const Analyze = () => {
                                                         data={assetData}
                                                         dataKey="value"
                                                         nameKey="name"
-                                                        innerRadius={50}
-                                                        outerRadius={82}
+                                                        innerRadius={"60%"}
+                                                        outerRadius={"100%"}
                                                         strokeWidth={0}
                                                     />
                                                 </PieChart>
@@ -375,7 +375,11 @@ const Analyze = () => {
                                         config={chartConfig}
                                         className="h-[45rem] w-full"
                                     >
-                                        <BarChart accessibilityLayer data={chartData}>
+                                        <BarChart
+                                            accessibilityLayer
+                                            data={chartData}
+                                            margin={{ top: 20, right: 30, left: 80, bottom: 5 }}
+                                        >
                                             <CartesianGrid
                                                 horizontal={false}
                                                 vertical={false}

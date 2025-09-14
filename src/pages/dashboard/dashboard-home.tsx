@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { UsersColumns } from "@/components/shared/tables/columns/users";
 import { uploadHistoryEnterpriseColumns } from "@/components/shared/tables/columns/upload-enterpise";
 import { formatRelativeTime } from "@/utils/formatTime";
+import { Link } from "react-router-dom";
 
 const DashboardHome = () => {
     const {
@@ -87,10 +88,13 @@ const DashboardHome = () => {
                 <div className="flex justify-between">
                     <h2 className="text-[1.6rem] text-[#EDEEF0]">Upload history</h2>
                     <Button
+                        asChild
                         style={buttonStyles}
                         className="text-[#030712] text-[1.2rem] px-[2.3rem] rounded-[2.3rem] py-[1.9rem]"
                     >
-                        Analyze Wallets
+                        <Link to="/dashboard/uploads">
+                            Analyze Wallets
+                        </Link>
                     </Button>
                 </div>
 

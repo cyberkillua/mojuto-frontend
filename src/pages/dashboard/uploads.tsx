@@ -103,16 +103,16 @@ const Upload = () => {
         );
     };
 
-    const handleBulkAnalyze = () => {
-        if (selectedUploadIds.length === 0) {
-            toast.error("Please select uploads to analyze");
-            return;
-        }
+    // const handleBulkAnalyze = () => {
+    //     if (selectedUploadIds.length === 0) {
+    //         toast.error("Please select uploads to analyze");
+    //         return;
+    //     }
 
-        // Navigate to analysis page with selected upload IDs
-        const idsParam = selectedUploadIds.join(',');
-        navigate(`/dashboard/analyze?uploads=${idsParam}`);
-    };
+    //     // Navigate to analysis page with selected upload IDs
+    //     const idsParam = selectedUploadIds.join(',');
+    //     navigate(`/dashboard/analyze?uploads=${idsParam}`);
+    // };
 
     // Loading state
     if (isUploadsLoading) {
@@ -199,22 +199,13 @@ const Upload = () => {
                         <p className="text-center text-[#D5F0FF] text-[1.3rem] mb-[1.5rem]">
                             {selectedCount} Upload{selectedCount > 1 ? 's' : ''} Selected
                         </p>
-
-                        <div className="flex gap-[1rem]">
-                            <Button
-                                onClick={handleBulkAnalyze}
-                                className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-[#18181A] bg-white hover:bg-gray-100"
-                            >
-                                Analyze
-                            </Button>
-                            <Button
-                                onClick={handleBulkDelete}
-                                disabled={bulkDeleteMutation.isPending}
-                                className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-white bg-[#AF1100] hover:bg-[#8F0E00] flex items-center gap-[0.5rem]"
-                            >
-                                Delete
-                            </Button>
-                        </div>
+                        <Button
+                            onClick={handleBulkDelete}
+                            disabled={bulkDeleteMutation.isPending}
+                            className="px-[2rem] py-[1.5rem] w-full rounded-[2rem] text-[1rem] text-white bg-[#AF1100] hover:bg-[#8F0E00] flex items-center gap-[0.5rem]"
+                        >
+                            Delete
+                        </Button>
                     </div>
                 )}
             </div>
@@ -327,14 +318,14 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                 toast.error("Wallet already added");
                 return;
             }
-            
+
             // Update the wallet at the editing index
             setWalletAddresses(prev => {
                 const updated = [...prev];
                 updated[editingIndex] = walletAddress;
                 return updated;
             });
-            
+
             // Clear editing state
             setEditingIndex(null);
             setWalletAddress("");
@@ -362,7 +353,7 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
             setEditingIndex(null);
             setWalletAddress("");
         }
-        
+
         setWalletAddresses(prev => prev.filter((_, i) => i !== index));
         toast.success("Wallet removed");
     }
@@ -372,11 +363,11 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
         if (editingIndex !== null) {
             setEditingIndex(null);
         }
-        
+
         // Set up editing state
         setEditingIndex(index);
         setWalletAddress(walletAddresses[index]);
-        
+
         // Optional: Focus the input
         setTimeout(() => {
             const input = document.querySelector('input[placeholder="7 Digit Wallet Address"]') as HTMLInputElement;
@@ -395,7 +386,7 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
     }
 
     // Check if current wallet address is valid (for styling)
-    const isCurrentWalletInvalid = Array.isArray(invalidWallets) 
+    const isCurrentWalletInvalid = Array.isArray(invalidWallets)
         ? invalidWallets.includes(walletAddress)
         : false;
 
@@ -417,7 +408,7 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
 
             <div className="bg-[#131E24] border border-[#192830] rounded-[2rem] px-[2rem] py-[1.5rem]">
                 <p className="text-[#D5F0FF] text-[1.35rem]">Import Wallets</p>
-                
+
                 {/* Show edit mode indicator */}
                 {editingIndex !== null && (
                     <div className="bg-[#1E3A8A]/20 border border-[#1E3A8A] rounded-[1rem] px-[1rem] py-[0.5rem] mt-[1rem]">
@@ -426,13 +417,12 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                         </p>
                     </div>
                 )}
-                
+
                 <div className="flex gap-[1rem] mt-[1.2rem] items-center">
                     <Input
                         placeholder="7 Digit Wallet Address"
-                        className={`bg-white pl-[1.5rem] !text-[1.4rem] placeholder:text-[1.2rem] placeholder:text-[#9CA3AF] h-[4rem] placeholder:font-[500] focus:outline-none rounded-[3.5rem] focus-visible:ring-none ${
-                            isCurrentWalletInvalid ? 'border-[#E11D48] border-2' : ''
-                        }`}
+                        className={`bg-white pl-[1.5rem] !text-[1.4rem] placeholder:text-[1.2rem] placeholder:text-[#9CA3AF] h-[4rem] placeholder:font-[500] focus:outline-none rounded-[3.5rem] focus-visible:ring-none ${isCurrentWalletInvalid ? 'border-[#E11D48] border-2' : ''
+                            }`}
                         onChange={handleChange}
                         value={walletAddress}
                     />
@@ -484,20 +474,18 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                 <div className="">
                     <div className="bg-[#131E24] rounded-[1.5rem] mt-[1.5rem] border border-[#192830]">
                         {walletAddresses.map((item, i) => (
-                            <div 
-                                className={`flex rounded-[1.5rem] pl-[2rem] pr-[1.5rem] items-center justify-between border py-[1.4rem] border-[#192830] ${
-                                    editingIndex === i ? 'bg-[#1E3A8A]/10 border-[#1E3A8A]' : ''
-                                }`} 
+                            <div
+                                className={`flex rounded-[1.5rem] pl-[2rem] pr-[1.5rem] items-center justify-between border py-[1.4rem] border-[#192830] ${editingIndex === i ? 'bg-[#1E3A8A]/10 border-[#1E3A8A]' : ''
+                                    }`}
                                 key={i}
                             >
                                 <div className="">
-                                    <p className={`${
-                                        Array.isArray(invalidWallets) && invalidWallets.includes(item) 
-                                            ? "text-[#E11D48]" 
-                                            : editingIndex === i 
-                                                ? "text-[#60A5FA]" 
+                                    <p className={`${Array.isArray(invalidWallets) && invalidWallets.includes(item)
+                                            ? "text-[#E11D48]"
+                                            : editingIndex === i
+                                                ? "text-[#60A5FA]"
                                                 : "text-[#D5F0FF]"
-                                    } font-[400] text-[1.2rem]`}>
+                                        } font-[400] text-[1.2rem]`}>
                                         {item}
                                         {editingIndex === i && <span className="text-[#60A5FA] ml-[0.5rem]">(editing)</span>}
                                     </p>
@@ -509,12 +497,11 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                                 </div>
 
                                 <div className="flex gap-[1rem]">
-                                    <Button 
-                                        className={`${
-                                            editingIndex === i 
-                                                ? 'bg-[#6B7280] hover:bg-[#4B5563]' 
+                                    <Button
+                                        className={`${editingIndex === i
+                                                ? 'bg-[#6B7280] hover:bg-[#4B5563]'
                                                 : 'bg-[#FFFFFF] hover:bg-white'
-                                        } rounded-full cursor-pointer size-[3.5rem]`}
+                                            } rounded-full cursor-pointer size-[3.5rem]`}
                                         onClick={() => editingIndex === i ? cancelEdit() : editWallet(i)}
                                         title={editingIndex === i ? "Cancel edit" : "Edit wallet"}
                                     >
