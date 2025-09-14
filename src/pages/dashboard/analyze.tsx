@@ -22,20 +22,93 @@ import {
 } from "@/components/ui/tooltip"
 import { Info } from "lucide-react";
 import { LoaderCircle } from "lucide-react";
+import { toast } from "sonner";
 
-function CustomLegend({ data, config }: { data: any[]; config: ChartConfig }) {
+// Types for percentage handling
+interface ChartDataItem {
+    name: string;
+    value: number;
+    fill: string;
+    displayValue?: number;
+    originalValue?: number;
+    totalOriginalValue?: number;
+}
+
+// Helper function to calculate percentage values with minimum 1% for non-zero values
+const calculatePercentageData = (data: ChartDataItem[]): ChartDataItem[] => {
+    const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+    
+    if (totalValue === 0) {
+        return data.map(item => ({ ...item, displayValue: 0, originalValue: item.value }));
+    }
+    
+    let adjustedData = data.map(item => {
+        const percentage = (item.value / totalValue) * 100;
+        const displayValue = item.value > 0 && percentage < 1 ? 1 : percentage;
+        
+        return {
+            ...item,
+            displayValue: displayValue,
+            originalValue: item.value
+        };
+    });
+    
+    // Normalize to ensure total is 100%
+    const totalDisplayValue = adjustedData.reduce((sum, item) => sum + (item.displayValue || 0), 0);
+    if (totalDisplayValue > 100) {
+        const scaleFactor = 100 / totalDisplayValue;
+        adjustedData = adjustedData.map(item => ({
+            ...item,
+            displayValue: (item.displayValue || 0) * scaleFactor
+        }));
+    }
+    
+    return adjustedData;
+};
+
+// Custom Tooltip component that shows original values
+const CustomChartTooltip = (showDollars: boolean = true) => ({ active, payload }: { active?: boolean; payload?: any[] }) => {
+    if (active && payload && payload.length) {
+        const data = payload[0].payload;
+        const totalValue = payload[0].payload.totalOriginalValue || 1;
+        const actualPercentage = ((data.originalValue / totalValue) * 100).toFixed(1);
+        
+        return (
+            <div className="bg-gray-800 p-3 rounded-lg border border-gray-600">
+                <p className="text-white font-medium">{data.name}</p>
+                <p className="text-blue-400">
+                    {showDollars ? `$${data.originalValue.toLocaleString()}` : data.originalValue.toLocaleString()}
+                </p>
+                <p className="text-gray-400 text-sm">{actualPercentage}%</p>
+            </div>
+        );
+    }
+    return null;
+};
+
+function CustomLegend({ data, config, showDollars = true }: { data: ChartDataItem[]; config: ChartConfig; showDollars?: boolean }) {
+    const percentageData = calculatePercentageData(data);
+    const totalValue = data.reduce((sum, item) => sum + item.value, 0);
+    
     return (
         <div className="flex flex-col gap-3">
-            {data.map((item) => {
+            {percentageData.map((item) => {
                 const configKey = item.name.toLowerCase()
                 const itemConfig = config[configKey as keyof typeof config]
+                const actualPercentage = totalValue > 0 ? ((item.originalValue! / totalValue) * 100).toFixed(1) : "0.0";
+                
                 return (
                     <div key={item.name} className="flex items-center justify-between gap-[3rem]">
                         <div className="flex items-center gap-[.7rem]">
                             <div className="size-[1rem] rounded-full" style={{ backgroundColor: itemConfig?.color }} />
                             <span className="text-[#8EA2AD] font-[400] text-[1.4rem]">{item.name}</span>
                         </div>
-                        <span className="text-white text-[1.8rem] font-medium">${item.value.toLocaleString()}</span>
+                        <div className="text-right">
+                            <span className="text-white text-[1.8rem] font-medium">{actualPercentage}%</span>
+                            <div className="text-[#8EA2AD] text-[1.2rem]">
+                                {showDollars ? `$${item.originalValue!.toLocaleString()}` : item.originalValue!.toLocaleString()}
+                            </div>
+                        </div>
                     </div>
                 )
             })}
@@ -43,11 +116,12 @@ function CustomLegend({ data, config }: { data: any[]; config: ChartConfig }) {
     )
 }
 
-
 const Analyze = () => {
     const location = useLocation();
     const state = location.state as { selectedUploadIds: string[] } | null;
     const selectedUploadIds = state?.selectedUploadIds || [];
+
+    console.log("Selected Upload IDs in Analyze Page:", selectedUploadIds);
     const { id } = useParams();
 
     const {
@@ -67,6 +141,7 @@ const Analyze = () => {
         },
         onError: (error) => {
             console.error("Error fetching analyze data:", error);
+            toast.error("Failed to fetch analysis data. Please try again.");    
         },
     })
 
@@ -169,8 +244,8 @@ const Analyze = () => {
         },
     ]
 
-    // Updated VM data integration
-    const vmData = [
+    // Updated VM data integration with percentage handling
+    const vmDataRaw = [
         {
             name: "BTC",
             value: analyzeData?.distributionByVirtualMembers?.find((item: any) => item.BTC !== undefined)?.BTC || 0,
@@ -188,17 +263,34 @@ const Analyze = () => {
         },
     ];
 
-    // Updated asset data integration
-    const assetData = analyzeData?.distributionByAssetType?.map((item: any) => ({
+    // Updated asset data integration with percentage handling
+    const assetDataRaw: ChartDataItem[] = analyzeData?.distributionByAssetType?.map((item: any) => ({
         name: item.type.charAt(0).toUpperCase() + item.type.slice(1),
         value: item.value,
         fill: `var(--color-${item.type})`
     })) || [
-            { name: "Altcoin", value: 0, fill: "var(--color-altcoin)" },
-            { name: "Stablecoin", value: 0, fill: "var(--color-stablecoin)" },
-            { name: "Native", value: 0, fill: "var(--color-native)" },
-            { name: "NFT", value: 0, fill: "var(--color-nft)" },
-        ];
+        { name: "Altcoin", value: 0, fill: "var(--color-altcoin)" },
+        { name: "Stablecoin", value: 0, fill: "var(--color-stablecoin)" },
+        { name: "Native", value: 0, fill: "var(--color-native)" },
+        { name: "NFT", value: 0, fill: "var(--color-nft)" },
+    ];
+
+    // Prepare data for pie charts with percentage display values
+    const vmPercentageData = calculatePercentageData(vmDataRaw);
+    const totalVmValue = vmDataRaw.reduce((sum, item) => sum + item.value, 0);
+    const vmChartData = vmPercentageData.map(item => ({
+        ...item,
+        value: item.displayValue!, // Use display value for chart rendering
+        totalOriginalValue: totalVmValue
+    }));
+
+    const assetPercentageData = calculatePercentageData(assetDataRaw);
+    const totalAssetValue = assetDataRaw.reduce((sum, item) => sum + item.value, 0);
+    const assetChartData = assetPercentageData.map(item => ({
+        ...item,
+        value: item.displayValue!, // Use display value for chart rendering
+        totalOriginalValue: totalAssetValue
+    }));
 
     const vmChartConfig = {
         btc: {
@@ -313,10 +405,10 @@ const Analyze = () => {
                                                 <PieChart>
                                                     <ChartTooltip
                                                         cursor={false}
-                                                        content={<ChartTooltipContent hideLabel />}
+                                                        content={CustomChartTooltip(true)}
                                                     />
                                                     <Pie
-                                                        data={vmData}
+                                                        data={vmChartData}
                                                         dataKey="value"
                                                         nameKey="name"
                                                         innerRadius={"60%"}
@@ -328,7 +420,7 @@ const Analyze = () => {
 
                                             <div className="">
                                                 <CustomLegend
-                                                    data={vmData}
+                                                    data={vmDataRaw}
                                                     config={vmChartConfig}
                                                 />
                                             </div>
@@ -345,10 +437,10 @@ const Analyze = () => {
                                                 <PieChart>
                                                     <ChartTooltip
                                                         cursor={false}
-                                                        content={<ChartTooltipContent hideLabel />}
+                                                        content={CustomChartTooltip(true)}
                                                     />
                                                     <Pie
-                                                        data={assetData}
+                                                        data={assetChartData}
                                                         dataKey="value"
                                                         nameKey="name"
                                                         innerRadius={"60%"}
@@ -359,7 +451,7 @@ const Analyze = () => {
                                             </ChartContainer>
 
                                             <CustomLegend
-                                                data={assetData}
+                                                data={assetDataRaw}
                                                 config={assetChartConfig}
                                             />
                                         </div>
@@ -428,7 +520,8 @@ const Analyze = () => {
                                         <Link
                                             state={{
                                                 selectedUploadIds: selectedUploadIds,
-                                                chain: "evm_chains"
+                                                chain: "evm_chains",
+                                                analyzeData: analyzeData  // Pass the complete analyze data
                                             }}
                                             to={`/dashboard/uploads/${id}/analyze/evm-chains`}
                                         >
@@ -465,7 +558,8 @@ const Analyze = () => {
                                                 <Link
                                                     state={{
                                                         selectedUploadIds: selectedUploadIds,
-                                                        chain: "sol_chains"
+                                                        chain: "sol_chains",
+                                                        analyzeData: analyzeData  // Pass the complete analyze data
                                                     }}
                                                     to={`/dashboard/uploads/${id}/analyze/evm-chains`}
                                                 >
@@ -504,7 +598,8 @@ const Analyze = () => {
                                                 <Link
                                                     state={{
                                                         selectedUploadIds: selectedUploadIds,
-                                                        chain: "btc_chains"
+                                                        chain: "btc_chains",
+                                                        analyzeData: analyzeData  // Pass the complete analyze data
                                                     }}
                                                     to={`/dashboard/uploads/${id}/analyze/evm-chains`}
                                                 >

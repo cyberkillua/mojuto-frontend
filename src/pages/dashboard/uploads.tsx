@@ -50,6 +50,7 @@ const Upload = () => {
         }),
     });
 
+    console.log(uploads);
 
     // Bulk delete mutation
     const bulkDeleteMutation = useMutation({
@@ -103,16 +104,68 @@ const Upload = () => {
         );
     };
 
-    // const handleBulkAnalyze = () => {
-    //     if (selectedUploadIds.length === 0) {
-    //         toast.error("Please select uploads to analyze");
-    //         return;
-    //     }
+    // Define types for better type safety
+    interface Wallet {
+        id: string;
+        address: string;
+        organizationId: string | null;
+        userId: string;
+        uploadId: string;
+        chain: string;
+        createdAt: string;
+        updatedAt: string;
+    }
 
-    //     // Navigate to analysis page with selected upload IDs
-    //     const idsParam = selectedUploadIds.join(',');
-    //     navigate(`/dashboard/analyze?uploads=${idsParam}`);
-    // };
+    interface Upload {
+        id: string;
+        fileName: string;
+        fileSize: number;
+        noOfWallets: number;
+        organizationId: string | null;
+        userId: string;
+        createdAt: string;
+        updatedAt: string;
+        wallets: Wallet[];
+    }
+
+    interface AnalyzePageState {
+        walletAddresses: string[];
+        // selectedUploadIds: string[];
+    }
+
+    const handleBulkAnalyze = (): void => {
+        if (selectedUploadIds.length === 0) {
+            toast.error("Please select uploads to analyze");
+            return;
+        }
+
+        // Get the selected uploads data
+        const selectedUploads: Upload[] = uploads?.data?.filter((upload: Upload) =>
+            selectedUploadIds.includes(upload.id)
+        ) || [];
+
+        // Extract all wallet addresses from the selected uploads
+        const allWalletAddresses: string[] = selectedUploads.reduce((addresses: string[], upload: Upload) => {
+            // Get wallet addresses from each upload's wallets array
+            const uploadWalletAddresses: string[] = upload.wallets?.map((wallet: Wallet) => wallet.address) || [];
+            return [...addresses, ...uploadWalletAddresses];
+        }, []);
+
+        // Remove duplicates (in case same wallet appears in multiple uploads)
+        const uniqueWalletAddresses: string[] = [...new Set(allWalletAddresses)];
+
+        console.log("Selected wallet addresses:", uniqueWalletAddresses);
+
+        // Navigate to analysis page with wallet addresses
+        const _state: AnalyzePageState = {
+            walletAddresses: uniqueWalletAddresses,
+            // selectedUploadIds: selectedUploadIds // Keep this if you also need the upload IDs
+        };
+
+        console.log("Analyze page state:", _state);
+
+        navigate(`/dashboard/uploads/${uploads?.data[1]?.id}/analyze`, { state: { selectedUploadIds: _state.walletAddresses } });
+    };
 
     // Loading state
     if (isUploadsLoading) {
@@ -122,6 +175,7 @@ const Upload = () => {
             </div>
         )
     }
+
 
     // Upload flow - can happen from any state (empty or with data)
     if (showUpload) {
@@ -197,15 +251,25 @@ const Upload = () => {
                 {selectedCount > 1 && (
                     <div className="bg-[#172228] w-fit mt-[1.7rem] px-[1.15rem] rounded-[1.7rem] py-[1.1rem]">
                         <p className="text-center text-[#D5F0FF] text-[1.3rem] mb-[1.5rem]">
-                            {selectedCount} Upload{selectedCount > 1 ? 's' : ''} Selected
+                            {selectedCount} wallet{selectedCount > 1 ? 's' : ''} Selected
                         </p>
-                        <Button
-                            onClick={handleBulkDelete}
-                            disabled={bulkDeleteMutation.isPending}
-                            className="px-[2rem] py-[1.5rem] w-full rounded-[2rem] text-[1rem] text-white bg-[#AF1100] hover:bg-[#8F0E00] flex items-center gap-[0.5rem]"
-                        >
-                            Delete
-                        </Button>
+
+                        <div className="flex gap-[1rem]">
+                            <Button
+                                onClick={handleBulkAnalyze}
+                                className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-[#18181A] bg-white hover:bg-gray-100"
+                                disabled={selectedCount === 0}
+                            >
+                                Analyze
+                            </Button>
+                            <Button
+                                onClick={handleBulkDelete}
+                                disabled={bulkDeleteMutation.isPending}
+                                className="px-[2rem] py-[1.5rem] rounded-[2rem] text-[1rem] text-white bg-[#AF1100] hover:bg-[#8F0E00] flex items-center gap-[0.5rem]"
+                            >
+                                Delete
+                            </Button>
+                        </div>
                     </div>
                 )}
             </div>
@@ -481,10 +545,10 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                             >
                                 <div className="">
                                     <p className={`${Array.isArray(invalidWallets) && invalidWallets.includes(item)
-                                            ? "text-[#E11D48]"
-                                            : editingIndex === i
-                                                ? "text-[#60A5FA]"
-                                                : "text-[#D5F0FF]"
+                                        ? "text-[#E11D48]"
+                                        : editingIndex === i
+                                            ? "text-[#60A5FA]"
+                                            : "text-[#D5F0FF]"
                                         } font-[400] text-[1.2rem]`}>
                                         {item}
                                         {editingIndex === i && <span className="text-[#60A5FA] ml-[0.5rem]">(editing)</span>}
@@ -499,8 +563,8 @@ const AddWallet = ({ onSuccess }: { onSuccess: () => void }) => {
                                 <div className="flex gap-[1rem]">
                                     <Button
                                         className={`${editingIndex === i
-                                                ? 'bg-[#6B7280] hover:bg-[#4B5563]'
-                                                : 'bg-[#FFFFFF] hover:bg-white'
+                                            ? 'bg-[#6B7280] hover:bg-[#4B5563]'
+                                            : 'bg-[#FFFFFF] hover:bg-white'
                                             } rounded-full cursor-pointer size-[3.5rem]`}
                                         onClick={() => editingIndex === i ? cancelEdit() : editWallet(i)}
                                         title={editingIndex === i ? "Cancel edit" : "Edit wallet"}

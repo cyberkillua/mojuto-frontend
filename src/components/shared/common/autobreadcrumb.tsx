@@ -46,6 +46,7 @@ export const AutoBreadcrumb: React.FC<AutoBreadcrumbProps> = ({
 }) => {
   const location = useLocation();
   const { state } = location;
+  console.log(state);
 
 
   // Memoize the configuration to prevent unnecessary re-renders

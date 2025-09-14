@@ -134,8 +134,6 @@ const Upload = () => {
         });
     };
 
-    console.log("Row Selection:", rowSelection);
-    console.log("Selected Wallet Addresses:", selectedWalletAddresses);
 
     if (error) {
         return (
@@ -191,7 +189,7 @@ const Upload = () => {
                 <div className="flex mt-[3rem] justify-between items-center">
                     <Input
                         className="w-[27rem] h-[4rem] bg-white rounded-[2rem] pl-[1.8rem] placeholder:text-[1.3rem] placeholder:text-[#9CA3AF] !text-[1.3rem]"
-                        placeholder="Search Uploads"
+                        placeholder="Search Wallets"
                         disabled={isLoading}
                     />
                     <Button
