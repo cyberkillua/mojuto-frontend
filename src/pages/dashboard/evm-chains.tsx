@@ -195,12 +195,13 @@ const MultiChainAnalytics = () => {
             stableCoin: formatToDollars(chain.stablecoinValue),
             stableCoinTokens: stablecoinTokens.length > 0 ? stablecoinTokens : undefined,
             allValue: formatToDollars(chain.altcoinValue),
-            altCoinTokens: altcoinTokens.length > 0 ? altcoinTokens : undefined,
+            altCoinToken:  altcoinTokens,
             nativeValue: formatToDollars(chain.nativeValue),
             nativeToken: nativeToken || undefined,
             NFTValue: formatToDollars(chain.nftValue),
             nftCount: walletAssetDetails?.nft_count || 0,
             totalValue: formatToDollars(chain.totalValue),
+            wet: "",
         };
     }) || [];
 
@@ -231,6 +232,7 @@ const MultiChainAnalytics = () => {
                         nft: formatToDollars(wallet.nft_usd || 0).replace('$', ''),
                         nftCount: walletAssetDetail?.nft_count?.toString() || "0",
                         altcoin: formatToDollars(wallet.altcoin_usd || 0).replace('$', ''),
+                        altcoinToken: walletAssetDetail?.altcoin_held || "",
                         altcoinCount: walletAssetDetail?.altcoin_held ?
                             walletAssetDetail.altcoin_held.split(',').length.toString() : "0",
                         totalValue: formatToDollars(wallet.total_value || 0).replace('$', ''),

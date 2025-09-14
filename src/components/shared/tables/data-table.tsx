@@ -143,7 +143,7 @@ export function DataTable<TData, TValue>({
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className={`
-                      text-[#D5F0FF] !border-0 text-[1.2rem] data-[state=selected]:bg-transperent transition-colors
+                      text-[#D5F0FF] !border-0 text-[1.2rem] data-[state=selected]:bg-transperent !align-top transition-colors
                       ${rowClickable ? rowClickStyle : 'hover:bg-transparent'}
                       ${rowClickable ? rowHoverStyle : ''}
                     `}
@@ -152,7 +152,7 @@ export function DataTable<TData, TValue>({
                     {row.getVisibleCells().map((cell, idx) => (
                       <TableCell
                         key={cell.id}
-                        className={`${idx == 3 ? "px-[2rem] w-[4rem]" : "px-[2rem] py-[1.7rem]"} border-r border-r-[#192830]`}
+                        className={`${idx == 3 ? "px-[2rem] w-[4rem]" : "px-[2rem] py-[1.7rem]"} border-r !align-top border-r-[#192830]`}
                         onClick={(e) => handleCellClick(e, cell.column.id)}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

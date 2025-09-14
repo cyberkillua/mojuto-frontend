@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 // import { ColumnDef } from "@tanstack/react-table";
-// import { formatToDollars } from "@/utils/formatamount";
+import { formatToDollars } from "@/utils/formatamount";
 
 // Portfolio data type
 export interface PortfolioData {
@@ -25,11 +25,7 @@ export interface PortfolioData {
     nftCount: string;
     altcoin: string;
     altcoinCount: string;
-    altcoinTokens?: Array<{
-        symbol: string;
-        amount: number;
-        value: string;
-    }>;
+    altcoinTokens?: string;
     totalValue: string;
     style: string;
     riskLevel: string;
@@ -67,11 +63,16 @@ export const portfolioColumns = (showDetails: boolean) => {
 
                 return (
                     <div className="text-right">
-                        <div className="text-[#8EA2AD] text-start max-w-[8rem] text-[1.3rem]">
-                            {row.original.nativeToken}
-                        </div>
-                        {showDetails && <div className="text-[1.3rem] text-start">(${value})</div>}
-                    </div>
+                        {
+                            showDetails ? (
+                                <div className="text-[1.3rem] text-center">${value}</div>
+                            ) : (
+                                <div className="text-[#8EA2AD] text-start max-w-[8rem] text-[1.3rem]">
+                                    {row.original.nativeToken}
+                                </div>
+                            )
+                        }
+                    </div >
                 );
             },
         },
@@ -79,23 +80,26 @@ export const portfolioColumns = (showDetails: boolean) => {
             accessorKey: "stablecoin",
             header: "Stablecoin ($)",
             cell: ({ row }: any) => {
-                // const value = row.getValue("stablecoin") as string;
                 const stablecoinTokensList = row.original.stablecoinTokens.split(',');
-
 
                 return (
                     <div className="text-right">
-                        {/* <div className="text-[#D5F0FF] text-[1.3rem] font-medium">${value}</div> */}
-                        <div className="text-[#8EA2AD] text-start !whitespace-normal  text-[1.1rem]">
-                            {
-                                stablecoinTokensList.map((token: any, idx: any) => (
-                                    <p key={idx} className={`text-[1.2rem] mt-[.2rem]`}>
-                                        {token.length > 0 ? token : 'No stablecoins'}
-                                        {/* <span className="block">({formatToDollars(row.original.stablecoin)})</span> */}
-                                    </p>
-                                ))
-                            }
-                        </div>
+                        {
+                            showDetails ? (
+                                <div className="text-[#8EA2AD] text-start !whitespace-normal  text-[1.1rem]">
+                                    {
+                                        stablecoinTokensList.map((token: any, idx: any) => (
+                                            <p key={idx} className={`text-[1.2rem] mt-[.2rem]`}>
+                                                {token.length > 0 ? token : 'No stablecoins'}
+
+                                            </p>
+                                        ))
+                                    }
+                                </div>
+                            ) : (
+                                <p className="text-center">{formatToDollars(row.original.stablecoin)}</p>
+                            )
+                        }
                     </div>
                 );
             },
@@ -120,36 +124,26 @@ export const portfolioColumns = (showDetails: boolean) => {
             header: "Altcoin ($)",
             cell: ({ row }: any) => {
                 const value = row.getValue("altcoin") as string;
-                const altcoinTokens = row.original.altcoinTokens;
-                // const hasAltcoins = parseFloat(value) > 0;
+                const altcoinsTokenList = row.original.altcoinToken.split(',');
 
                 return (
                     <div className="text-right">
-                        <div>
-                            ${value}
-                            {/* {hasAltcoins && <span className="ml-1 text-[#7EF9FF] text-[1rem]">●</span>} */}
-                        </div>
-                        {altcoinTokens && altcoinTokens.length > 0 ? (
-                            <div className="text-[#8EA2AD] text-[1.1rem] space-y-1">
-                                {altcoinTokens.slice(0, 3).map((token: any, index: any) => (
-                                    <div key={index} className="flex justify-end items-center gap-1">
-                                        <span className="">
-                                            {token.symbol}
-                                        </span>
-                                        {/* <span>{token.amount.toFixed(4)}</span> */}
-                                    </div>
-                                ))}
-                                {/* {altcoinTokens.length > 3 && (
-                                <div className="">
-                                    +{altcoinTokens.length - 3} more
+                        {
+                            showDetails ? (
+                                <div className="text-[#8EA2AD] text-start !whitespace-normal  text-[1.1rem]">
+                                    {
+                                        altcoinsTokenList.map((token: any, idx: any) => (
+                                            <p key={idx} className={`text-[1.2rem] mt-[.2rem]`}>
+                                                {token.length > 0 ? token : 'No stablecoins'}
+
+                                            </p>
+                                        ))
+                                    }
                                 </div>
-                            )} */}
-                            </div>
-                        ) : (
-                            <div className="text-[#8EA2AD] text-[1.1rem]">
-                                {/* <span className="text-[#7EF9FF]">Tokens:</span> {row.original.altcoinCount} */}
-                            </div>
-                        )}
+                            ) : (
+                                <p className="">{value}</p>
+                            )
+                        }
                     </div>
                 );
             },

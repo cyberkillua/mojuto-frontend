@@ -121,7 +121,6 @@ const Analyze = () => {
     const state = location.state as { selectedUploadIds: string[] } | null;
     const selectedUploadIds = state?.selectedUploadIds || [];
 
-    console.log("Selected Upload IDs in Analyze Page:", selectedUploadIds);
     const { id } = useParams();
 
     const {
