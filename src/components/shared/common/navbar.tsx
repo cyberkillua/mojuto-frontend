@@ -17,7 +17,7 @@ const Nav = () => {
     ]
 
     return (
-        <nav className=" sm:px-[7rem] px-[2rem] py-[2rem] w-full">
+        <nav className="sm:px-[7rem] px-[2rem] py-[2rem] w-full">
             <div className="max-w-[1920px] mx-auto w-full flex justify-between items-center">
                 <Logo />
                 <div className="flex  sm:gap-x-[2rem] gap-x-[1.5rem]nav items-center">
