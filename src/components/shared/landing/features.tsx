@@ -23,7 +23,7 @@ const Features = () => {
 
     return ( 
         <section className="">
-
+            
         </section>
      );
 }
