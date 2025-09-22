@@ -35,7 +35,7 @@ const Features = () => {
                 {
                     features.map((item, index) => (
                         <div
-                            className=" sm:pt-[8.3rem] sm:rounded-[2rem] sm:data-[islast=true]:col-span-2 sm:data-[islast=true]:h-[56rem] sm:px-[4rem] bg-[url(/common/card-bg.png)] data-[islast=true]:bg-[url(/common/last-card-bg.png),url(/common/starlight.png)] data-[islast=true]:bg-contain bg-no-repeat data-[islast=true]:bg-[position:center,bottom_right] bg-[#010F10] sm:pb-[4rem]"
+                            className=" sm:pt-[8.3rem] sm:rounded-[2rem] sm:data-[islast=true]:col-span-2 sm:data-[islast=true]:h-[56rem] sm:px-[4rem] bg-[url(/common/card-bg.png)] data-[islast=true]:bg-[url(/common/last-card-bg.png),url(/common/starlight.png)] data-[islast=true]:bg-contain bg-no-repeat data-[islast=true]:bg-[position:center,100%_-60%] bg-[#010F10] sm:pb-[4rem]"
                             key={index}
                             data-islast={index === features.length - 1}
                         >

@@ -7,22 +7,22 @@ import Actions from "@/components/shared/landing/action";
 import CTA from "@/components/shared/landing/cta";
 import Offer from "@/components/shared/landing/offer";
 import Footer from "@/components/shared/landing/footer";
-
+import MaxContainer from "@/components/shared/common/maxcontainer";
 
 const Home = () => {
     return (
-        <div className="bg-[#000000] min-h-[100vh]">
-            <div
-                className="bg-[url(/common/globe_flare.png)] bg-contain bg-no-repeat bg-center"
+        <div className="bg-[#000000]">
+            <MaxContainer
+                className="bg-[url(/common/globe_flare.png),url(/common/coins.png)] bg-contain bg-no-repeat bg-center"
                 style={{
-                    backgroundPosition: 'center center',
+                    backgroundPosition: 'center center, top center',
                     backgroundSize: '100% auto',
                 }}
             >
                 <Nav />
                 <Hero />
                <UseCase />
-            </div>
+            </MaxContainer>
             <Features />
             <Actions />
             <CTA />
