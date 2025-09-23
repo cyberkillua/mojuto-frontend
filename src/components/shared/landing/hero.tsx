@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 const Hero = () => {
     return (
         <section className="flex flex-col ">
-            <h1 className="text-[5.5rem] mt-[17rem] text-[#FFFFFF] font-[400] mx-auto text-center w-[50rem]">
+            <h1 className="sm:text-[5.5rem] text-[3rem] sm:mt-[17rem] mt-[10rem] text-[#FFFFFF] font-[400] mx-auto text-center sm:w-[50rem] w-[27rem]">
                 Analyze wallets across EVM, Bitcoin & Solana Chains.
             </h1>
 

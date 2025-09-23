@@ -11,11 +11,11 @@ import MaxContainer from "@/components/shared/common/maxcontainer";
 
 const Home = () => {
     return (
-        <div className="bg-[#000000]">
+        <div className="bg-[#000000] w-[100vw] overflow-x-hidden">
             <MaxContainer
-                className="bg-[url(/common/globe_flare.png),url(/common/coins.png)] bg-contain bg-no-repeat bg-center"
+                className="sm:bg-[url(/common/coins.png),url(/common/globe_flare.png)] bg-contain bg-no-repeat bg-center"
                 style={{
-                    backgroundPosition: 'center center, top center',
+                    backgroundPosition: 'top center, center center',
                     backgroundSize: '100% auto',
                 }}
             >
@@ -24,9 +24,9 @@ const Home = () => {
                <UseCase />
             </MaxContainer>
             <Features />
+            <Offer />
             <Actions />
             <CTA />
-            <Offer />
             <Footer />
         </div>
     );
