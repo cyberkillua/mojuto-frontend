@@ -1,4 +1,3 @@
-import DashboardHome from "./dashboard/dashboard-home";
 import Nav from "@/components/shared/landing/navbar";
 import Hero from "@/components/shared/landing/hero";
 import UseCase from "@/components/shared/landing/use-case";
@@ -13,11 +12,8 @@ const Home = () => {
     return (
         <div className="bg-[#000000] w-[100vw] overflow-x-hidden">
             <MaxContainer
-                className="sm:bg-[url(/common/coins.png),url(/common/globe_flare.png)] bg-contain bg-no-repeat bg-center"
-                style={{
-                    backgroundPosition: 'top center, center center',
-                    backgroundSize: '100% auto',
-                }}
+                className="sm:bg-[url(/common/coins.png),url(/common/globe_flare.png)] bg-no-repeat sm:bg-[position:top_center,center_center] bg-[url(/common/coins_sm.png),url(/common/flare_mobile.png)] sm:bg-[length:100%_auto] bg-[length:150%_auto] bg-[position:center_top]"
+                
             >
                 <Nav />
                 <Hero />
@@ -32,4 +28,4 @@ const Home = () => {
     );
 }
 
-export default Home; DashboardHome
+export default Home; 

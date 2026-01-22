@@ -24,7 +24,7 @@ const UseCase = () => {
     ]
 
     return (
-        <div className="sm:mt-[50rem] mt-[15rem] sm:px-[7rem] px-[2rem]">
+        <div className="sm:mt-[50rem] mt-[25rem] sm:px-[7rem] px-[2rem]">
             <MaxContainer className="flex flex-col justify-between sm:flex-row gap-[5rem]">
                 {
                     useCases.map((item, index) => {

@@ -2,6 +2,7 @@ import People from "@/components/shared/icons/people";
 import MaxContainer from "../common/maxcontainer";
 import Folder from "@/components/shared/icons/folder";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Features = () => {
     const features = [
@@ -66,9 +67,12 @@ const Features = () => {
                                 {
                                     index == 2 && (
                                         <Button
-                                            className="bg-white px-[3.6rem] sm:mt-[4rem] mt-[3rem] py-[2rem] text-[#030712] rounded-[3rem]"
+                                            asChild
+                                            className="bg-white hover:bg-transparent hover:border-[1.5px] hover:border-[#7EF9FF] hover:text-[#7EF9FF] px-[3.6rem] text-[1.2rem] sm:mt-[4rem] mt-[3rem] py-[2rem] text-[#030712] rounded-[3rem]"
                                         >
-                                            TRY MOJUTO
+                                            <Link to="/dashboard">
+                                                TRY MOJUTO
+                                            </Link>
                                         </Button>
                                     )
                                 }

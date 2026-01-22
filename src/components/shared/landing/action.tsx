@@ -8,6 +8,8 @@ const Actions = () => {
             <img
                 src="/common/_dash.png"
                 alt="dashboard"
+                loading="lazy"
+                decoding="async"
                 className="max-w-[94rem] w-full mx-auto sm:mt-[6rem] mt-[2.1rem]"
             />
         </section>
