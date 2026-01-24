@@ -1,88 +1,89 @@
-import People from "@/components/shared/icons/people";
 import MaxContainer from "../common/maxcontainer";
-import Folder from "@/components/shared/icons/folder";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
 
 const Features = () => {
-    const features = [
-        {
-            icons: <People className="sm:w-[36rem] w-[26rem] h-[100%]" />,
-            title: "Enterprise Collaboration",
-            pargragh: "Manage up to 1000 wallets, get instant insights.",
-        },
-        {
-            icons: <Folder className="sm:w-[25rem] w-[17rem] h-[100%]" />,
-            title: "Periodic Onchain Statement",
-            pargragh: "Compare wallets 1v1, 2v2, or bulk vs bulk.",
-        },
-        {
-            icons: "",
-            title: <>Multi-Chain <br></br> Support</>,
-            pargragh: "Analyze thousands of wallets at once across multiple chains ",
-        },
-
-    ]
 
     return (
         <section
-            className="sm:mt-[13rem] sm:px-[7rem] px-[2.5rem] mt-[7rem]"
+            className="sm:px-[7rem] px-[2.5rem]"
         >
-            <h2 className="sm:text-[1.3rem] text-[1rem] text-center text-[#7EF9FF]">Experiment</h2>
-            <h3 className="text-center sm:text-[3.4rem] text-[2.4rem] text-white font-[400]">Features</h3>
-            <MaxContainer
-                className="grid sm:grid-cols-2 sm:mt-[6rem] mt-[2rem] gap-[2rem] sm:gap-[3rem]"
-            >
-                {
-                    features.map((item, index) => (
-                        <div
-                            className=" sm:pt-[8.3rem] rounded-[2rem] sm:data-[islast=true]:col-span-2 sm:data-[islast=true]:h-[56rem] data-[islast=true]:h-[50rem] sm:px-[4rem] px-[1.8rem] bg-[url(/common/card-bg.png)] sm:data-[islast=true]:text-start data-[islast=true]:text-center data-[islast=true]:bg-[url(/common/last-card-bg.png),url(/common/starlight.png)] sm:data-[islast=true]:bg-[length:100%,50%_100%] data-[islast=true]:bg-contain bg-no-repeat data-[islast=true]:bg-[position:center,right_23rem] sm:data-[islast=true]:bg-[position:center,right_10rem] bg-[#010F10] sm:pb-[4rem] pb-[2rem]"
-                            key={index}
-                            data-islast={index === features.length - 1}
-                        >
-                            {
-                                index !== 2 && (
-                                    <div className="h-[35rem] mx-auto w-fit">
-                                        {item.icons}
-                                    </div>
-                                )
-                            }
-                            <div
-                                className="sm:w-[39rem] data-[islast=true]:mt-[2rem] sm:data-[islast=true]:mt-[6rem]"
-                                data-islast={index === features.length - 1}
-                            >
-                                <h2
-                                    className="sm:text-[2.8rem] text-[2.4rem] text-[#FFFFFF] sm:data-[islast=true]:text-[3.2rem] data-[islast=true]:text-[2.2rem]"
-                                    data-islast={index === features.length - 1}
-                                >
-                                    {item.title}
-                                </h2>
-                                <p
-                                    className="sm:text-[1.6rem] data-[islast=true]:text-center sm:data-[islast=true]:text-start text-[1.2rem] w-[23rem] sm:w-[22rem] sm:mt-[1.5rem] sm:data-[islast=true]:w-[28rem] data-[islast=true]:mx-auto sm:data-[islast=true]:mx-0 mt-[1rem] text-[#B2D5E9]"
-                                    data-islast={index === features.length - 1}
-                                >
-                                    {item.pargragh}
-                                </p>
 
-                                {
-                                    index == 2 && (
-                                        <Button
-                                            asChild
-                                            className="bg-white hover:bg-transparent hover:border-[1.5px] hover:border-[#7EF9FF] hover:text-[#7EF9FF] px-[3.6rem] text-[1.2rem] sm:mt-[4rem] mt-[3rem] py-[2rem] text-[#030712] rounded-[3rem]"
-                                        >
-                                            <Link to="/dashboard">
-                                                TRY MOJUTO
-                                            </Link>
-                                        </Button>
-                                    )
-                                }
-                            </div>
-                        </div>
-                    ))
-                }
+            <MaxContainer
+                className="mt-[10rem]"
+            >
+                <h2 className="font-[400] text-[2.6rem] text-white">Features</h2>
+
+                <div className="grid sm:grid-cols-2 gap-[2rem] sm:mt-[3rem] sm:gap-[3rem]">
+                    <EnterpriseCollaboration />
+                    <PeriodicOnchainStatement />
+                    <MultiChainSupport />
+                </div>
             </MaxContainer>
         </section>
     );
+}
+
+interface Feature {
+    icons?: React.ReactNode;
+    title?: string | React.ReactNode;
+    pargragh?: string;
+    classNames?: string;
+}
+
+const EnterpriseCollaboration = () => {
+    return (
+        <div className="rounded-[2rem] bg-[url(/common/card-bg.png)] px-[3rem] py-[2.5rem]">
+            <img
+                src="/common/enterprise-collaboration.svg"
+                alt="enterprise-collaboration"
+                className="size-[38rem] mx-auto"
+            />
+            <FeatureContent
+                title="Enterprise Collaboration"
+                pargragh="Share wallet analytics and reports across your team.Collaborate on portfolio tracking, enable multi-user workspaces & maintain unified visibility across organizational wallets."
+                classNames="max-w-[39rem] mt-[4rem]"
+            />
+        </div>
+    )
+}
+
+const PeriodicOnchainStatement = () => {
+    return (
+        <div className="rounded-[2rem] bg-[url(/common/card-bg.png)] px-[3rem] pb-[2.5rem]">
+            <img
+                src="/common/periodic-onchain-statement.png"
+                alt="periodic-onchain-statement"
+                className="h-[38rem] mx-auto"
+            />
+            <FeatureContent
+                title="Periodic Onchain Statement"
+                pargragh="Monthly reports summarizing your onchain activity, including DEX/CEX volumes, transaction statistics, chains & protocols interacted with, gas spent, & key portfolio metrics. "
+                classNames="max-w-[34rem] mt-[4rem]"
+            />
+        </div>
+    )
+}
+
+const MultiChainSupport = () => {
+    return (
+        <div className="flex items-center col-span-2 bg-[url(/common/card-bg.png)] bg-no-repeat bg-[length:100%_100%] rounded-[3rem] justify-between border px-[3rem]">
+            <FeatureContent
+                title="Multi-Chain Support"
+                pargragh="Track and analyze wallet activity across multiple blockchains from a single dashboard. "
+                classNames=""
+            />
+
+            <img src="/common/multi-chain-support.svg" alt="multi-chain-support" className="size-[61rem]" />
+        </div>
+    )
+}
+
+const FeatureContent = ({ title, pargragh, classNames = "" }: Feature) => {
+    return (
+        <div className={classNames}>
+            <h3 className="text-[#FFFFFF] text-[2rem] font-[400]">{title}</h3>
+            <p className="text-[#7C8E97] text-[1.3rem] mt-[.4rem] font-[400]">{pargragh}</p>
+        </div>
+    )
 }
 
 export default Features;

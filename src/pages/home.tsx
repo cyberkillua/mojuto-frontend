@@ -13,7 +13,7 @@ const Home = () => {
     return (
         <div className="bg-[#000000] w-[100vw] overflow-x-hidden">
             <MaxContainer
-                className="bg-[url(/common/mojuto-hero-bg.png)] max-w-[1440px] mx-auto h-[988px] bg-size-[length:100%_100%] bg-no-repeat bg-center relative"
+                className="bg-[url(/common/mojuto-hero-bg.png)] max-w-[1440px] mx-auto h-[98rem] bg-size-[length:100%_100%] bg-no-repeat bg-center relative"
             >
                 <Nav />
                 <Hero />
