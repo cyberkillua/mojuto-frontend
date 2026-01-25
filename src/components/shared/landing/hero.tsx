@@ -11,32 +11,32 @@ const Hero = () => {
     const coins: Coins[] = [
         {
             image: "/common/btc.png",
-            classname: "top-[5rem] left-[6.8rem] rotate-[-20deg] size-[31rem]",
+            classname: "sm:top-[5rem] sm:left-[6.8rem] sm:rotate-[-20deg] sm:size-[31rem] left-[-6.7rem] top-[18rem] size-[16rem]",
             name: "BTC"
         },
         {
             image: "/common/binance.png",
-            classname: "size-[17rem] top-[53rem] rotate-37 left-[10rem]",
+            classname: "size-[17rem] top-[53rem] rotate-37 hidden sm:block left-[10rem]",
             name: "Binance"
         },
         {
             image: "/common/lite.png",
-            classname: "size-[17rem] top-[66rem] left-[38rem] rotate-19",
+            classname: "sm:size-[17rem] size-[12rem] sm:top-[66rem] top-[37rem] sm:left-[38rem]  rotate-19",
             name: "Litecoin"
         },
         {
             image: "/common/stellar.png",
-            classname: "size-[15rem] top-[77rem]  left-[76rem] rotate-[-12deg]",
+            classname: "sm:size-[15rem] size-[6.8rem] sm:top-[77rem] top-[47rem]  sm:left-[76rem] left-[15.7rem] rotate-[-12deg]",
             name: "Stellar"
         },
         {
             image: "/common/eth.png",
-            classname: "size-[19rem] top-[54rem] left-[97rem] rotate-[-22deg]",
+            classname: "sm:size-[19rem] size-[8.7rem] sm:top-[54rem] top-[38rem] sm:left-[97rem] left-[28rem] rotate-[-22deg]",
             name: "Ethereum"
         },
         {
             image: "/common/cardano.png",
-            classname: "size-[22rem] top-[18.5rem] left-[104rem] rotate-[-27deg]",
+            classname: "sm:size-[22rem] size-[10.2rem] sm:top-[18.5rem] top-[22.8rem] sm:left-[104rem] left-[32rem] rotate-[-27deg]",
             name: "Cardano"
         },
 

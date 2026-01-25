@@ -55,11 +55,19 @@ const Nav = () => {
                 </div>
 
                 <Button
-                    className="bg-white size-[4rem] sm:hidden relative z-[102] shrink-0 items-end justify-center rounded-full flex flex-col gap-[.6rem]"
+                    className="bg-[#7EF4FF1A] size-[4rem] sm:hidden relative z-[102] shrink-0 rounded-full flex flex-col items-end"
                     onClick={ToggleNavOpen}
                 >
-                    <div className="w-full h-[.15rem] bg-[#000000]" />
-                    <div className="w-[60%] h-[.15rem] bg-[#000000]" />
+                    <span
+                        className={`absolute h-[.15rem] w-[50%] bg-[#7EF4FF] transition-all duration-300 ${
+                            isOpen ? "rotate-45" : "-translate-y-[.35rem]"
+                        }`}
+                    />
+                    <span
+                        className={`absolute h-[.15rem] w-[30%] bg-[#7EF4FF] transition-transform duration-300 ${
+                            isOpen ? "-rotate-45 w-[50%]" : "translate-y-[.35rem]"
+                        }`}
+                    />
                 </Button>
             </div>
         </nav>

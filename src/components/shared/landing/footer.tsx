@@ -2,14 +2,14 @@ import MaxContainer from "../common/maxcontainer";
 
 const Footer = () => {
     return (
-        <footer className="sm:px-[7rem] px-[2rem] mt-[20rem] sm:pb-[6rem] pb-[5rem]">
+        <footer className="sm:px-[7rem] px-[2rem] bg-[url(/common/footer-bg-mobile.png)] sm:bg-[url(/common/footer-bg.png)] bg-no-repeat bg-[length:100%_100%] pt-[4rem] sm:mt-[20rem] mt-[7rem] sm:pb-[6rem] pb-[5rem]">
             <MaxContainer>
                 <div className="flex flex-col sm:flex-row justify-between">
-                    <p className="text-[#7EF9FF] sm:text-[3.2rem] text-[2.8rem]">
-                        Analyze Wallets
-                        <br></br>
-                        Satisfied BS
-                    </p>
+                    <img
+                        src="/common/footer-logo.png"
+                        alt="mojuto-logo"
+                        className="size-[26rem] mx-auto sm:mx-0"
+                    />
 
                     <div className="grid sm:grid-cols-3 mt-[6.6rem] sm:mt-0 grid-cols-2 sm:gap-[7rem]">
                         {
@@ -79,41 +79,38 @@ const Footer = () => {
                         }
                     </div>
                 </div>
-                <div className="flex justify-between sm:mt-[6.8rem] items-center">
-                    <p className="text-[1.6rem] text-[#637A7A] hidden sm:block">2025 Mojuto</p>
 
-                    <div className="grid grid-cols-4 sm:gap-[2.5rem] mt-[1.4rem] sm:mt-0 gap-[2.5rem]">
-                        {
-                            [
-                                {
-                                    link: "",
-                                    icon: "/common/in.svg",
-                                },
-                                {
-                                    link: "",
-                                    icon: "/common/x.svg",
-                                },
-                                {
-                                    link: "",
-                                    icon: "/common/github.svg",
-                                },
-                                {
-                                    link: "",
-                                    icon: "/common/ig.svg",
-                                },
+                <div className="grid grid-cols-4 w-[17rem] ml-auto sm:gap-[2.5rem] mt-[1.4rem] sm:mt-0 gap-[2.5rem]">
+                    {
+                        [
+                            {
+                                link: "",
+                                icon: "/common/in.svg",
+                            },
+                            {
+                                link: "",
+                                icon: "/common/x.svg",
+                            },
+                            {
+                                link: "",
+                                icon: "/common/github.svg",
+                            },
+                            {
+                                link: "",
+                                icon: "/common/ig.svg",
+                            },
 
-                            ].map((item, index) => (
-                                <a href={item.link} className="size-fit">
-                                    <img
-                                        src={item.icon}
-                                        alt="social icon"
-                                        key={index}
-                                        className="size-[1.5rem]"
-                                    />
-                                </a>
-                            ))
-                        }
-                    </div>
+                        ].map((item, index) => (
+                            <a href={item.link} className="size-fit">
+                                <img
+                                    src={item.icon}
+                                    alt="social icon"
+                                    key={index}
+                                    className="size-[1.5rem]"
+                                />
+                            </a>
+                        ))
+                    }
                 </div>
             </MaxContainer>
         </footer>

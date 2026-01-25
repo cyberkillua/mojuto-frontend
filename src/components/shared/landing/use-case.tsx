@@ -30,7 +30,7 @@ const UseCase = () => {
                                 <div>
                                     {item.icons}
                                 </div>
-                                <p className="font-[400] text-[2rem] text-white text-center mx-auto max-w-[18rem] sm:max-w-[22rem]">{item.description}</p>
+                                <p className="font-[400] sm:text-[2rem] mt-[2.5rem] sm:mt-0 text-[1.6rem] text-white text-center mx-auto max-w-[18rem] sm:max-w-[22rem]">{item.description}</p>
                             </div>
                         )
                     })

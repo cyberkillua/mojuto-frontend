@@ -96,7 +96,7 @@ const Offer = () => {
                             >
                                 <div
                                     aria-hidden="true"
-                                    className="pointer-events-none h-[4.1rem] absolute top-[12px] bottom-[6px] left-0 rounded-[3rem] border border-[#253A46] bg-[#1D2A31] transition-[transform,width] duration-300 ease-out"
+                                    className="pointer-events-none sm:h-[4.1rem] h-[3.5rem] absolute sm:top-[12px] top-[8px] bottom-[6px] left-0 rounded-[3rem] border border-[#253A46] bg-[#1D2A31] transition-[transform,width] duration-300 ease-out"
                                     style={
                                         indicatorStyle
                                             ? {
@@ -133,13 +133,13 @@ const Offer = () => {
                                         className="sm:mt-[4rem] data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:duration-500"
                                     >
                                         <div className="mt-[2rem] items-center flex flex-col sm:flex-row justify-between">
-                                            <div className="">
+                                            <div className="w-full sm:w-fit">
                                                 {
                                                     item.offers.map((offer, index) => {
                                                         return (
                                                             <div
                                                                 key={index}
-                                                                className="flex border-b-[0.25px_solid] border-b [border-image:linear-gradient(90deg,rgba(255,255,255,0.12)_0%,rgba(0,234,255,0.6)_50.48%,rgba(255,255,255,0.12)_100%)_1]  w-[40rem] flex-col sm:py-[3rem] py-[2rem]"
+                                                                className="flex border-b-[0.25px_solid] border-b [border-image:linear-gradient(90deg,rgba(255,255,255,0.12)_0%,rgba(0,234,255,0.6)_50.48%,rgba(255,255,255,0.12)_100%)_1]  sm:w-[40rem] w-full flex-col sm:py-[3rem] py-[2rem]"
                                                             >
                                                                 <p className="text-[#7C8E97] text-[1.2rem] sm:text-[1.5rem]">{offer}</p>
                                                             </div>
@@ -150,7 +150,7 @@ const Offer = () => {
                                             <img
                                                 src={item.img}
                                                 alt={item.title}
-                                                className="mt-[2.5rem] sm:mt-0 sm:w-[67rem] w-full sm:h-auto sm:rounded-[5rem] rounded-[3rem] h-[30rem]"
+                                                className="mt-[2.5rem] sm:mt-0 sm:w-[67rem] w-full h-auto sm:rounded-[5rem] rounded-[3rem]"
                                             />
                                         </div>
                                     </TabsContent>
