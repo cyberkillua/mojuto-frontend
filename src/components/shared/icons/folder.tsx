@@ -1,179 +1,105 @@
-const SVGComponent = ({
-  className,
-}: {
-  className?: string;
-}) => (
-  <svg
-    width={280}
-    height={348}
-    viewBox="0 0 280 348"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-  >
-    <foreignObject x={25.2783} y={17.875} width={234.517} height={339.128}>
-      <div
-        style={{
-          backdropFilter: "blur(5px)",
-          clipPath: "url(#bgblur_0_1397_34189_clip_path)",
-          height: "100%",
-          width: "100%",
-        }}
-      />
-    </foreignObject>
-    <path
-      data-figma-bg-blur-radius={10}
-      d="M249.342 27.875L249.796 217.039C249.828 228.555 241.724 242.592 231.702 248.378L52.3379 344.511C42.304 350.304 35.311 345.649 35.2783 334.133V154.346L142.971 90.6115C184.745 66.4931 207.568 51.9934 249.342 27.875Z"
-      fill="url(#paint0_linear_1397_34189)"
-      fillOpacity={0.2}
-    />
-    <g filter="url(#filter1_f_1397_34189)">
-      <path
-        d="M45.1838 280.354C74.9801 195.674 40.2425 204.574 50.7716 178.742C61.3007 152.911 175.246 85.2085 230.352 127.501C255.206 143.245 181.412 201.95 160.828 252.452C150.298 278.284 114.751 313.259 45.1838 280.354Z"
-        fill="#3AEFFF"
-      />
-    </g>
-    <g filter="url(#filter2_f_1397_34189)">
-      <path
-        d="M145.5 226.309C125.056 173.571 185.654 195.32 191.522 180.922C197.391 166.524 207.606 64.5045 230.063 78.7297C214.207 202.322 232.692 189.114 221.219 217.262C215.35 231.659 186.168 250.645 145.5 226.309Z"
-        fill="#B8FF71"
-      />
-    </g>
-    <path
-      d="M38.3576 344.665L21.3423 328.268C19.3184 326.374 18.9233 322.508 18.9132 316.785L35.458 332.819C35.4681 338.542 36.3337 342.771 38.3576 344.665Z"
-      fill="#00EAFF"
-      fillOpacity={0.2}
-    />
-    <path
-      d="M35.4956 332.835L18.8906 316.616L20.144 138.854L35.4956 154.799V332.835Z"
-      fill="#00EAFF"
-      fillOpacity={0.2}
-    />
-    <foreignObject x={7.34355} y={-12.1701} width={249.5} height={179.659}>
-      <div
-        style={{
-          backdropFilter: "blur(6.4px)",
-          clipPath: "url(#bgblur_1_1397_34189_clip_path)",
-          height: "100%",
-          width: "100%",
-        }}
-      />
-    </foreignObject>
-    <g data-figma-bg-blur-radius={12.8}>
-      <path
-        d="M223.496 1.85563L244.044 12.1928C240.743 10.2744 236.172 10.5437 231.128 13.4554L210.581 3.11825C215.624 0.206578 220.195 -0.0627664 223.496 1.85563Z"
-        fill="#00EAFF"
-        fillOpacity={0.14}
-      />
-      <path
-        d="M35.4065 154.689L20.1437 138.839L20.1436 131.506L35.4064 147.355L35.4065 154.689Z"
-        fill="#00EAFF"
-        fillOpacity={0.14}
-      />
-      <path
-        d="M53.5067 116.019L38.2438 100.169L210.594 3.12429L231.141 13.4614L53.5067 116.019Z"
-        fill="#00EAFF"
-        fillOpacity={0.14}
-      />
-      <path
-        d="M35.4065 147.358L20.1437 131.509C20.111 119.993 28.2032 105.963 38.2371 100.17L53.5 116.019C43.466 121.812 35.3739 135.843 35.4065 147.358Z"
-        fill="#00EAFF"
-        fillOpacity={0.14}
-      />
-    </g>
-    <foreignObject x={30.4014} y={5.96094} width={223.939} height={153.739}>
-      <div
-        style={{
-          backdropFilter: "blur(2.5px)",
-          clipPath: "url(#bgblur_2_1397_34189_clip_path)",
-          height: "100%",
-          width: "100%",
-        }}
-      />
-    </foreignObject>
-    <path
-      data-figma-bg-blur-radius={5}
-      d="M231.129 13.4493C241.151 7.66315 249.308 12.3117 249.341 23.8276V27.8633L35.4015 154.7V147.346C35.3688 135.83 43.461 121.8 53.4949 116.006L231.129 13.4493Z"
-      fill="#00EAFF"
-      fillOpacity={0.15}
-    />
-    <defs>
-      <clipPath
-        id="bgblur_0_1397_34189_clip_path"
-        transform="translate(-25.2783 -17.875)"
-      >
-        <path d="M249.342 27.875L249.796 217.039C249.828 228.555 241.724 242.592 231.702 248.378L52.3379 344.511C42.304 350.304 35.311 345.649 35.2783 334.133V154.346L142.971 90.6115C184.745 66.4931 207.568 51.9934 249.342 27.875Z" />
-      </clipPath>
-      <filter
-        id="filter1_f_1397_34189"
-        x={0.583717}
-        y={69.3268}
-        width={279.424}
-        height={269.007}
-        filterUnits="userSpaceOnUse"
-        colorInterpolationFilters="sRGB"
-      >
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feBlend
-          mode="normal"
-          in="SourceGraphic"
-          in2="BackgroundImageFix"
-          result="shape"
+const Folder = ({ className }: { className?: string }) => {
+  return (
+    <svg
+      width={259}
+      height={212}
+      viewBox="0 0 259 212"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+    >
+      <g filter="url(#filter0_f_1651_22858)">
+        <path
+          d="M44.5996 144.421C66.0281 58.408 63.3547 109.775 71.0858 87.3538C78.8169 64.9326 177.6 94.2221 203.325 87.3538C221.575 101.019 175.678 122.799 160.564 166.633C138.531 154.17 77.8826 167.123 44.5996 144.421Z"
+          fill="#3AEFFF"
         />
-        <feGaussianBlur
-          stdDeviation={22.3}
-          result="effect1_foregroundBlur_1397_34189"
+      </g>
+      <path
+        d="M29.4688 0.625H71.0205C73.0303 0.625 73.9913 0.631838 75.0098 0.973633C76.0436 1.32067 77.1634 2.02333 79.4023 3.5498L97.5205 18.7402V18.7412C100.73 21.4233 103.166 24.1885 107.89 24.1885H197.479C210.355 24.1885 220.872 34.5233 220.872 47.127V92.1455L191.26 177.635C190.371 180.202 187.953 181.923 185.236 181.923H18.4883L11.1738 180.429C8.20641 179.822 6.07528 177.211 6.0752 174.183V23.5635C6.07533 10.9599 16.5925 0.625 29.4688 0.625Z"
+        fill="#7EF4FF"
+        fillOpacity={0.1}
+        stroke="url(#paint0_linear_1651_22858)"
+        strokeWidth={1.25}
+      />
+      <foreignObject x={-15.7324} y={29.4219} width={288.054} height={177.8}>
+        <div
+          style={{
+            backdropFilter: "blur(12px)",
+            clipPath: "url(#bgblur_0_1651_22858_clip_path)",
+            height: "100%",
+            width: "100%",
+          }}
         />
-      </filter>
-      <filter
-        id="filter2_f_1397_34189"
-        x={96.7038}
-        y={32.7733}
-        width={177.959}
-        height={249.822}
-        filterUnits="userSpaceOnUse"
-        colorInterpolationFilters="sRGB"
-      >
-        <feFlood floodOpacity={0} result="BackgroundImageFix" />
-        <feBlend
-          mode="normal"
-          in="SourceGraphic"
-          in2="BackgroundImageFix"
-          result="shape"
-        />
-        <feGaussianBlur
-          stdDeviation={22.3}
-          result="effect1_foregroundBlur_1397_34189"
-        />
-      </filter>
-      <clipPath
-        id="bgblur_1_1397_34189_clip_path"
-        transform="translate(-7.34355 12.1701)"
-      >
-        <path d="M223.496 1.85563L244.044 12.1928C240.743 10.2744 236.172 10.5437 231.128 13.4554L210.581 3.11825C215.624 0.206578 220.195 -0.0627664 223.496 1.85563Z" />
-        <path d="M35.4065 154.689L20.1437 138.839L20.1436 131.506L35.4064 147.355L35.4065 154.689Z" />
-        <path d="M53.5067 116.019L38.2438 100.169L210.594 3.12429L231.141 13.4614L53.5067 116.019Z" />
-        <path d="M35.4065 147.358L20.1437 131.509C20.111 119.993 28.2032 105.963 38.2371 100.17L53.5 116.019C43.466 121.812 35.3739 135.843 35.4065 147.358Z" />
-      </clipPath>
-      <clipPath
-        id="bgblur_2_1397_34189_clip_path"
-        transform="translate(-30.4014 -5.96094)"
-      >
-        <path d="M231.129 13.4493C241.151 7.66315 249.308 12.3117 249.341 23.8276V27.8633L35.4015 154.7V147.346C35.3688 135.30 43.461 121.8 53.4949 116.006L231.129 13.4493Z" />
-      </clipPath>
-      <linearGradient
-        id="paint0_linear_1397_34189"
-        x1={193.254}
-        y1={69.7118}
-        x2={141.961}
-        y2={347.004}
-        gradientUnits="userSpaceOnUse"
-      >
-        <stop stopColor="#3DEFFF" />
-        <stop offset={1} stopColor="#3DEFFF" stopOpacity={0.5} />
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
-export default SVGComponent;
+      </foreignObject>
+      <path
+        data-figma-bg-blur-radius={24}
+        d="M197.708 183.221C208.516 183.221 218.003 176.135 220.886 165.86L247.906 68.3034C249.948 60.7445 244.184 53.4219 236.378 53.4219H58.8807C48.0723 53.4219 38.585 60.5083 35.7028 70.7836L8.68197 168.34C6.64039 175.899 12.4048 183.221 20.2109 183.221H197.708Z"
+        fill="#7EF4FF"
+        fillOpacity={0.1}
+      />
+      <path
+        d="M258.905 53.422L54.3907 53.4219C44.6457 53.4219 36.2916 60.268 34.5336 69.6947L33.8467 73.3783L8.26758 167.706"
+        stroke="url(#paint1_linear_1651_22858)"
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
+      <defs>
+        <filter
+          id="filter0_f_1651_22858"
+          x={-0.000389099}
+          y={34.15}
+          width={252.148}
+          height={177.083}
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity={0} result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape"
+          />
+          <feGaussianBlur
+            stdDeviation={22.3}
+            result="effect1_foregroundBlur_1651_22858"
+          />
+        </filter>
+        <clipPath
+          id="bgblur_0_1651_22858_clip_path"
+          transform="translate(15.7324 -29.4219)"
+        >
+          <path d="M197.708 183.221C208.516 183.221 218.003 176.135 220.886 165.86L247.906 68.3034C249.948 60.7445 244.184 53.4219 236.378 53.4219H58.8807C48.0723 53.4219 38.585 60.5083 35.7028 70.7836L8.68197 168.34C6.64039 175.899 12.4048 183.221 20.2109 183.221H197.708Z" />
+        </clipPath>
+        <linearGradient
+          id="paint0_linear_1651_22858"
+          x1={119.213}
+          y1={-0.00000422461}
+          x2={141.321}
+          y2={92.3261}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#00EAFF" stopOpacity={0.6} />
+          <stop offset={0.408462} stopColor="#44F9D2" stopOpacity={0.45} />
+          <stop offset={0.624247} stopColor="#337552" stopOpacity={0.1} />
+          <stop offset={1} stopColor="#97FF67" stopOpacity={0} />
+        </linearGradient>
+        <linearGradient
+          id="paint1_linear_1651_22858"
+          x1={15.9318}
+          y1={157.837}
+          x2={246.893}
+          y2={127.476}
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#00EAFF" stopOpacity={0} />
+          <stop offset={0.0652543} stopColor="#00EAFF" stopOpacity={0.14} />
+          <stop offset={0.18336} stopColor="#00EAFF" stopOpacity={0.8} />
+          <stop offset={0.439551} stopColor="#00EAFF" stopOpacity={0.8} />
+          <stop offset={1} stopColor="#00EAFF" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+export default Folder;

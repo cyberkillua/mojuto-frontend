@@ -1,3 +1,7 @@
+import MaxContainer from "@/components/shared/common/maxcontainer";
+import  scroll, { resetScroll } from "@/animations/scroll";
+import { split } from "@/animations/text";
+import { useEffect } from "react";
 import Nav from "@/components/shared/landing/navbar";
 import Hero from "@/components/shared/landing/hero";
 import UseCase from "@/components/shared/landing/use-case";
@@ -6,19 +10,30 @@ import Actions from "@/components/shared/landing/action";
 import CTA from "@/components/shared/landing/cta";
 import Offer from "@/components/shared/landing/offer";
 import Footer from "@/components/shared/landing/footer";
-import MaxContainer from "@/components/shared/common/maxcontainer";
 
 const Home = () => {
+    useEffect(() => {
+        document.body.classList.add("landing-scroll");
+        scroll();
+        split();
+        return () => {
+            document.body.classList.remove("landing-scroll");
+            resetScroll();
+        };
+    }, []);
     return (
-        <div className="bg-[#000000] w-[100vw] overflow-x-hidden">
+        <div 
+            className="bg-[#000000] w-[100vw] overflow-x-hidden"
+            
+        >
+            
             <MaxContainer
-                className="sm:bg-[url(/common/coins.png),url(/common/globe_flare.png)] bg-no-repeat sm:bg-[position:top_center,center_center] bg-[url(/common/coins_sm.png),url(/common/flare_mobile.png)] sm:bg-[length:100%_auto] bg-[length:150%_auto] bg-[position:center_top]"
-                
+                className="bg-[url(/common/hero-bg-mobile.png)] sm:bg-[url(/common/mojuto-hero-bg.png)] max-w-[1440px] mx-auto sm:h-[98rem] h-[62rem]  bg-size-[length:100%_100%] bg-no-repeat bg-center relative"
             >
                 <Nav />
                 <Hero />
-               <UseCase />
             </MaxContainer>
+            <UseCase />
             <Features />
             <Offer />
             <Actions />

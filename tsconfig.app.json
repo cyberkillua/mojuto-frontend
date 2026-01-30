@@ -25,6 +25,7 @@
     "jsx": "react-jsx",
     /* Linting */
     "strict": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
@@ -32,6 +33,7 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "src"
+    "src/**/*",
+    "src/types/*.d.ts"
   ]
 }
