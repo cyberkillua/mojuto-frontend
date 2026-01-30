@@ -61,4 +61,25 @@ body {
   color: #888;
 }
 
-::-webkit-scrollbar {display: none;}
+span.word_wrap {
+  overflow: hidden;
+  display: inline-block;
+}
+
+[data-animation="header"] span.word {
+  overflow-y: hidden;
+  position: relative;
+}
+
+.line {
+  overflow: hidden;
+}
+
+p {
+  font-kerning: none;
+
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

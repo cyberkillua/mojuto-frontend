@@ -1,11 +1,18 @@
 import MaxContainer from "../common/maxcontainer";
-import { useLayoutEffect, useRef, useState } from "react";
+import {
+    useLayoutEffect,
+    useRef,
+    useState,
+    useEffect
+} from "react";
 import {
     Tabs,
     TabsContent,
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
+import gsap from "gsap";
+import { IO } from "@/animations/observe";
 
 const Offer = () => {
     const items = [
@@ -53,11 +60,49 @@ const Offer = () => {
     ]
     const [activeTab, setActiveTab] = useState(items[0].title);
     const tabsListRef = useRef<HTMLDivElement | null>(null);
+    const contentContainerRef = useRef<HTMLDivElement | null>(null);
     const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
     const [indicatorStyle, setIndicatorStyle] = useState<{
         width: number;
         translateX: number;
     } | null>(null);
+
+    useEffect(() => {
+        // Animate tablist only (not the heading)
+        if (tabsListRef.current) {
+            gsap.set(tabsListRef.current, {
+                y: 60,
+                opacity: 0,
+            });
+
+            IO(tabsListRef.current, { threshold: 0.3 }).then(() => {
+                gsap.to(tabsListRef.current, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out",
+                });
+            });
+        }
+
+        // Animate content container
+        if (contentContainerRef.current) {
+            gsap.set(contentContainerRef.current, {
+                y: 60,
+                opacity: 0,
+            });
+
+            IO(contentContainerRef.current, { threshold: 0.2 }).then(() => {
+                gsap.to(contentContainerRef.current, {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power2.out",
+                    delay: 0.3,
+                });
+            });
+        }
+    }, []);
 
     useLayoutEffect(() => {
         const activeEl = triggerRefs.current[activeTab];
@@ -77,7 +122,9 @@ const Offer = () => {
     }, [activeTab]);
 
     return (
-        <section className="sm:px-[7rem] sm:mt-[15rem] mt-[6rem] px-[2rem]">
+        <section
+            className="sm:px-[7rem] sm:mt-[15rem] mt-[6rem] px-[2rem]"
+        >
             <MaxContainer>
                 <Tabs
                     className=""
@@ -86,10 +133,15 @@ const Offer = () => {
                 >
                     <div className="relative">
                         <div className="sm:flex sm:flex-row flex-col justify-between">
-                            <h1 className="sm:text-[3rem] text-[2.3rem] text-center sm:text-start text-white">
+                            {/* Heading - No animation */}
+                            <h1
+                                className="sm:text-[3rem] text-[2.3rem] text-center sm:text-start text-white"
+                                data-animation="paragraph"
+                            >
                                 What We Offer
                             </h1>
 
+                            {/* TabsList - Animated */}
                             <TabsList
                                 ref={tabsListRef}
                                 className="relative px-[1rem] w-full mt-[1rem] sm:mt-0 overflow-scroll sm:w-[67rem] sm:py-[1.5rem] rounded-[4rem] !h-fit bg-[#172228] py-[1rem]"
@@ -124,39 +176,42 @@ const Offer = () => {
                             </TabsList>
                         </div>
 
-                        {
-                            items.map((item, index) => {
-                                return (
-                                    <TabsContent
-                                        key={index}
-                                        value={item.title}
-                                        className="sm:mt-[4rem] data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:duration-500"
-                                    >
-                                        <div className="mt-[2rem] items-center flex flex-col sm:flex-row justify-between">
-                                            <div className="w-full sm:w-fit">
-                                                {
-                                                    item.offers.map((offer, index) => {
-                                                        return (
-                                                            <div
-                                                                key={index}
-                                                                className="flex border-b-[0.25px_solid] border-b [border-image:linear-gradient(90deg,rgba(255,255,255,0.12)_0%,rgba(0,234,255,0.6)_50.48%,rgba(255,255,255,0.12)_100%)_1]  sm:w-[40rem] w-full flex-col sm:py-[3rem] py-[2rem]"
-                                                            >
-                                                                <p className="text-[#7C8E97] text-[1.2rem] sm:text-[1.5rem]">{offer}</p>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
+                        {/* Content Container - Animated */}
+                        <div ref={contentContainerRef}>
+                            {
+                                items.map((item, index) => {
+                                    return (
+                                        <TabsContent
+                                            key={index}
+                                            value={item.title}
+                                            className="sm:mt-[4rem] data-[state=active]:animate-in data-[state=active]:fade-in-0 data-[state=active]:duration-500"
+                                        >
+                                            <div className="mt-[2rem] items-center flex flex-col sm:flex-row justify-between">
+                                                <div className="w-full sm:w-fit">
+                                                    {
+                                                        item.offers.map((offer, index) => {
+                                                            return (
+                                                                <div
+                                                                    key={index}
+                                                                    className="flex border-b-[0.25px_solid] border-b [border-image:linear-gradient(90deg,rgba(255,255,255,0.12)_0%,rgba(0,234,255,0.6)_50.48%,rgba(255,255,255,0.12)_100%)_1]  sm:w-[40rem] w-full flex-col sm:py-[3rem] py-[2rem]"
+                                                                >
+                                                                    <p className="text-[#7C8E97] text-[1.2rem] sm:text-[1.5rem]">{offer}</p>
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </div>
+                                                <img
+                                                    src={item.img}
+                                                    alt={item.title}
+                                                    className="mt-[2.5rem] sm:mt-0 sm:w-[67rem] w-full h-auto sm:rounded-[5rem] rounded-[3rem]"
+                                                />
                                             </div>
-                                            <img
-                                                src={item.img}
-                                                alt={item.title}
-                                                className="mt-[2.5rem] sm:mt-0 sm:w-[67rem] w-full h-auto sm:rounded-[5rem] rounded-[3rem]"
-                                            />
-                                        </div>
-                                    </TabsContent>
-                                )
-                            })
-                        }
+                                        </TabsContent>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                 </Tabs>
 
